@@ -214,15 +214,136 @@
   });
 
   // ─── Real Photography ───────────────────────────────
-  // Derives a stable numeric seed from the label so the same label always
-  // picks the same Unsplash photo across page loads.
+  // Hardcoded Unsplash photo IDs — one per product/scene category.
+  var PHOTOS = {
+    // Interior doors
+    shaker_5panel:       'rIcDuE91HWk',
+    raised_panel:        '6A8IlonoXR4',
+    flush_door:          'zF0aSACUPjk',
+    custom_arched:       'iphWbI4pkSU',
+    // Barn doors
+    barn_modern:         'kHy6pcn0nc4',
+    barn_xbrace:         'g2luYjMpc14',
+    barn_zbrace:         'bmEfC6JfABA',
+    barn_reclaimed:      'JWMEUgHy7ok',
+    barn_glass:          'a21S260hKYc',
+    barn_shaker:         'AexqkH1SLbg',
+    barn_double:         'KiBtTuPtsHA',
+    // French doors
+    french_interior:     'TiNh2kcfF0Y',
+    french_bifold:       'irqcS2UsBbA',
+    french_sunlit:       'DvWRy8ykluY',
+    // Exterior doors
+    exterior_grand:      'Tgs4Neb9fVg',
+    exterior_arched:     'ohz7YsXj14w',
+    exterior_dutch:      'fnPPA3hpbgQ',
+    exterior_mahogany:   'zWjKyZump6o',
+    // Custom / special
+    pivot_door:          'bloY_24ivVM',
+    custom_carved:       'STrvz-H3JcI',
+    // Fire-rated
+    fire_rated:          'Y7XhCw8ykRo',
+    fire_hotel:          'uiqx-n5RVhg',
+    // Moldings
+    crown_molding:       'Cn8Vz8sO9Pw',
+    coffered_ceiling:    '8aHbSehdS3k',
+    crown_hotel:         'JuI0xTZyKJ0',
+    baseboard:           'Idl6CfIYxsA',
+    door_casing:         'TuhjCrKzJY4',
+    chair_rail:          'pjQAGRNehew',
+    chair_rail_formal:   'rI-IbYGrTf0',
+    wainscoting:         'thpCQH4Tolk',
+    board_batten:        'DxQxKD3pnDU',
+    shadow_box:          'OKcqTe4h6jg',
+    staircase_molding:   'bxJ8JMcRcjs',
+    // Hardware
+    lever_brass:         'ZqdRa6vjX4Y',
+    lever_black:         'ZUdwAfOlvEM',
+    knob_brass:          '8ea3Kl7pY4k',
+    knob_crystal:        '5YUIiv0kLW8',
+    hinge_brass:         'UxP1o-E2OCM',
+  };
+
+  // Returns a hardcoded photo ID for the label, or null to fall back to query.
+  function _photoId(label) {
+    var l = label.toLowerCase();
+    // Barn doors (check before generic "door")
+    if (/double.bypass/.test(l))                              return PHOTOS.barn_double;
+    if (/x.brace/.test(l))                                    return PHOTOS.barn_xbrace;
+    if (/z.brace/.test(l))                                    return PHOTOS.barn_zbrace;
+    if (/reclaimed.*barn|plank.*barn|wide.*sliding/.test(l))  return PHOTOS.barn_reclaimed;
+    if (/glass.*barn|barn.*glass/.test(l))                    return PHOTOS.barn_glass;
+    if (/shaker.*barn|barn.*shaker|panel.*barn/.test(l))      return PHOTOS.barn_shaker;
+    if (/barn.door.*(loft|modern|rail)|loft.*barn/.test(l))   return PHOTOS.barn_modern;
+    if (/barn.door/.test(l))                                   return PHOTOS.barn_modern;
+    // Interior doors
+    if (/shaker|5.panel|five.panel/.test(l))                  return PHOTOS.shaker_5panel;
+    if (/craftsman|2.panel|two.panel/.test(l))                return PHOTOS.shaker_5panel;
+    if (/raised.panel/.test(l))                               return PHOTOS.raised_panel;
+    if (/flush|flat.panel.*door/.test(l))                     return PHOTOS.flush_door;
+    if (/louvered/.test(l))                                   return PHOTOS.flush_door;
+    if (/glass.lite|10.lite|15.lite|true.divided/.test(l))    return PHOTOS.french_interior;
+    if (/custom.*arch|arch.*interior/.test(l))                return PHOTOS.custom_arched;
+    // French doors
+    if (/bifold|accordion|pocketing/.test(l))                 return PHOTOS.french_bifold;
+    if (/sunlit.garden|pair.*open.*garden|open.*sunlit/.test(l)) return PHOTOS.french_sunlit;
+    if (/french.*open.*garden|open.*garden.*french/.test(l))  return PHOTOS.french_sunlit;
+    if (/exterior.french|terrace.door|french.*terrace|french.*exterior|exterior.*french/.test(l)) return PHOTOS.french_interior;
+    if (/french.door|french.doors/.test(l))                   return PHOTOS.french_interior;
+    // Exterior doors
+    if (/dutch.door/.test(l))                                 return PHOTOS.exterior_dutch;
+    if (/arched.*exterior|ornate.*exterior|arched.top|single.*arched/.test(l)) return PHOTOS.exterior_arched;
+    if (/grand.*mahogany|mahogany.*entry|mahogany.*grand/.test(l)) return PHOTOS.exterior_mahogany;
+    if (/grand.*oak|grand.*white.oak|grand.*entry|sidelight|estate.entry/.test(l)) return PHOTOS.exterior_grand;
+    if (/entry.door|front.door|exterior.*solid|solid.*exterior|exterior.*door/.test(l)) return PHOTOS.exterior_grand;
+    if (/contemporary.exterior|modern.exterior/.test(l))      return PHOTOS.exterior_grand;
+    // Custom / pivot
+    if (/pivot/.test(l))                                      return PHOTOS.pivot_door;
+    if (/custom.*carv|carved.*mahogany|carved.*solid|carved.*ornate/.test(l)) return PHOTOS.custom_carved;
+    // Fire-rated
+    if (/ul.listing|ul.list|fire.*label/.test(l))             return PHOTOS.fire_rated;
+    if (/fire.rated.*walnut|fire.rated.*wood|fire.rated.*office|fire.rated.*solid/.test(l)) return PHOTOS.fire_hotel;
+    if (/hotel.room.door|corridor.door|suite.entry/.test(l))  return PHOTOS.fire_hotel;
+    if (/fire.rated|fire-rated/.test(l))                      return PHOTOS.fire_rated;
+    // Crown molding
+    if (/coffered/.test(l))                                   return PHOTOS.coffered_ceiling;
+    if (/grand.crown|high.ceiling.*library|library.*crown/.test(l)) return PHOTOS.coffered_ceiling;
+    if (/hotel.*crown|crown.*hotel|hotel.*wainscot/.test(l))  return PHOTOS.crown_hotel;
+    if (/crown.molding|crown.*ceiling|ceiling.molding|dentil/.test(l)) return PHOTOS.crown_molding;
+    // Base / casing
+    if (/base.cap|base.molding|baseboard|tall.base|minimal.*base/.test(l)) return PHOTOS.baseboard;
+    if (/staircase.*molding/.test(l))                         return PHOTOS.staircase_molding;
+    if (/casing|door.frame|door.casing/.test(l))              return PHOTOS.door_casing;
+    // Chair rail
+    if (/colonial.chair|traditional.*chair/.test(l))          return PHOTOS.chair_rail_formal;
+    if (/chair.rail.*dining|dining.*chair.rail|formal.*dining.*chair/.test(l)) return PHOTOS.chair_rail_formal;
+    if (/chair.rail/.test(l))                                 return PHOTOS.chair_rail;
+    // Wainscoting / paneling
+    if (/beadboard/.test(l))                                  return PHOTOS.board_batten;
+    if (/board.and.batten|board.*batten/.test(l))             return PHOTOS.board_batten;
+    if (/shadow.box/.test(l))                                 return PHOTOS.shadow_box;
+    if (/picture.frame|gallery.wall/.test(l))                 return PHOTOS.shadow_box;
+    if (/panel.molding|wall.panel.grid|panel.grid|dining.room.panel|formal.living.*panel/.test(l)) return PHOTOS.shadow_box;
+    if (/executive.board/.test(l))                            return PHOTOS.shadow_box;
+    if (/wainscot/.test(l))                                   return PHOTOS.wainscoting;
+    // Hardware
+    if (/matte.black.*lever|linear.lever|j.pull|matte.black.*pull|cabinet.*pull/.test(l)) return PHOTOS.lever_black;
+    if (/lever|door.handle|brass.*handle|handle.*brass/.test(l)) return PHOTOS.lever_brass;
+    if (/crystal.knob/.test(l))                               return PHOTOS.knob_crystal;
+    if (/knob/.test(l))                                       return PHOTOS.knob_brass;
+    if (/hinge|flush.bolt|door.stop|door.closer|mortise|cremone|entry.pull|barn.*pull|barn.*hardware|hardware.display/.test(l)) return PHOTOS.hinge_brass;
+    // No hardcoded match — fall back to query
+    return null;
+  }
+
+  // Fallback: stable seed for source.unsplash.com queries
   function _sig(label) {
     var h = 5381;
     for (var i = 0; i < label.length; i++) h = (h * 33 ^ label.charCodeAt(i)) >>> 0;
     return (h % 900) + 50;
   }
 
-  // Maps each image label to a precise Unsplash search query.
+  // Fallback query for categories not covered by hardcoded IDs.
   function _query(label) {
     var l = label.toLowerCase();
     // Barn doors
@@ -404,11 +525,14 @@
       var w = Math.max(ph.offsetWidth  || 800, 200);
       var h = Math.max(ph.offsetHeight || 600, 150);
 
-      var q   = _query(label);
-      var sig = _sig(label);
-      var src = 'https://source.unsplash.com/featured/'
-                + Math.round(w * 1.5) + 'x' + Math.round(h * 1.5)
-                + '/?' + q + '&sig=' + sig;
+      var id  = _photoId(label);
+      var src = id
+        ? 'https://images.unsplash.com/photo-' + id
+          + '?w=' + Math.round(w * 1.5) + '&h=' + Math.round(h * 1.5)
+          + '&auto=format&fit=crop&q=80'
+        : 'https://source.unsplash.com/featured/'
+          + Math.round(w * 1.5) + 'x' + Math.round(h * 1.5)
+          + '/?' + _query(label) + '&sig=' + _sig(label);
 
       // Product cards: light background so the image reads clean
       if (isStyleImg) {
