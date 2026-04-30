@@ -214,93 +214,220 @@
   });
 
   // ─── Real Photography ───────────────────────────────
-  // Maps label keywords → curated Unsplash photo IDs
-  var PHOTOS = [
-    // Doors – exterior
-    { k: ['grand','entry door','mahogany door','estate entry','carved door','solid mahogany'],  id: '1558618666-fcd25c85cd64' },
-    { k: ['exterior door','front door','sidelight','dutch door','arched door','contemporary exterior'], id: '1568605114974-d883bead6b46' },
-    // Doors – interior
-    { k: ['interior door','shaker','5-panel','panel door','2-panel','raised 6','louvered','glass-lite','flush interior'], id: '1558997519-9c67cfcaad47' },
-    // French doors
-    { k: ['french door','garden door','terrace door','bifold','pocketing french'], id: '1502005229762-cf1b2da7c5d6' },
-    // Barn doors
-    { k: ['barn door','sliding door','x-brace','reclaimed plank','z-brace','bypass'], id: '1558997519-9c67cfcaad47' },
-    // Custom / pivot
-    { k: ['custom door','pivot door','carved','oversized','custom carved','historic'], id: '1600585154340-be6161a56a0c' },
-    // Fire-rated
-    { k: ['fire-rated','fire rated','hotel room door','corridor door','office door'], id: '1497366216548-37526070297c' },
-    // Crown molding
-    { k: ['crown molding','crown','cornice','coffered','ceiling molding'], id: '1586023492125-27b2c045efd7' },
-    // Base molding / wainscoting / paneling
-    { k: ['baseboard','base molding','wainscoting','paneling','wall panel','shadow box','board and batten','beadboard','chair rail','casing','door frame','door casing','window frame'], id: '1600210492486-724d5a25c597' },
-    // Hardware
-    { k: ['hardware','handle','lever','knob','pull','brass','hinge','bolt','cremone','mortise'], id: '1558618587-5acac4dfef3f' },
-    // Workshop / craft
-    { k: ['workshop','craftsman','woodworking','carpenter','planing','bench','cnc','finishing','staining','mill','facility','production'], id: '1530124566582-a618bc2615dc' },
-    // Lumber / wood material
-    { k: ['lumber','wood stack','cured','plank','grain','species','texture','white oak','walnut','cherry','mahogany','maple'], id: '1518893883800-45cd0954574b' },
-    // Interiors – living / lounge
-    { k: ['living room','lounge','modern interior','contemporary','open plan'], id: '1583847268964-b28dc8f51f92' },
-    // Interiors – dining
-    { k: ['dining room','formal dining','dining','chair rail dining'], id: '1556909172-8277d6b46f0a' },
-    // Interiors – hallway / entry
-    { k: ['hallway','corridor','entry','foyer'], id: '1600566752355-35792bedcfea' },
-    // Hotel / hospitality
-    { k: ['hotel lobby','hotel corridor','hotel','hospitality','resort','hermitage','thompson'], id: '1564501049412-61c2a3083791' },
-    // Office / commercial / boardroom
-    { k: ['office','boardroom','commercial','corporate','executive'], id: '1497366811353-6870744d04b2' },
-    // Brooklyn / map / location
-    { k: ['map','brooklyn','new york','location','showroom location'], id: '1522083165945-a07a6ac05f87' },
-    // Portrait / people
-    { k: ['portrait','founder','team','director','manager','person'], id: '1560250097-0b93528c311a' },
-    // Samples / design
-    { k: ['sample','finish chip','stain','material','drawing','design table'], id: '1558618666-fcd25c85cd64' },
-    // Showroom
-    { k: ['showroom','display','door display'], id: '1616486701797-0f33f61038ec' },
-  ];
+  // Derives a stable numeric seed from the label so the same label always
+  // picks the same Unsplash photo across page loads.
+  function _sig(label) {
+    var h = 5381;
+    for (var i = 0; i < label.length; i++) h = (h * 33 ^ label.charCodeAt(i)) >>> 0;
+    return (h % 900) + 50;
+  }
 
-  function bestPhotoId(label) {
-    if (!label) return null;
+  // Maps each image label to a precise Unsplash search query.
+  function _query(label) {
     var l = label.toLowerCase();
-    var best = null, bestScore = 0;
-    for (var i = 0; i < PHOTOS.length; i++) {
-      var score = 0;
-      for (var j = 0; j < PHOTOS[i].k.length; j++) {
-        if (l.indexOf(PHOTOS[i].k[j]) !== -1) score += PHOTOS[i].k[j].length;
-      }
-      if (score > bestScore) { bestScore = score; best = PHOTOS[i].id; }
-    }
-    return best;
+    // Barn doors
+    if (/z.brace/.test(l))                              return 'z-brace+barn+door+black+industrial+wood';
+    if (/x.brace/.test(l))                              return 'x-brace+barn+door+farmhouse+pine+wood';
+    if (/bypass/.test(l))                               return 'bypass+sliding+barn+door+wood+modern';
+    if (/glass.*barn|barn.*glass/.test(l))              return 'glass+panel+barn+door+modern+interior';
+    if (/shaker.*barn|barn.*shaker|panel.*barn/.test(l))return 'shaker+barn+door+white+oak+minimal';
+    if (/reclaimed.*barn|plank.*barn|wide.*sliding/.test(l)) return 'reclaimed+wood+barn+door+rustic+rail';
+    if (/double.bypass/.test(l))                        return 'double+bypass+barn+door+walnut+bedroom';
+    if (/barn.door/.test(l))                            return 'barn+door+sliding+interior+wood+modern';
+    // Interior doors
+    if (/shaker|5-panel|five.panel/.test(l))            return 'shaker+5+panel+interior+wood+door+clean';
+    if (/craftsman|2-panel|two.panel/.test(l))          return 'craftsman+2+panel+interior+wood+door';
+    if (/raised.panel/.test(l))                         return 'raised+panel+interior+door+traditional+wood';
+    if (/louvered/.test(l))                             return 'louvered+interior+door+white+painted';
+    if (/glass.lite|10.lite|15.lite|true.divided/.test(l)) return 'glass+panel+interior+door+french+lite';
+    if (/flush.*door|flat.panel.*door/.test(l))         return 'flush+minimal+interior+door+wood+modern';
+    if (/custom.*arched|arch.*interior/.test(l))        return 'custom+arched+interior+door+cherry+wood';
+    if (/interior.*door|interior.*solid/.test(l))       return 'interior+solid+wood+door+panel+minimal';
+    // Exterior doors
+    if (/dutch.door/.test(l))                           return 'dutch+door+exterior+painted+split+wood';
+    if (/arched.*exterior|ornate.*exterior/.test(l))    return 'arched+exterior+wood+door+ornate+entry';
+    if (/contemporary.exterior|modern.exterior/.test(l))return 'modern+contemporary+exterior+door+white+oak';
+    if (/sidelight|grand.*entry|grand.*oak|grand.*mahogany|grand.*white.oak/.test(l)) return 'grand+entry+door+wood+sidelights+transom+luxury';
+    if (/entry.door|front.door/.test(l))                return 'front+entry+door+wood+home+exterior';
+    if (/exterior.french|terrace.door/.test(l))         return 'exterior+french+doors+terrace+garden+wood';
+    if (/exterior.*solid|solid.*exterior/.test(l))      return 'solid+wood+exterior+door+sidelights+modern';
+    // French doors
+    if (/bifold|accordion/.test(l))                     return 'bifold+french+doors+wood+glass+interior';
+    if (/pocketing/.test(l))                            return 'pocketing+french+door+interior+wall+sliding';
+    if (/half.glass|half-glass/.test(l))                return 'french+door+half+glass+wood+interior+panel';
+    if (/full.glass/.test(l))                           return 'full+glass+french+door+minimal+modern';
+    if (/pair.*open|open.*garden|sunlit.garden/.test(l))return 'french+doors+open+garden+sunlit+natural+light';
+    if (/french.door/.test(l))                          return 'french+doors+glass+wood+interior+light';
+    // Fire-rated / commercial
+    if (/ul.listing|ul.list/.test(l))                   return 'fire+door+label+UL+listing+plate+metal+close';
+    if (/fire.rated|fire.rated.*walnut|fire.rated.*wood/.test(l)) return 'fire+rated+steel+metal+door+commercial+industrial';
+    if (/hotel.room.door|corridor.door/.test(l))        return 'hotel+corridor+room+door+wood+hospitality';
+    // Custom / pivot
+    if (/pivot/.test(l))                                return 'pivot+door+oversized+wood+modern+polished+brass';
+    if (/custom.*carved|carved.*mahogany/.test(l))      return 'carved+mahogany+wood+door+ornate+custom+entry';
+    if (/custom.*door|made.to.spec/.test(l))            return 'custom+handcrafted+wood+door+bespoke+interior';
+    // Crown molding
+    if (/dentil/.test(l))                               return 'crown+molding+dentil+detail+white+painted+close';
+    if (/coffered/.test(l))                             return 'coffered+ceiling+panel+molding+library+wood+beams';
+    if (/grand.crown|high.ceiling.*crown/.test(l))      return 'grand+crown+molding+high+ceiling+library+bookcase';
+    if (/hotel.*crown|crown.*hotel/.test(l))            return 'hotel+lobby+crown+molding+luxury+grand+interior';
+    if (/crown.molding|crown.*ceiling|ceiling.molding/.test(l)) return 'crown+molding+white+painted+ceiling+architectural';
+    // Casing
+    if (/backband/.test(l))                             return 'door+casing+backband+formal+traditional+depth';
+    if (/colonial.*cas|ogee.*cas/.test(l))              return 'colonial+ogee+door+casing+trim+traditional+wood';
+    if (/craftsman.*cas/.test(l))                       return 'craftsman+door+casing+rosette+flat+painted+white';
+    if (/minimal.*cas|modern.*cas/.test(l))             return 'modern+minimal+door+casing+contemporary+clean';
+    if (/built.up.*cas|layered.*cas/.test(l))           return 'layered+built+up+door+casing+formal+doorway';
+    if (/colonial.stop/.test(l))                        return 'colonial+stop+casing+traditional+profile+wood';
+    if (/casing|door.frame|door.casing/.test(l))        return 'door+window+casing+trim+wood+interior+craftsman';
+    // Base molding
+    if (/base.cap/.test(l))                             return 'base+cap+molding+floor+transition+hardwood';
+    if (/modern.minimal.*base|minimal.*base/.test(l))   return 'modern+minimal+baseboard+white+oak+natural';
+    if (/tall.base/.test(l))                            return 'tall+baseboard+formal+room+painted+white+elegant';
+    if (/base.molding|baseboard/.test(l))               return 'baseboard+molding+floor+trim+white+painted+interior';
+    // Staircase
+    if (/staircase.*molding/.test(l))                   return 'staircase+wall+panel+molding+angled+installation';
+    // Chair rail
+    if (/built.up.chair|layered.chair/.test(l))         return 'built+up+chair+rail+two+piece+cap+base+molding';
+    if (/colonial.chair/.test(l))                       return 'colonial+chair+rail+formal+traditional+hallway';
+    if (/craftsman.chair/.test(l))                      return 'craftsman+chair+rail+flat+bead+detail';
+    if (/modern.*chair.rail|flat.*chair.rail|minimal.*chair/.test(l)) return 'modern+minimal+flat+chair+rail+contemporary+clean';
+    if (/traditional.*chair/.test(l))                   return 'traditional+ogee+chair+rail+profile+formal';
+    if (/chair.rail/.test(l))                           return 'chair+rail+molding+dining+room+two+tone+wall';
+    // Wainscoting / paneling
+    if (/beadboard.*sage|sage.*beadboard/.test(l))      return 'beadboard+wainscoting+sage+green+painted+kitchen';
+    if (/beadboard/.test(l))                            return 'beadboard+wainscoting+white+painted+cottage+interior';
+    if (/board.and.batten.*dining|board.*batten.*farm/.test(l)) return 'board+batten+wall+farmhouse+dining+room+modern';
+    if (/board.and.batten/.test(l))                     return 'board+and+batten+wall+panel+farmhouse+interior';
+    if (/shadow.box/.test(l))                           return 'shadow+box+wall+panel+bedroom+contemporary';
+    if (/raised.panel.wainscot/.test(l))                return 'raised+panel+wainscoting+formal+hallway+white+painted';
+    if (/flat.panel.wainscot/.test(l))                  return 'flat+panel+wainscoting+contemporary+shaker+white';
+    if (/full.wainscot|dining.*wainscot/.test(l))       return 'full+height+wainscoting+dining+room+formal+chair+rail';
+    if (/wainscot.*install|install.*wainscot/.test(l))  return 'wainscoting+installation+formal+dining+traditional';
+    if (/wainscot.*cap/.test(l))                        return 'wainscoting+cap+panel+hallway+painted';
+    if (/hotel.*wainscot|wainscot.*hotel/.test(l))      return 'hotel+lobby+full+height+wainscoting+crown+molding';
+    if (/wainscot/.test(l))                             return 'wainscoting+interior+hallway+white+painted+wall+panel';
+    // Panel molding
+    if (/picture.frame|gallery.wall/.test(l))           return 'picture+frame+panel+molding+gallery+wall+formal+room';
+    if (/dining.room.panel/.test(l))                    return 'dining+room+wall+panel+molding+painted+white+elegant';
+    if (/formal.living.*panel|panel.*formal.living/.test(l)) return 'formal+living+room+wall+panel+grid+shadow+reveals';
+    if (/executive.board/.test(l))                      return 'executive+boardroom+solid+walnut+doors+wall+paneling';
+    if (/panel.molding|wall.panel.grid|panel.grid/.test(l)) return 'wall+panel+molding+grid+formal+interior+painted+white';
+    if (/coffered.*panel|panel.*beam/.test(l))          return 'coffered+panel+molding+library+beams+ceiling';
+    // Hardware – levers
+    if (/arch.*lever.*bronze|arch.*bronze/.test(l))     return 'arch+lever+handle+oil+rubbed+bronze+door+close';
+    if (/craftsman.lever|craftsman.*brass/.test(l))     return 'craftsman+lever+solid+brass+satin+door+handle';
+    if (/linear.lever|matte.black.*lever|lever.*matte.black/.test(l)) return 'linear+matte+black+lever+door+handle+modern+minimal';
+    if (/offset.lever|brushed.brass/.test(l))           return 'brushed+brass+offset+lever+door+handle+contemporary';
+    if (/close.up.*lever|lever.*close.up|brass.*lever.*door/.test(l)) return 'brass+lever+set+door+close+up+antique+painted';
+    if (/solid.brass.lever/.test(l))                    return 'solid+brass+lever+handle+door+hardware+satin';
+    // Hardware – knobs
+    if (/crystal.knob/.test(l))                         return 'crystal+glass+door+knob+brass+faceted+hardware';
+    if (/round.knob|polished.brass.*knob/.test(l))      return 'round+polished+brass+door+knob+traditional+hardware';
+    if (/oil.rub.*knob/.test(l))                        return 'oil+rubbed+bronze+door+knob+hardware+close';
+    if (/knob/.test(l))                                 return 'door+knob+hardware+close+up+metal+brass';
+    // Hardware – pulls / bolts
+    if (/cremone/.test(l))                              return 'cremone+bolt+brass+french+door+closure+hardware';
+    if (/barn.*hardware|rail.system|matte.black.rail/.test(l)) return 'barn+door+hardware+matte+black+rail+system';
+    if (/barn.*pull|wrought.iron/.test(l))              return 'barn+door+pull+wrought+iron+rustic+handle';
+    if (/entry.pull|18.*pull|architectural.*pull/.test(l)) return 'entry+pull+18+inch+solid+brass+bar+architectural';
+    if (/commercial.*pull/.test(l))                     return 'commercial+door+pull+brushed+nickel+hardware';
+    if (/j.pull|cabinet.*pull|pulls.*black/.test(l))    return 'matte+black+cabinet+door+pull+modern+hardware';
+    if (/matte.black.pull|matte.black.*door.pull/.test(l)) return 'matte+black+door+pull+modern+hardware+entry';
+    if (/flush.bolt/.test(l))                           return 'flush+bolt+door+hardware+brass+top+bottom';
+    if (/door.stop/.test(l))                            return 'brass+door+stop+wall+mount+hardware+close+up';
+    if (/door.closer/.test(l))                          return 'surface+mount+door+closer+commercial+hardware';
+    if (/mortise/.test(l))                              return 'mortise+lock+set+antique+brass+estate+door+hardware';
+    if (/hardware.display/.test(l))                     return 'door+hardware+showroom+display+handles+finishes+all';
+    if (/hinge/.test(l))                                return 'ball+bearing+butt+hinge+door+hardware+brass+close';
+    if (/hardware|handle|lever|pull/.test(l))           return 'door+hardware+handle+metal+close+up+brass';
+    // Wood grain
+    if (/white.oak.grain|white.oak.*close/.test(l))     return 'white+oak+wood+grain+natural+close+up+texture';
+    if (/walnut.grain/.test(l))                         return 'walnut+wood+grain+dark+rich+close+up+texture';
+    if (/cherry.*grain|cherry.*warm/.test(l))           return 'cherry+wood+grain+warm+reddish+close+up+texture';
+    if (/mahogany.grain|mahogany.*straight/.test(l))    return 'mahogany+wood+grain+straight+reddish+brown+close';
+    if (/maple.grain|maple.*tight/.test(l))             return 'maple+wood+grain+tight+light+close+up+texture';
+    if (/alder.grain|alder.*reddish/.test(l))           return 'alder+wood+grain+light+reddish+brown+close+up';
+    if (/douglas.fir|fir.*knotty|fir.*warm/.test(l))   return 'douglas+fir+grain+warm+knotty+wood+texture';
+    if (/poplar.grain|poplar.*light/.test(l))           return 'poplar+wood+grain+light+painted+close+up';
+    if (/paint.grade/.test(l))                          return 'paint+grade+primed+white+door+studio+clean';
+    // Workshop / facility
+    if (/cnc|router/.test(l))                           return 'cnc+router+cutting+wood+panel+precision+machine';
+    if (/planing|hand.plan|planing.*oak/.test(l))       return 'craftsman+hand+planing+solid+oak+workbench+tools';
+    if (/staining|finishing.booth/.test(l))             return 'wood+door+staining+finishing+spray+workshop+booth';
+    if (/shop.drawing|designer.*review/.test(l))        return 'architect+designer+reviewing+shop+drawings+door+samples';
+    if (/molding.profile|hundreds/.test(l))             return 'molding+profile+wall+display+samples+wood+trim';
+    if (/wood.*sample|finish.*chip|sample.*chip/.test(l)) return 'wood+stain+finish+sample+chips+design+table+spread';
+    if (/wide.angle.*facility|brooklyn.facility/.test(l)) return 'millwork+factory+facility+floor+wood+production+wide';
+    if (/aerial.*brooklyn|aerial.*facility/.test(l))   return 'aerial+industrial+building+brooklyn+rooftop+facility';
+    if (/master.craftsman|craftsman.at.bench/.test(l))  return 'master+craftsman+workbench+planing+wood+portrait';
+    if (/workshop|woodwork|carpenter/.test(l))          return 'woodworking+workshop+craftsman+hand+tools+bench';
+    if (/lumber|wood.stack|stack.*cured|cured.*hardwood/.test(l)) return 'hardwood+lumber+stack+cured+planks+warehouse';
+    if (/facility|production|mill/.test(l))             return 'millwork+production+facility+wood+workshop+factory';
+    // People
+    if (/robert.hollis|founder.*workbench|circa.1990/.test(l)) return 'woodworker+craftsman+workbench+vintage+portrait';
+    if (/claire|ceo.*portrait|portrait.*ceo/.test(l))   return 'businesswoman+professional+portrait+executive+modern';
+    if (/diane|design.director/.test(l))                return 'interior+designer+professional+woman+portrait+office';
+    if (/marcus|head.of.production/.test(l))            return 'production+manager+craftsman+workshop+man+portrait';
+    if (/portrait/.test(l))                             return 'professional+portrait+modern+office+confident';
+    // Interiors
+    if (/hotel.lobby.*wainscot|hotel.*wainscot/.test(l)) return 'hotel+lobby+wainscoting+crown+molding+luxury+grand';
+    if (/hotel.lobby.*crown/.test(l))                   return 'hotel+lobby+crown+molding+grand+luxury+interior';
+    if (/hotel.corridor|suite.entry/.test(l))           return 'hotel+corridor+luxury+wood+doors+warm+lighting';
+    if (/hotel.room.door|hotel.lobby/.test(l))          return 'hotel+lobby+luxury+grand+interior+wood+doors';
+    if (/hotel|hospitality|resort/.test(l))             return 'luxury+hotel+interior+wood+doors+hospitality';
+    if (/boardroom|executive.*panel/.test(l))           return 'executive+boardroom+wood+panel+wall+formal+doors';
+    if (/office|commercial/.test(l))                    return 'commercial+office+interior+wood+door+modern';
+    if (/dining.room.*wainscot|full.wainscot/.test(l))  return 'dining+room+wainscoting+chair+rail+formal+wall';
+    if (/dining.room/.test(l))                          return 'formal+dining+room+interior+molding+wall+elegant';
+    if (/living.room|open.plan|modern.interior/.test(l))return 'modern+living+room+interior+design+wood+door+open';
+    if (/hallway|foyer|corridor/.test(l))               return 'hallway+entry+interior+corridor+wood+door+panels';
+    if (/showroom/.test(l))                             return 'door+showroom+display+row+solid+wood+doors+products';
+    // Location / map
+    if (/map|brooklyn.*location|showroom.*location/.test(l)) return 'brooklyn+new+york+street+neighborhood+building';
+    // Hero / catch-all
+    if (/hero/.test(l))                                 return 'grand+wood+entry+door+luxury+interior+warm+light';
+    if (/exterior/.test(l))                             return 'exterior+home+architecture+front+door+wood+luxury';
+    if (/interior/.test(l))                             return 'interior+design+wood+door+modern+minimal+clean';
+    if (/door/.test(l))                                 return 'solid+wood+door+interior+architecture+clean';
+    if (/molding/.test(l))                              return 'architectural+molding+trim+white+painted+interior';
+    return 'interior+architecture+wood+door+minimal+clean';
   }
 
   function loadPhotos() {
     document.querySelectorAll('.img-ph').forEach(function (ph) {
       var labelEl = ph.querySelector('.img-ph-label');
-      var label = labelEl ? labelEl.textContent : '';
-      var id = bestPhotoId(label);
-      if (!id) return;
+      var label   = labelEl ? labelEl.textContent.trim() : '';
+      var isStyleImg = ph.classList.contains('style-img');
+      var isCatImg   = ph.classList.contains('cat-img');
 
-      // Measure rendered size for optimal crop
-      var w = Math.max(ph.offsetWidth || 800, 400);
-      var h = Math.max(ph.offsetHeight || 600, 200);
+      var w = Math.max(ph.offsetWidth  || 800, 200);
+      var h = Math.max(ph.offsetHeight || 600, 150);
 
-      var img = document.createElement('img');
-      img.src = 'https://images.unsplash.com/photo-' + id + '?w=' + Math.round(w * 1.5) + '&h=' + Math.round(h * 1.5) + '&auto=format&fit=crop&q=80';
-      img.alt = label;
-      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
-      img.loading = 'lazy';
+      var q   = _query(label);
+      var sig = _sig(label);
+      var src = 'https://source.unsplash.com/featured/'
+                + Math.round(w * 1.5) + 'x' + Math.round(h * 1.5)
+                + '/?' + q + '&sig=' + sig;
 
-      // Ensure parent is positioned
+      // Product cards: light background so the image reads clean
+      if (isStyleImg) {
+        ph.style.background = '#f4f1ec';
+      } else if (isCatImg) {
+        ph.style.background = '#1a1714';
+      } else {
+        ph.style.background = '#ede9e1';
+      }
+
       var pos = window.getComputedStyle(ph).position;
       if (pos === 'static') ph.style.position = 'relative';
 
-      // Remove stripe pseudo-element by overriding
-      ph.style.background = '#1a1714';
-
-      // Hide label once image loads
-      img.onload = function () {
-        if (labelEl) labelEl.style.display = 'none';
-      };
+      var img = document.createElement('img');
+      img.src     = src;
+      img.alt     = label;
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
+      img.loading = 'lazy';
+      img.onload  = function () { if (labelEl) labelEl.style.display = 'none'; };
       ph.insertBefore(img, ph.firstChild);
     });
   }
