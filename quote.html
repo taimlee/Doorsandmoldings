@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get a Quote | Solid Doors &amp; Moldings</title>
+  <meta name="description" content="Request a custom quote for solid wood doors, architectural moldings, or door hardware. We respond within 48 hours with a detailed estimate." />
+  <link rel="stylesheet" href="shared/styles.css" />
+  <style>
+    .quote-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); }
+    .quote-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(48px,8vw,100px); align-items: start; }
+    .quote-card { background: white; border-radius: 4px; padding: clamp(28px,4vw,48px); box-shadow: 0 4px 48px rgba(0,0,0,0.10); }
+    .step-indicator { display: flex; gap: 0; margin-bottom: 36px; }
+    .step { flex: 1; text-align: center; }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; font-size: 0.80rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 6px;
+      background: var(--cream-dark); color: var(--charcoal-lt); transition: all 0.3s;
+    }
+    .step.active .step-num { background: var(--charcoal); color: var(--cream); }
+    .step.done .step-num { background: var(--gold); color: var(--charcoal); }
+    .step-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--charcoal-lt); }
+    .step.active .step-label { color: var(--charcoal); }
+    .step-connector { flex: 0.5; height: 1px; background: var(--cream-dark); margin-top: 16px; }
+
+    .quote-step { display: none; }
+    .quote-step.active { display: block; }
+
+    .product-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .product-option {
+      border: 1.5px solid var(--cream-dark); border-radius: 4px; padding: 16px;
+      cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .product-option:hover { border-color: var(--charcoal); }
+    .product-option.selected { border-color: var(--gold); background: var(--gold-pale); }
+    .product-option-icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .product-option-label { font-size: 0.82rem; font-weight: 600; color: var(--charcoal); }
+    .product-option-sub { font-size: 0.72rem; color: var(--charcoal-lt); margin-top: 2px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .quote-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+    .btn-prev { font-size: 0.80rem; font-weight: 600; color: var(--charcoal-lt); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: color 0.15s; background: none; border: none; padding: 0; }
+    .btn-prev:hover { color: var(--charcoal); }
+
+    .why-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px; }
+    .why-num { font-family: var(--serif); font-size: 2rem; font-weight: 700; color: var(--cream-dark); line-height: 1; flex-shrink: 0; width: 40px; }
+    .why-text h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .why-text p { font-size: 0.83rem; color: var(--charcoal-lt); }
+
+    .success-card { text-align: center; padding: 40px 0; display: none; }
+    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold-dark); }
+    .success-icon svg { width: 28px; height: 28px; }
+
+    @media(max-width:900px){ .quote-layout { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+    @media(max-width:500px){ .product-selector { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="page-content">
+
+  <section class="quote-hero">
+    <div class="container">
+      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
+        <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <span style="color:rgba(255,255,255,0.70);">Get a Quote</span>
+      </nav>
+      <div class="label" style="margin-bottom:20px;">Custom Quote</div>
+      <h1 style="color:var(--cream); margin-bottom:16px;">Tell Us About<br/>Your Project</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.55);">We'll put together a detailed quote within 48 hours. No obligation, no pressure.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="quote-layout">
+        <!-- Left: Why -->
+        <div>
+          <div class="label" style="margin-bottom:20px;">What Happens Next</div>
+          <div class="rule"></div>
+          <div style="margin-top:32px;">
+            <div class="why-item"><div class="why-num">01</div><div class="why-text"><h4>We Review Your Request</h4><p>Within 48 hours, a project manager reviews your specs and contacts you to confirm details.</p></div></div>
+            <div class="why-item"><div class="why-num">02</div><div class="why-text"><h4>Detailed Quote Delivered</h4><p>You receive an itemized quote with species options, finish selections, and lead time.</p></div></div>
+            <div class="why-item"><div class="why-num">03</div><div class="why-text"><h4>Shop Drawings (if Custom)</h4><p>For custom or non-standard work, we produce shop drawings for your approval before production starts.</p></div></div>
+            <div class="why-item"><div class="why-num">04</div><div class="why-text"><h4>Production &amp; Delivery</h4><p>Once approved, we build your order in our Brooklyn facility and deliver it — crated, wrapped, and on time.</p></div></div>
+          </div>
+          <div class="rule-full" style="margin:32px 0;"></div>
+          <div class="testimonial-card">
+            <p class="testimonial-quote">"The quote process was thorough and fast. We had a detailed response within 24 hours — and the final product matched every specification."</p>
+            <div class="testimonial-author">Diane Park, Design Director</div>
+            <div class="testimonial-role">Whitmore Architecture, Brooklyn, NY</div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="quote-card">
+          <!-- Step Indicator -->
+          <div class="step-indicator">
+            <div class="step active" id="step-ind-1"><div class="step-num">1</div><div class="step-label">Products</div></div>
+            <div class="step-connector"></div>
+            <div class="step" id="step-ind-2"><div class="step-num">2</div><div class="step-label">Details</div></div>
+            <div class="step-connector"></div>
+            <div class="step" id="step-ind-3"><div class="step-num">3</div><div class="step-label">Contact</div></div>
+          </div>
+
+          <!-- Step 1: Product Selection -->
+          <div class="quote-step active" id="q-step-1">
+            <h3 style="margin-bottom:6px;">What are you looking for?</h3>
+            <p style="margin-bottom:24px; font-size:0.88rem;">Select all that apply.</p>
+            <div class="product-selector">
+              <div class="product-option" data-val="interior-doors">
+                <div class="product-option-icon">🚪</div>
+                <div class="product-option-label">Interior Doors</div>
+                <div class="product-option-sub">Shaker, panel, flush</div>
+              </div>
+              <div class="product-option" data-val="exterior-doors">
+                <div class="product-option-icon">🏠</div>
+                <div class="product-option-label">Exterior Doors</div>
+                <div class="product-option-sub">Entry, front, patio</div>
+              </div>
+              <div class="product-option" data-val="french-doors">
+                <div class="product-option-icon">🪟</div>
+                <div class="product-option-label">French Doors</div>
+                <div class="product-option-sub">Interior &amp; exterior pairs</div>
+              </div>
+              <div class="product-option" data-val="barn-doors">
+                <div class="product-option-icon">🛖</div>
+                <div class="product-option-label">Barn Doors</div>
+                <div class="product-option-sub">Sliding with hardware</div>
+              </div>
+              <div class="product-option" data-val="custom-doors">
+                <div class="product-option-icon">✏️</div>
+                <div class="product-option-label">Custom Doors</div>
+                <div class="product-option-sub">Made-to-specification</div>
+              </div>
+              <div class="product-option" data-val="fire-rated">
+                <div class="product-option-icon">🔥</div>
+                <div class="product-option-label">Fire-Rated Doors</div>
+                <div class="product-option-sub">UL listed, 20–90 min</div>
+              </div>
+              <div class="product-option" data-val="moldings">
+                <div class="product-option-icon">📐</div>
+                <div class="product-option-label">Moldings</div>
+                <div class="product-option-sub">Crown, base, casing</div>
+              </div>
+              <div class="product-option" data-val="hardware">
+                <div class="product-option-icon">🔑</div>
+                <div class="product-option-label">Hardware</div>
+                <div class="product-option-sub">Handles, knobs, hinges</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-project-type">Project Type</label>
+              <select class="form-select" id="q-project-type">
+                <option value="">Select type</option>
+                <option>New Construction — Residential</option>
+                <option>Renovation — Residential</option>
+                <option>Hotel / Hospitality</option>
+                <option>Commercial Office</option>
+                <option>Multi-Family Residential</option>
+                <option>Historic Preservation</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-timeline">Desired Timeline</label>
+              <select class="form-select" id="q-timeline">
+                <option value="">Select timeline</option>
+                <option>As soon as possible (&lt; 4 weeks)</option>
+                <option>6–10 weeks</option>
+                <option>10–16 weeks</option>
+                <option>More than 4 months</option>
+                <option>Flexible / not yet determined</option>
+              </select>
+            </div>
+            <div class="quote-nav">
+              <span></span>
+              <button class="btn btn-primary" onclick="goStep(2)">Next: Project Details →</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Project Details -->
+          <div class="quote-step" id="q-step-2">
+            <h3 style="margin-bottom:6px;">Project Details</h3>
+            <p style="margin-bottom:24px; font-size:0.88rem;">The more you share, the more accurate our quote will be.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="q-qty">Approximate Quantity</label>
+                <input class="form-input" type="number" id="q-qty" placeholder="e.g. 12 doors" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="q-size">Door Size (if known)</label>
+                <input class="form-input" type="text" id="q-size" placeholder='e.g. 80"×36"×1¾"' />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-species">Preferred Wood Species</label>
+              <select class="form-select" id="q-species">
+                <option value="">No preference / advise me</option>
+                <option>White Oak</option>
+                <option>Red Oak</option>
+                <option>Walnut</option>
+                <option>Cherry</option>
+                <option>Mahogany</option>
+                <option>Maple</option>
+                <option>Alder</option>
+                <option>Painted Poplar</option>
+                <option>Douglas Fir</option>
+                <option>Other (describe below)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-finish">Finish Preference</label>
+              <select class="form-select" id="q-finish">
+                <option value="">No preference / advise me</option>
+                <option>Raw / Unfinished</option>
+                <option>Shop Primed</option>
+                <option>Factory Painted</option>
+                <option>Stained &amp; Topcoated</option>
+                <option>Natural Oil / Hardwax</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-details">Project Description</label>
+              <textarea class="form-textarea" id="q-details" placeholder="Describe your project — style, any special requirements, relevant drawings or specs..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-budget">Approximate Budget</label>
+              <select class="form-select" id="q-budget">
+                <option value="">Prefer not to say</option>
+                <option>Under $5,000</option>
+                <option>$5,000–$25,000</option>
+                <option>$25,000–$100,000</option>
+                <option>$100,000–$500,000</option>
+                <option>$500,000+</option>
+              </select>
+            </div>
+            <div class="quote-nav">
+              <button class="btn-prev" onclick="goStep(1)">← Back</button>
+              <button class="btn btn-primary" onclick="goStep(3)">Next: Your Info →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Contact Info -->
+          <div class="quote-step" id="q-step-3">
+            <h3 style="margin-bottom:6px;">Your Contact Information</h3>
+            <p style="margin-bottom:24px; font-size:0.88rem;">We'll reach out to confirm details and deliver your quote.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="q-fname">First Name *</label>
+                <input class="form-input" type="text" id="q-fname" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="q-lname">Last Name *</label>
+                <input class="form-input" type="text" id="q-lname" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-company">Company / Firm</label>
+              <input class="form-input" type="text" id="q-company" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="q-email">Email *</label>
+                <input class="form-input" type="email" id="q-email" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="q-phone">Phone *</label>
+                <input class="form-input" type="tel" id="q-phone" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-role">I Am A</label>
+              <select class="form-select" id="q-role">
+                <option>Homeowner</option>
+                <option>Architect / Interior Designer</option>
+                <option>General Contractor</option>
+                <option>Specialty Subcontractor</option>
+                <option>Developer</option>
+                <option>Hotel / Hospitality Purchaser</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="q-location">Project Location</label>
+              <input class="form-input" type="text" id="q-location" placeholder="City, State" />
+            </div>
+            <div class="quote-nav">
+              <button class="btn-prev" onclick="goStep(2)">← Back</button>
+              <button class="btn btn-gold" onclick="submitQuote()">Submit Quote Request →</button>
+            </div>
+          </div>
+
+          <!-- Success -->
+          <div class="success-card" id="q-success">
+            <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h3 style="margin-bottom:8px;">Quote Request Received!</h3>
+            <p style="margin-bottom:24px;">Thank you. A project manager will contact you within 48 business hours with a detailed quote. Check your email for a confirmation.</p>
+            <a href="index.html" class="btn btn-outline btn-sm">Return Home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="shared/nav.js"></script>
+<script>
+  var currentStep = 1;
+
+  document.querySelectorAll('.product-option').forEach(function(opt) {
+    opt.addEventListener('click', function() { this.classList.toggle('selected'); });
+  });
+
+  function goStep(n) {
+    document.getElementById('q-step-' + currentStep).classList.remove('active');
+    document.getElementById('step-ind-' + currentStep).classList.remove('active');
+    if (n > currentStep) document.getElementById('step-ind-' + currentStep).classList.add('done');
+    currentStep = n;
+    document.getElementById('q-step-' + n).classList.add('active');
+    document.getElementById('step-ind-' + n).classList.add('active');
+    document.querySelector('.quote-card').scrollIntoView ? window.scrollTo(0, document.querySelector('.quote-card').offsetTop - 100) : null;
+  }
+
+  function submitQuote() {
+    var fname = document.getElementById('q-fname').value.trim();
+    var email = document.getElementById('q-email').value.trim();
+    var phone = document.getElementById('q-phone').value.trim();
+    if (!fname || !email || !phone) { alert('Please fill in all required fields.'); return; }
+
+    var selectedProducts = [];
+    document.querySelectorAll('.product-option.selected').forEach(function(el) {
+      selectedProducts.push(el.dataset.val);
+    });
+
+    var submitBtn = document.querySelector('#q-step-3 .btn-gold');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    fetch('https://formsubmit.co/ajax/info@soliddoorsandmoldings.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: fname + ' ' + document.getElementById('q-lname').value.trim(),
+        email: email,
+        phone: phone,
+        company: document.getElementById('q-company').value.trim(),
+        role: document.getElementById('q-role').value,
+        products: selectedProducts.join(', ') || 'Not selected',
+        project_type: document.getElementById('q-project-type').value,
+        timeline: document.getElementById('q-timeline').value,
+        quantity: document.getElementById('q-qty').value,
+        door_size: document.getElementById('q-size').value,
+        species: document.getElementById('q-species').value,
+        finish: document.getElementById('q-finish').value,
+        budget: document.getElementById('q-budget').value,
+        project_location: document.getElementById('q-location').value,
+        description: document.getElementById('q-details').value,
+        _subject: 'Quote Request — Solid Doors & Moldings',
+        _template: 'table'
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function() {
+      document.getElementById('q-step-3').classList.remove('active');
+      document.getElementById('q-success').style.display = 'block';
+      document.querySelector('.step-indicator').style.display = 'none';
+    })
+    .catch(function() {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Quote Request →';
+      alert('Something went wrong. Please call (718) 986-7990 or email info@soliddoorsandmoldings.com.');
+    });
+  }
+</script>
+</body>
+</html>

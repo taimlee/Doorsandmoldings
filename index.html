@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solid Doors &amp; Moldings | Premium Solid Wood Doors &amp; Architectural Moldings</title>
+  <meta name="description" content="Solid Doors &amp; Moldings crafts premium solid wood doors, architectural moldings, and door hardware for homes, hotels, and commercial spaces. American-made since 1987." />
+  <meta property="og:title" content="Solid Doors &amp; Moldings | Premium Solid Wood Doors" />
+  <meta property="og:description" content="American-crafted solid wood doors, architectural moldings, and hardware. Built for architects, designers, contractors, and discerning homeowners." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://soliddoorsandmoldings.com/" />
+  <link rel="stylesheet" href="shared/styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Solid Doors & Moldings",
+    "url": "https://soliddoorsandmoldings.com",
+    "logo": "https://soliddoorsandmoldings.com/shared/logo.svg",
+    "description": "Premium American-crafted solid wood doors, architectural moldings, and door hardware.",
+    "address": { "@type": "PostalAddress", "streetAddress": "829 E New York Ave", "addressLocality": "Brooklyn", "addressRegion": "NY", "postalCode": "11203", "addressCountry": "US" },
+    "telephone": "+17189867990",
+    "email": "info@soliddoorsandmoldings.com",
+    "foundingDate": "1987",
+    "sameAs": ["https://instagram.com/soliddoorsandmoldings", "https://houzz.com/soliddoorsandmoldings"]
+  }
+  </script>
+  <style>
+    /* ── Home-specific ── */
+    .home-hero {
+      background: var(--charcoal);
+      display: grid;
+      grid-template-columns: 55% 45%;
+      min-height: 100vh;
+    }
+    .home-hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter))) 80px max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter)));
+    }
+    .home-hero-right {
+      position: relative; overflow: hidden;
+    }
+    .home-hero-right-inner {
+      position: absolute; inset: 0;
+      display: grid; grid-template-rows: 60% 40%; gap: 4px;
+    }
+    .hero-accent-line {
+      width: 48px; height: 3px; background: var(--gold); margin-bottom: 28px;
+    }
+    .home-hero h1 {
+      color: var(--cream);
+      font-size: clamp(3rem, 5.5vw, 6.2rem);
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .home-hero h1 em { font-style: italic; color: var(--gold); }
+    .home-hero .lead {
+      color: rgba(255,255,255,0.55);
+      max-width: 460px;
+      margin-bottom: 40px;
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+    }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-scroll-hint {
+      margin-top: 64px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.75rem; letter-spacing: 0.10em; text-transform: uppercase;
+      color: rgba(255,255,255,0.30);
+    }
+    .hero-scroll-hint::before {
+      content: '';
+      display: block; width: 1px; height: 48px;
+      background: rgba(255,255,255,0.20);
+    }
+
+    /* Category Section */
+    .cat-section { padding: clamp(72px, 10vw, 120px) 0; }
+    .cat-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--cream-dark);
+      margin-bottom: 48px; overflow-x: auto;
+    }
+    .cat-tab {
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px 24px; color: var(--charcoal-lt); border-bottom: 2px solid transparent;
+      margin-bottom: -1px; transition: all 0.15s; white-space: nowrap;
+      cursor: pointer; background: none; border-left: none; border-right: none; border-top: none;
+    }
+    .cat-tab.active { color: var(--charcoal); border-bottom-color: var(--gold); }
+    .cat-panel { display: none; }
+    .cat-panel.active { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 32px); }
+
+    /* Process Section */
+    .process-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--cream-dark);
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px; overflow: hidden;
+    }
+    .process-step {
+      background: var(--cream); padding: clamp(28px, 4vw, 48px) clamp(20px, 3vw, 36px);
+      position: relative;
+    }
+    .process-step-num {
+      font-family: var(--serif); font-size: 3.5rem; font-weight: 700;
+      color: var(--cream-dark); line-height: 1; margin-bottom: 16px;
+      position: absolute; top: 24px; right: 24px;
+    }
+    .process-step h4 { margin-bottom: 8px; font-size: 1rem; }
+    .process-step p { font-size: 0.85rem; }
+
+    /* Featured Products */
+    .feat-products {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+      grid-template-rows: auto;
+      gap: 4px;
+    }
+    .feat-prod { position: relative; overflow: hidden; cursor: pointer; }
+    .feat-prod:first-child { grid-row: span 2; }
+    .feat-prod-img { width: 100%; height: 100%; min-height: 260px; }
+    .feat-prod:first-child .feat-prod-img { min-height: 560px; }
+    .feat-prod-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(20,17,14,0.80) 0%, transparent 60%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 28px; transition: background 0.3s;
+    }
+    .feat-prod:hover .feat-prod-overlay { background: linear-gradient(to top, rgba(20,17,14,0.90) 0%, rgba(20,17,14,0.20) 60%); }
+    .feat-prod-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .feat-prod-title { font-family: var(--serif); font-size: 1.4rem; color: var(--cream); line-height: 1.2; margin-bottom: 12px; }
+    .feat-prod:first-child .feat-prod-title { font-size: 2rem; }
+    .feat-prod-link {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.60); transition: color 0.2s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .feat-prod:hover .feat-prod-link { color: var(--gold); }
+
+    /* Industries strip */
+    .industry-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px; background: var(--charcoal);
+    }
+    .industry-card {
+      background: var(--charcoal); padding: clamp(32px, 5vw, 56px) clamp(20px, 3vw, 36px);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.2s; cursor: pointer; text-decoration: none; display: block;
+    }
+    .industry-card:last-child { border-right: none; }
+    .industry-card:hover { background: rgba(255,255,255,0.04); }
+    .industry-card-icon {
+      width: 40px; height: 40px; border-radius: 2px; background: rgba(180,130,50,0.15);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold); margin-bottom: 20px;
+    }
+    .industry-card-icon svg { width: 20px; height: 20px; }
+    .industry-card h4 { font-family: var(--serif); font-size: 1.1rem; color: var(--cream); margin-bottom: 8px; }
+    .industry-card p { font-size: 0.83rem; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 20px; }
+    .industry-card-arrow { font-size: 0.78rem; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; }
+
+    /* Testimonials */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    /* Marquee */
+    .marquee-wrap { overflow: hidden; background: var(--gold); padding: 14px 0; }
+    .marquee-inner {
+      display: flex; gap: 48px; white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-item {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--charcoal); flex-shrink: 0; display: flex; align-items: center; gap: 20px;
+    }
+    .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--charcoal); opacity: 0.4; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    @media (max-width: 1024px) {
+      .home-hero { grid-template-columns: 1fr; min-height: auto; }
+      .home-hero-right { height: 55vw; }
+      .home-hero-left { padding: 100px var(--gutter) 60px; }
+      .feat-products { grid-template-columns: 1fr 1fr; }
+      .feat-prod:first-child { grid-column: span 2; grid-row: span 1; }
+      .process-grid { grid-template-columns: repeat(2, 1fr); }
+      .industry-strip { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .cat-panel.active { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .feat-products { grid-template-columns: 1fr; }
+      .feat-prod:first-child { grid-column: 1; }
+      .cat-panel.active { grid-template-columns: 1fr; }
+      .industry-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-content">
+
+  <!-- HERO -->
+  <section class="home-hero">
+    <div class="home-hero-left">
+      <div class="hero-accent-line"></div>
+      <h1>Where Craft<br/>Meets <em>Permanence</em></h1>
+      <p class="lead">Solid wood doors, architectural moldings, and premium hardware — designed for spaces that demand the finest, built to outlast everything else.</p>
+      <div class="hero-ctas">
+        <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
+        <a href="gallery.html" class="btn btn-outline-light">View Gallery</a>
+      </div>
+      <div class="hero-scroll-hint">Scroll to explore</div>
+    </div>
+    <div class="home-hero-right">
+      <div class="home-hero-right-inner">
+        <div class="img-ph" style="width:100%;height:100%;">
+          <span class="img-ph-label">Hero — Grand solid wood entry door, warm interior light</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;height:100%;">
+          <div class="img-ph" style="width:100%;height:100%;">
+            <span class="img-ph-label">Crown molding detail</span>
+          </div>
+          <div class="img-ph" style="width:100%;height:100%;">
+            <span class="img-ph-label">Door hardware — brass lever</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-inner">
+      <span class="marquee-item">Solid Wood Doors <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Architectural Moldings <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Premium Hardware <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Custom Millwork <span class="marquee-dot"></span></span>
+      <span class="marquee-item">American Craftsmanship <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Since 1987 <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Solid Wood Doors <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Architectural Moldings <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Premium Hardware <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Custom Millwork <span class="marquee-dot"></span></span>
+      <span class="marquee-item">American Craftsmanship <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Since 1987 <span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+  <!-- FEATURE STRIP -->
+  <div class="container">
+    <div class="feature-strip" style="margin:0;">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V8m0 0l-4 4m4-4l4 4"/><rect x="2" y="2" width="20" height="6" rx="1"/></svg>
+        </div>
+        <div>
+          <div class="feature-label">Materials</div>
+          <div class="feature-title">100% Solid Hardwood</div>
+          <div class="feature-desc">No veneers, no fillers — only premium species</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <div class="feature-label">Lead Time</div>
+          <div class="feature-title">6–12 Week Delivery</div>
+          <div class="feature-desc">Standard &amp; custom orders, on-time guaranteed</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <div class="feature-label">Warranty</div>
+          <div class="feature-title">Lifetime Structural</div>
+          <div class="feature-desc">We stand behind every joint and finish</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div>
+          <div class="feature-label">Custom</div>
+          <div class="feature-title">Made-to-Measure</div>
+          <div class="feature-desc">Any size, species, profile, or finish</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT CATEGORIES -->
+  <section class="cat-section">
+    <div class="container">
+      <div class="section-intro">
+        <div class="label">Our Products</div>
+        <div class="rule"></div>
+        <h2>Every Element,<br/>Perfectly Crafted</h2>
+        <p class="lead">From grand entry doors to the subtle curve of a crown, every product we make is designed to elevate the architecture around it.</p>
+      </div>
+      <div class="cat-tabs">
+        <button class="cat-tab active" data-panel="doors">Doors</button>
+        <button class="cat-tab" data-panel="moldings">Moldings</button>
+        <button class="cat-tab" data-panel="hardware">Hardware</button>
+      </div>
+      <!-- Doors panel -->
+      <div class="cat-panel active" id="panel-doors">
+        <a href="doors/interior-doors.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Interior solid wood door — 5-panel shaker</span></div>
+          <div class="card-body">
+            <div class="card-label label">Doors</div>
+            <div class="card-title">Interior Doors</div>
+            <p class="card-desc">Shaker, panel, flush, and louvered — solid wood interior doors that define every room they enter.</p>
+            <span class="card-link">Explore Interior Doors →</span>
+          </div>
+        </a>
+        <a href="doors/exterior-doors.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Exterior solid wood door with sidelights</span></div>
+          <div class="card-body">
+            <div class="card-label label">Doors</div>
+            <div class="card-title">Exterior Doors</div>
+            <p class="card-desc">Built to withstand the elements while making a lasting first impression. Engineered for beauty and durability.</p>
+            <span class="card-link">Explore Exterior Doors →</span>
+          </div>
+        </a>
+        <a href="doors/french-doors.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">French doors open to garden — natural light</span></div>
+          <div class="card-body">
+            <div class="card-label label">Doors</div>
+            <div class="card-title">French Doors</div>
+            <p class="card-desc">Glass-paned elegance that connects spaces and floods rooms with light. Interior and exterior configurations.</p>
+            <span class="card-link">Explore French Doors →</span>
+          </div>
+        </a>
+        <a href="doors/barn-doors.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Reclaimed wood barn door on black rail</span></div>
+          <div class="card-body">
+            <div class="card-label label">Doors</div>
+            <div class="card-title">Barn Doors</div>
+            <p class="card-desc">Sliding barn doors that serve as functional art — in classic, modern, and custom profiles.</p>
+            <span class="card-link">Explore Barn Doors →</span>
+          </div>
+        </a>
+        <a href="doors/custom-doors.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Custom carved solid wood door — ornate detail</span></div>
+          <div class="card-body">
+            <div class="card-label label">Doors</div>
+            <div class="card-title">Custom Doors</div>
+            <p class="card-desc">No standard needed. We build any size, profile, species, and finish to your exact specifications.</p>
+            <span class="card-link">Start a Custom Order →</span>
+          </div>
+        </a>
+        <a href="doors/fire-rated-doors.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Fire-rated solid wood door — clean modern profile</span></div>
+          <div class="card-body">
+            <div class="card-label label">Doors</div>
+            <div class="card-title">Fire-Rated Doors</div>
+            <p class="card-desc">20, 45, 60, and 90-minute fire-rated doors that meet code without sacrificing beauty.</p>
+            <span class="card-link">Explore Fire-Rated →</span>
+          </div>
+        </a>
+      </div>
+      <!-- Moldings panel -->
+      <div class="cat-panel" id="panel-moldings">
+        <a href="moldings/crown-molding.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Crown molding — high ceiling installation</span></div>
+          <div class="card-body"><div class="card-label label">Moldings</div><div class="card-title">Crown Molding</div><p class="card-desc">The finishing touch every great room deserves. Profiles from classical to contemporary in solid hardwood.</p><span class="card-link">Explore Crown Molding →</span></div>
+        </a>
+        <a href="moldings/base-molding.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Base molding — clean modern baseboard installation</span></div>
+          <div class="card-body"><div class="card-label label">Moldings</div><div class="card-title">Base Molding</div><p class="card-desc">Where walls meet floors — solid wood base molding in dozens of profiles for any architectural style.</p><span class="card-link">Explore Base Molding →</span></div>
+        </a>
+        <a href="moldings/casing.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Door casing — craftsman style profile</span></div>
+          <div class="card-body"><div class="card-label label">Moldings</div><div class="card-title">Door &amp; Window Casing</div><p class="card-desc">Frame your doors and windows with solid wood casing that brings every opening into focus.</p><span class="card-link">Explore Casing →</span></div>
+        </a>
+        <a href="moldings/chair-rail.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Chair rail in formal dining room</span></div>
+          <div class="card-body"><div class="card-label label">Moldings</div><div class="card-title">Chair Rail</div><p class="card-desc">A horizontal anchor for the wall plane — functional, elegant, and available in a range of profiles.</p><span class="card-link">Explore Chair Rail →</span></div>
+        </a>
+        <a href="moldings/panel-molding.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Panel molding grid on formal living room wall</span></div>
+          <div class="card-body"><div class="card-label label">Moldings</div><div class="card-title">Panel Molding</div><p class="card-desc">Create wall panels, picture frames, and shadow boxes that give any room architectural weight.</p><span class="card-link">Explore Panel Molding →</span></div>
+        </a>
+        <a href="moldings/wainscoting.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Wainscoting — raised panel hallway installation</span></div>
+          <div class="card-body"><div class="card-label label">Moldings</div><div class="card-title">Wainscoting</div><p class="card-desc">Raised panel, flat panel, and board-and-batten wainscoting systems — complete kits available.</p><span class="card-link">Explore Wainscoting →</span></div>
+        </a>
+      </div>
+      <!-- Hardware panel -->
+      <div class="cat-panel" id="panel-hardware">
+        <a href="hardware.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Solid brass lever handle set — satin finish</span></div>
+          <div class="card-body"><div class="card-label label">Hardware</div><div class="card-title">Door Levers &amp; Knobs</div><p class="card-desc">Solid brass, bronze, and stainless door levers and knobs in dozens of styles and finishes.</p><span class="card-link">Explore Handles →</span></div>
+        </a>
+        <a href="hardware.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Cabinet and door pulls — matte black collection</span></div>
+          <div class="card-body"><div class="card-label label">Hardware</div><div class="card-title">Door Pulls</div><p class="card-desc">Architectural door pulls for entry doors and interior applications — from minimal to ornate.</p><span class="card-link">Explore Pulls →</span></div>
+        </a>
+        <a href="hardware.html" class="card">
+          <div class="card-img img-ph"><span class="img-ph-label">Ball bearing butt hinge — antique brass</span></div>
+          <div class="card-body"><div class="card-label label">Hardware</div><div class="card-title">Hinges &amp; Accessories</div><p class="card-desc">Heavy-duty hinges, door stops, flush bolts, and closers — everything to complete the installation.</p><span class="card-link">Explore Accessories →</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PRODUCTS MOSAIC -->
+  <section style="padding-bottom: clamp(72px, 10vw, 120px);">
+    <div class="container">
+      <div class="section-intro">
+        <div class="label">Featured Work</div>
+        <div class="rule"></div>
+        <h2>Recent Installations</h2>
+      </div>
+      <div class="feat-products">
+        <div class="feat-prod">
+          <div class="feat-prod-img img-ph"><span class="img-ph-label">Grand oak entry door — Brooklyn brownstone</span></div>
+          <div class="feat-prod-overlay">
+            <div class="feat-prod-label">Custom Door</div>
+            <div class="feat-prod-title">Brentwood Residence<br/>Custom White Oak Entry</div>
+            <a href="gallery.html" class="feat-prod-link">View Project →</a>
+          </div>
+        </div>
+        <div class="feat-prod">
+          <div class="feat-prod-img img-ph"><span class="img-ph-label">Crown molding — luxury hotel lobby</span></div>
+          <div class="feat-prod-overlay">
+            <div class="feat-prod-label">Crown Molding</div>
+            <div class="feat-prod-title">Thompson Hotels — Lobby Crown</div>
+            <a href="gallery.html" class="feat-prod-link">View Project →</a>
+          </div>
+        </div>
+        <div class="feat-prod">
+          <div class="feat-prod-img img-ph"><span class="img-ph-label">French doors — modern living room</span></div>
+          <div class="feat-prod-overlay">
+            <div class="feat-prod-label">French Doors</div>
+            <div class="feat-prod-title">Green Hills — Interior French Pair</div>
+            <a href="gallery.html" class="feat-prod-link">View Project →</a>
+          </div>
+        </div>
+        <div class="feat-prod">
+          <div class="feat-prod-img img-ph"><span class="img-ph-label">Wainscoting installation — formal dining</span></div>
+          <div class="feat-prod-overlay">
+            <div class="feat-prod-label">Wainscoting</div>
+            <div class="feat-prod-title">Historic Preservation — Dining Room</div>
+            <a href="gallery.html" class="feat-prod-link">View Project →</a>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:32px;">
+        <a href="gallery.html" class="btn btn-outline">View Full Gallery</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INDUSTRIES -->
+  <div class="industry-strip">
+    <a href="industries/hotels.html" class="industry-card">
+      <div class="industry-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h4>Hotels &amp; Hospitality</h4>
+      <p>High-volume, schedule-driven delivery for hotel renovations and new builds. We speak contractor and designer.</p>
+      <div class="industry-card-arrow">Learn more →</div>
+    </a>
+    <a href="industries/commercial.html" class="industry-card">
+      <div class="industry-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <h4>Commercial Offices</h4>
+      <p>Code-compliant fire-rated doors and architectural millwork for offices that make an impression.</p>
+      <div class="industry-card-arrow">Learn more →</div>
+    </a>
+    <a href="industries/contractors.html" class="industry-card">
+      <div class="industry-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <h4>Contractors &amp; Builders</h4>
+      <p>Trade pricing, dedicated account managers, and bulk fulfillment for residential and commercial builds.</p>
+      <div class="industry-card-arrow">Learn more →</div>
+    </a>
+    <a href="industries/designers.html" class="industry-card">
+      <div class="industry-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h4>Designers &amp; Architects</h4>
+      <p>Custom profiles, material samples, and spec sheets. We're your manufacturing partner from concept to install.</p>
+      <div class="industry-card-arrow">Learn more →</div>
+    </a>
+  </div>
+
+  <!-- STATS + STORY -->
+  <section class="section bg-cream-mid">
+    <div class="container">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 100px); align-items:center;">
+        <div>
+          <div class="label">Our Story</div>
+          <div class="rule"></div>
+          <h2>Built on a belief that a door is the most important element in a room.</h2>
+          <p class="lead" style="margin: 24px 0;">Founded in Brooklyn in 1987 by master craftsman Robert Hollis, Solid Doors &amp; Moldings began as a one-man shop committed to solid wood and honest construction.</p>
+          <p>Today, we operate a 40,000 sq ft facility with 60 craftspeople, producing thousands of doors and miles of molding each year — all with the same obsessive attention to detail that Robert brought to his first commission.</p>
+          <a href="about.html" class="btn btn-outline" style="margin-top:28px;">Our Full Story →</a>
+        </div>
+        <div>
+          <div class="stats-row" style="margin-bottom:48px;">
+            <div class="stat-item"><div class="stat-number">37<span>+</span></div><div class="stat-label">Years of Craft</div></div>
+            <div class="stat-item"><div class="stat-number">60<span>k</span></div><div class="stat-label">Doors Delivered</div></div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item"><div class="stat-number">400<span>+</span></div><div class="stat-label">Profiles Available</div></div>
+            <div class="stat-item"><div class="stat-number">100<span>%</span></div><div class="stat-label">Solid Hardwood</div></div>
+          </div>
+          <div style="margin-top: 40px;" class="img-ph" style="aspect-ratio:16/9; border-radius:4px; overflow:hidden; height:220px;">
+            <span class="img-ph-label">Workshop — craftsman hand-planing a solid oak door panel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-intro-center">
+        <div class="label">How It Works</div>
+        <div class="rule" style="margin: 0 auto 20px;"></div>
+        <h2>From Vision to Installation</h2>
+        <p>A clear, collaborative process — so you know exactly what to expect at every step.</p>
+      </div>
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="process-step-num">01</div>
+          <div class="label" style="margin-bottom:8px;">Consult</div>
+          <h4>Discovery &amp; Specification</h4>
+          <p>We meet to understand your project — architecture, scale, species preference, and finish goals. We'll send samples.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">02</div>
+          <div class="label" style="margin-bottom:8px;">Design</div>
+          <h4>Custom Drawings &amp; Approval</h4>
+          <p>Our design team produces shop drawings for your review. Nothing goes into production until you sign off.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">03</div>
+          <div class="label" style="margin-bottom:8px;">Craft</div>
+          <h4>Production in Brooklyn</h4>
+          <p>Your doors and moldings are milled, assembled, sanded, and finished in our 40,000 sq ft Brooklyn facility.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">04</div>
+          <div class="label" style="margin-bottom:8px;">Deliver</div>
+          <h4>White-Glove Delivery</h4>
+          <p>We package everything carefully and can arrange professional installation anywhere in the continental US.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section bg-cream-mid">
+    <div class="container">
+      <div class="section-intro-center">
+        <div class="label">What Clients Say</div>
+        <div class="rule" style="margin:0 auto 20px;"></div>
+        <h2>Trusted by Architects, Builders, and Homeowners</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"Solid Doors &amp; Moldings is the only millwork house I trust with high-end residential projects. The quality is consistent, the communication is excellent, and they've never missed a deadline."</p>
+          <div class="testimonial-author">Sarah Whitmore, AIA</div>
+          <div class="testimonial-role">Principal, Whitmore Architecture — Brooklyn, NY</div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"We specified custom crown molding for 140 guest rooms in a luxury hotel renovation. The profiles matched our drawings perfectly and the lead time was met to the day. Exceptional."</p>
+          <div class="testimonial-author">James Okafor</div>
+          <div class="testimonial-role">Director of Construction, Meridian Hotels Group</div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">"As a custom home builder, I've worked with a dozen millwork suppliers. None come close to the craftsmanship or professionalism of Solid Doors &amp; Moldings. They're the reason my clients keep coming back."</p>
+          <div class="testimonial-author">Mike Carver</div>
+          <div class="testimonial-role">President, Carver Custom Homes — Franklin, TN</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <div class="container">
+      <h2>Ready to Specify?</h2>
+      <p>Request a custom quote, order a sample pack, or schedule a showroom visit — we're ready when you are.</p>
+      <div class="btn-row">
+        <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
+        <a href="contact.html" class="btn btn-outline-light">Contact Our Team</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-content -->
+<script src="shared/nav.js"></script>
+<script>
+  // Category tabs
+  document.querySelectorAll('.cat-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.cat-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.cat-panel').forEach(function(p){ p.classList.remove('active'); });
+      this.classList.add('active');
+      const panel = document.getElementById('panel-' + this.dataset.panel);
+      if (panel) panel.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

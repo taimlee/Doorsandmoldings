@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Materials &amp; Finishes Guide | Solid Doors &amp; Moldings</title>
+  <meta name="description" content="Explore wood species, stain colors, paint finishes, and hardware patinas from Solid Doors & Moldings. Order a sample pack for $35, credited to your first order." />
+  <link rel="stylesheet" href="../shared/styles.css" />
+  <style>
+    .finishes-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px);}
+    .species-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,20px);}
+    .species-card{border-radius:2px;overflow:hidden;border:1.5px solid var(--cream-dark);transition:all 0.2s;}
+    .species-card:hover{border-color:var(--charcoal);box-shadow:0 8px 32px rgba(0,0,0,0.08);}
+    .species-img{aspect-ratio:4/3;}
+    .species-body{padding:16px;}
+    .species-name{font-family:var(--serif);font-size:1rem;font-weight:600;margin-bottom:4px;}
+    .species-desc{font-size:0.78rem;color:var(--charcoal-lt);margin-bottom:8px;}
+    .species-tags{display:flex;gap:4px;flex-wrap:wrap;}
+    .species-tag{font-size:0.65rem;font-weight:600;letter-spacing:0.06em;padding:3px 8px;background:var(--cream-mid);border-radius:100px;color:var(--charcoal-lt);}
+    .stain-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+    .stain-card{border-radius:2px;overflow:hidden;cursor:pointer;}
+    .stain-swatch{height:80px;border-radius:2px 2px 0 0;}
+    .stain-name{font-size:0.70rem;font-weight:600;padding:6px 8px;background:white;color:var(--charcoal);}
+    .stain-code{font-size:0.62rem;color:var(--charcoal-lt);padding:0 8px 8px;}
+    .paint-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;}
+    .paint-chip{aspect-ratio:1;border-radius:2px;border:1px solid rgba(0,0,0,0.08);cursor:pointer;position:relative;}
+    .paint-chip-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--charcoal);color:var(--cream);font-size:0.68rem;padding:4px 8px;border-radius:2px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:10;}
+    .paint-chip:hover .paint-chip-tooltip{opacity:1;}
+    .sample-banner{background:var(--gold-pale);border:2px solid var(--gold);border-radius:4px;padding:32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .hardware-finish-row{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;}
+    .hf-card{text-align:center;}
+    .hf-circle{width:60px;height:60px;border-radius:50%;margin:0 auto 10px;border:2px solid rgba(0,0,0,0.08);}
+    .hf-name{font-size:0.78rem;font-weight:600;margin-bottom:2px;}
+    .hf-code{font-size:0.68rem;color:var(--charcoal-lt);}
+    @media(max-width:1024px){.species-grid{grid-template-columns:repeat(3,1fr);}.stain-grid{grid-template-columns:repeat(4,1fr);}.paint-grid{grid-template-columns:repeat(4,1fr);}.hardware-finish-row{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:768px){.species-grid{grid-template-columns:repeat(2,1fr);}.stain-grid{grid-template-columns:repeat(3,1fr);}.hardware-finish-row{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:480px){.species-grid{grid-template-columns:1fr;}.stain-grid{grid-template-columns:repeat(2,1fr);}.paint-grid{grid-template-columns:repeat(3,1fr);}}
+  </style>
+</head>
+<body>
+<div class="page-content">
+  <section class="finishes-hero">
+    <div class="container">
+      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35);margin-bottom:32px;">
+        <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a><span class="breadcrumb-sep">/</span>
+        <span style="color:rgba(255,255,255,0.70);">Materials &amp; Finishes</span>
+      </nav>
+      <div class="label" style="margin-bottom:20px;">Materials &amp; Finishes</div>
+      <h1 style="color:var(--cream);margin-bottom:18px;">The Guide to Everything We Make</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.55);max-width:540px;margin-bottom:32px;">Wood species, stain colors, paint finishes, and hardware patinas — every option we offer, in one place. Order a sample pack to feel the difference before you commit.</p>
+      <a href="quote.html" class="btn btn-gold">Order a Sample Pack — $35</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-intro"><div class="label">Wood Species</div><div class="rule"></div><h2>20+ Species. We'll Help You Choose the Right One.</h2></div>
+      <div class="species-grid">
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">White Oak grain — close-up, natural</span></div><div class="species-body"><div class="species-name">White Oak</div><p class="species-desc">Open grain, warm tone, pronounced ray flecks. Our most popular species. Takes stain beautifully.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span><span class="species-tag">Exterior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Walnut grain — dark, rich tone</span></div><div class="species-body"><div class="species-name">Black Walnut</div><p class="species-desc">Rich chocolate brown with purple undertones. America's luxury hardwood. No stain needed.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Cherry wood — warm reddish-brown</span></div><div class="species-body"><div class="species-name">Cherry</div><p class="species-desc">Light pink when fresh-cut, deepens to a warm reddish-brown over time. Fine, smooth grain.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Mahogany grain — straight, reddish-brown</span></div><div class="species-body"><div class="species-name">Mahogany</div><p class="species-desc">Straight grain, excellent dimensional stability, outstanding weather resistance. Premier exterior species.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Interior</span><span class="species-tag">Exterior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Maple grain — tight, light, clean</span></div><div class="species-body"><div class="species-name">Hard Maple</div><p class="species-desc">Dense, tight grain. Light color that accepts paint perfectly or can be used natural for a clean, contemporary look.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Poplar grain — light, painted</span></div><div class="species-body"><div class="species-name">Poplar</div><p class="species-desc">Our paint-grade standard. Mills cleanly, accepts primer and paint without bleeding, holds shape reliably.</p><div class="species-tags"><span class="species-tag">Moldings</span><span class="species-tag">Paint-Grade</span><span class="species-tag">Interior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Alder grain — light reddish-brown</span></div><div class="species-body"><div class="species-name">Alder</div><p class="species-desc">Light, uniform grain. Often used as a paintable stain-grade species — accepts dark stains evenly.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Douglas Fir grain — warm, knotty</span></div><div class="species-body"><div class="species-name">Douglas Fir</div><p class="species-desc">Strong, dimensional, with warm golden grain. Classic exterior species used in traditional and craftsman homes.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Exterior</span></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-cream-mid">
+    <div class="container">
+      <div class="section-intro"><div class="label">Stain Colors</div><div class="rule"></div><h2>Standard Stain Palette</h2><p>Shown on White Oak. Appearance varies by species — order samples to see on your chosen wood.</p></div>
+      <div class="stain-grid">
+        <div class="stain-card"><div class="stain-swatch" style="background:#e8d5b4;"></div><div class="stain-name">Natural</div><div class="stain-code">ST-01</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#c8a87a;"></div><div class="stain-name">Golden Honey</div><div class="stain-code">ST-02</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#a07848;"></div><div class="stain-name">Amber</div><div class="stain-code">ST-03</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#7a5030;"></div><div class="stain-name">Warm Walnut</div><div class="stain-code">ST-04</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#5a3820;"></div><div class="stain-name">Dark Walnut</div><div class="stain-code">ST-05</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#3a2010;"></div><div class="stain-name">Espresso</div><div class="stain-code">ST-06</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#8a6848;"></div><div class="stain-name">Jacobean</div><div class="stain-code">ST-07</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#d0b090;"></div><div class="stain-name">Whitewash</div><div class="stain-code">ST-08</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#b08860;"></div><div class="stain-name">Provincial</div><div class="stain-code">ST-09</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#605040;"></div><div class="stain-name">Early American</div><div class="stain-code">ST-10</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#9a8878;"></div><div class="stain-name">Driftwood</div><div class="stain-code">ST-11</div></div>
+        <div class="stain-card"><div class="stain-swatch" style="background:#e0d4c4;"></div><div class="stain-name">Ceruse / Limed</div><div class="stain-code">ST-12</div></div>
+      </div>
+      <p style="margin-top:20px;font-size:0.80rem;color:var(--charcoal-lt);">Custom stain matching available. Send us a finish chip or reference and we'll produce a matched sample within 5 business days.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-intro"><div class="label">Paint Colors</div><div class="rule"></div><h2>Popular Painted Finishes</h2><p>We paint to any Benjamin Moore or Sherwin-Williams color. These are our most frequently specified.</p></div>
+      <div class="paint-grid">
+        <div class="paint-chip" style="background:#f5f0e8;"><div class="paint-chip-tooltip">BM White Dove OC-17</div></div>
+        <div class="paint-chip" style="background:#ede8dc;"><div class="paint-chip-tooltip">BM Chantilly Lace OC-65</div></div>
+        <div class="paint-chip" style="background:#e8e0d0;"><div class="paint-chip-tooltip">SW Alabaster SW 7008</div></div>
+        <div class="paint-chip" style="background:#d8d0c0;"><div class="paint-chip-tooltip">BM Revere Pewter HC-172</div></div>
+        <div class="paint-chip" style="background:#c8c0b0;"><div class="paint-chip-tooltip">SW Accessible Beige SW 7036</div></div>
+        <div class="paint-chip" style="background:#b0a898;"><div class="paint-chip-tooltip">BM Pale Oak OC-20</div></div>
+        <div class="paint-chip" style="background:#787068;"><div class="paint-chip-tooltip">BM Kendall Charcoal HC-166</div></div>
+        <div class="paint-chip" style="background:#404038;"><div class="paint-chip-tooltip">SW Iron Ore SW 7069</div></div>
+        <div class="paint-chip" style="background:#201810;"><div class="paint-chip-tooltip">BM Black Beauty 2128-10</div></div>
+        <div class="paint-chip" style="background:#2a3040;"><div class="paint-chip-tooltip">BM Hale Navy HC-154</div></div>
+        <div class="paint-chip" style="background:#384840;"><div class="paint-chip-tooltip">SW Cascades SW 6483</div></div>
+        <div class="paint-chip" style="background:#506050;"><div class="paint-chip-tooltip">BM Backwoods 2142-30</div></div>
+        <div class="paint-chip" style="background:#685840;"><div class="paint-chip-tooltip">BM Middlebury Brown HC-68</div></div>
+        <div class="paint-chip" style="background:#806858;"><div class="paint-chip-tooltip">SW Cavern Clay SW 7701</div></div>
+        <div class="paint-chip" style="background:#988070;"><div class="paint-chip-tooltip">BM Mink 2112-40</div></div>
+        <div class="paint-chip" style="background:#b09880;"><div class="paint-chip-tooltip">SW Rookwood Clay SW 2813</div></div>
+      </div>
+      <p style="margin-top:16px;font-size:0.80rem;color:var(--charcoal-lt);">Any BM or SW color available. Custom colors and Farrow &amp; Ball matching available for design clients.</p>
+    </div>
+  </section>
+
+  <section class="section bg-cream-mid">
+    <div class="container">
+      <div class="section-intro"><div class="label">Hardware Finishes</div><div class="rule"></div><h2>8 Hardware Finishes</h2></div>
+      <div class="hardware-finish-row">
+        <div class="hf-card"><div class="hf-circle" style="background:#c8a951;"></div><div class="hf-name">Polished Brass</div><div class="hf-code">PB</div></div>
+        <div class="hf-card"><div class="hf-circle" style="background:#b8945a;"></div><div class="hf-name">Satin Brass</div><div class="hf-code">SB</div></div>
+        <div class="hf-card"><div class="hf-circle" style="background:#6b4226;"></div><div class="hf-name">Oil-Rubbed Bronze</div><div class="hf-code">ORB</div></div>
+        <div class="hf-card"><div class="hf-circle" style="background:#9fa3a8;"></div><div class="hf-name">Satin Nickel</div><div class="hf-code">SN</div></div>
+        <div class="hf-card"><div class="hf-circle" style="background:#d4d8dc;border:1px solid #ccc;"></div><div class="hf-name">Polished Chrome</div><div class="hf-code">PC</div></div>
+        <div class="hf-card"><div class="hf-circle" style="background:#2a2a2a;"></div><div class="hf-name">Matte Black</div><div class="hf-code">MB</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="sample-banner">
+        <div>
+          <div class="label" style="margin-bottom:8px;">Order a Sample Pack</div>
+          <h3 style="margin-bottom:8px;">Feel the Difference Before You Commit</h3>
+          <p style="max-width:480px;">$35 sample pack includes wood species chips in all standard stains, paint finish chips in our most popular colors, and hardware finish samples. Credited toward your first order.</p>
+        </div>
+        <a href="quote.html" class="btn btn-primary">Order Sample Pack — $35 →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-banner"><div class="container">
+    <h2>Ready to Specify?</h2>
+    <p>Our design team can help you narrow down species, stain, and finish for your specific project.</p>
+    <div class="btn-row"><a href="contact.html" class="btn btn-gold">Talk to a Designer →</a><a href="quote.html" class="btn btn-outline-light">Get a Quote</a></div>
+  </div></div>
+</div>
+<script src="shared/nav.js"></script>
+</body></html>
