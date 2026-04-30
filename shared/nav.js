@@ -525,14 +525,9 @@
       var w = Math.max(ph.offsetWidth  || 800, 200);
       var h = Math.max(ph.offsetHeight || 600, 150);
 
-      var id  = _photoId(label);
-      var src = id
-        ? 'https://images.unsplash.com/photo-' + id
-          + '?w=' + Math.round(w * 1.5) + '&h=' + Math.round(h * 1.5)
-          + '&auto=format&fit=crop&q=80'
-        : 'https://source.unsplash.com/featured/'
-          + Math.round(w * 1.5) + 'x' + Math.round(h * 1.5)
-          + '/?' + _query(label) + '&sig=' + _sig(label);
+      var src = 'https://source.unsplash.com/featured/'
+        + Math.round(w * 1.5) + 'x' + Math.round(h * 1.5)
+        + '/?' + _query(label) + '&sig=' + _sig(label);
 
       // Product cards: light background so the image reads clean
       if (isStyleImg) {
