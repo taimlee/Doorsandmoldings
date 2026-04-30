@@ -12,7 +12,7 @@
   <div class="nav-inner">
     <a href="${base}index.html" class="nav-logo">
       <span class="nav-logo-main">Solid Doors &amp; Moldings</span>
-      <span class="nav-logo-sub">Crafted in America Since 1987</span>
+      <span class="nav-logo-sub">Solid Wood. American Made.</span>
     </a>
     <ul class="nav-links">
       <li class="nav-item has-dropdown">
@@ -63,8 +63,7 @@
           <div class="nav-dropdown-section">
             <a href="${base}finishes.html">Materials &amp; Finishes Guide</a>
             <a href="${base}faq.html">FAQ</a>
-            <a href="${base}about.html">Our Story</a>
-            <a href="${base}showroom.html">Showroom</a>
+            <a href="${base}about.html">About Us</a>
           </div>
         </div></div>
       </li>
@@ -160,7 +159,6 @@
           <li><a href="${base}about.html">About Us</a></li>
           <li><a href="${base}gallery.html">Gallery</a></li>
           <li><a href="${base}finishes.html">Finishes Guide</a></li>
-          <li><a href="${base}showroom.html">Showroom</a></li>
           <li><a href="${base}faq.html">FAQ</a></li>
           <li><a href="${base}contact.html">Contact</a></li>
           <li><a href="${base}quote.html">Get a Quote</a></li>
@@ -170,9 +168,9 @@
     <div class="footer-bottom">
       <div class="footer-copy">&copy; 2026 Solid Doors &amp; Moldings, Inc. All rights reserved.</div>
       <div class="footer-legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
-        <a href="#">Accessibility</a>
+        <a href="${base}privacy-policy.html">Privacy Policy</a>
+        <a href="${base}terms-of-use.html">Terms of Use</a>
+        <a href="${base}accessibility.html">Accessibility</a>
       </div>
     </div>
   </div>

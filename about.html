@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Us | Solid Doors &amp; Moldings — American Craftsmanship Since 1987</title>
-  <meta name="description" content="Learn the story of Solid Doors &amp; Moldings — founded in Brooklyn in 1987 by master craftsman Robert Hollis. 37 years of solid wood doors, architectural moldings, and uncompromising quality." />
+  <title>About Us | Solid Doors &amp; Moldings — Brooklyn, NY</title>
+  <meta name="description" content="Solid Doors &amp; Moldings is a Brooklyn-based millwork specialist. Solid hardwood doors, architectural moldings, and direct accountability — made in New York." />
   <meta property="og:title" content="About Solid Doors &amp; Moldings" />
-  <meta property="og:description" content="37 years of American craftsmanship. Our story, our people, our process." />
+  <meta property="og:description" content="Brooklyn-based millwork. Solid hardwood doors and architectural moldings, made without shortcuts." />
   <link rel="stylesheet" href="shared/styles.css" />
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"AboutPage","name":"About Solid Doors & Moldings","description":"The story of Solid Doors & Moldings — founded 1987 in Brooklyn, NY.","url":"https://soliddoorsandmoldings.com/about.html"}
+  {"@context":"https://schema.org","@type":"AboutPage","name":"About Solid Doors & Moldings","description":"Brooklyn-based millwork specialist — solid hardwood doors and architectural moldings.","url":"https://soliddoorsandmoldings.com/about.html"}
   </script>
   <style>
     .about-hero {
@@ -25,38 +25,21 @@
     .about-hero-img { aspect-ratio: 4/3; }
     .about-hero-img:first-child { aspect-ratio: 16/9; }
 
-    .timeline { position: relative; padding-left: 32px; }
-    .timeline::before { content:''; position:absolute; left:6px; top:0; bottom:0; width:1px; background:var(--cream-dark); }
-    .timeline-item { position: relative; margin-bottom: 48px; }
-    .timeline-dot {
-      position: absolute; left: -32px; top: 6px;
-      width: 13px; height: 13px; border-radius: 50%;
-      background: var(--cream); border: 2px solid var(--gold);
-    }
-    .timeline-year { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 6px; }
-    .timeline-title { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 6px; }
-    .timeline-desc { font-size: 0.88rem; color: var(--charcoal-mid); }
-
-    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2.5vw, 28px); }
-    .team-card { }
-    .team-img { aspect-ratio: 3/4; border-radius: 2px; margin-bottom: 16px; }
-    .team-name { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 2px; }
-    .team-role { font-size: 0.80rem; color: var(--gold-dark); font-weight: 600; letter-spacing: 0.04em; margin-bottom: 8px; }
-    .team-bio { font-size: 0.83rem; color: var(--charcoal-mid); }
-
     .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--cream-dark); border: 1px solid var(--cream-dark); }
     .value-item { background: var(--cream); padding: clamp(28px, 4vw, 48px); }
     .value-num { font-family: var(--serif); font-size: 2.5rem; font-weight: 700; color: var(--cream-dark); line-height:1; margin-bottom: 16px; }
     .value-title { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 10px; }
 
-    .cert-row { display: flex; gap: clamp(20px, 4vw, 48px); flex-wrap: wrap; align-items: center; }
-    .cert-item { display: flex; align-items: center; gap: 12px; }
-    .cert-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; color: var(--gold-dark); flex-shrink:0; }
-    .cert-badge svg { width: 24px; height: 24px; }
-    .cert-label { font-size: 0.80rem; font-weight: 600; color: var(--charcoal); }
-    .cert-body { font-size: 0.75rem; color: var(--charcoal-lt); }
+    .approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 100px); align-items: center; }
+    .approach-list { display: flex; flex-direction: column; gap: 0; }
+    .approach-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--cream-dark); }
+    .approach-item:last-child { border-bottom: none; }
+    .approach-check { width: 24px; height: 24px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; margin-top: 2px; }
+    .approach-check svg { width: 12px; height: 12px; }
+    .approach-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
+    .approach-desc { font-size: 0.83rem; color: var(--charcoal-lt); }
 
-    @media(max-width:900px){ .team-grid { grid-template-columns: repeat(2,1fr); } .values-grid { grid-template-columns: 1fr; } .about-hero-img-row { grid-template-columns: 1fr; } }
+    @media(max-width:900px){ .values-grid { grid-template-columns: 1fr; } .about-hero-img-row { grid-template-columns: 1fr; } .approach-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -65,9 +48,9 @@
   <section class="about-hero">
     <div class="container">
       <div class="about-hero-text">
-        <div class="label" style="color:var(--gold); margin-bottom:20px;">Our Story</div>
-        <h1 style="color:var(--cream); font-size:clamp(2.8rem,5.5vw,5.5rem); margin-bottom:24px;">Thirty-seven years of<br/><em style="color:var(--gold);">doing it right.</em></h1>
-        <p class="lead" style="color:rgba(255,255,255,0.55); max-width:600px;">We started with a single workbench, a set of hand tools, and a conviction that wood deserved better treatment than it was getting. That conviction hasn't changed.</p>
+        <div class="label" style="color:var(--gold); margin-bottom:20px;">About Us</div>
+        <h1 style="color:var(--cream); font-size:clamp(2.8rem,5.5vw,5.5rem); margin-bottom:24px;">Solid wood.<br/><em style="color:var(--gold);">No compromises.</em></h1>
+        <p class="lead" style="color:rgba(255,255,255,0.55); max-width:600px;">We're a Brooklyn-based millwork specialist making solid hardwood doors and architectural moldings for clients who won't accept shortcuts. When you work with us, you work directly with the maker.</p>
       </div>
     </div>
     <div class="container" style="padding-left:0; padding-right:0; max-width:100%;">
@@ -79,57 +62,56 @@
     </div>
   </section>
 
-  <!-- FOUNDING STORY -->
+  <!-- APPROACH -->
   <section class="section">
     <div class="container">
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 100px); align-items:start;">
+      <div class="approach-grid">
         <div>
-          <div class="label">Founding</div>
+          <div class="label">How We Work</div>
           <div class="rule"></div>
-          <h2>It started with one door that nobody else would build right.</h2>
-          <p class="lead" style="margin:24px 0 16px;">In 1987, Robert Hollis was a finish carpenter in Brooklyn, NY, frustrated with the millwork options available to his clients. Pre-hung, hollow-core, veneered — none of it met his standard.</p>
-          <p style="margin-bottom:16px;">So he built a door himself. Solid red oak, mortise-and-tenon joinery, hand-fit and hand-finished. His client called three architect friends. Those architects called five more. Within a year, Robert had a crew of four and a waiting list.</p>
-          <p>Today, Solid Doors &amp; Moldings operates a 40,000 square foot facility in Brooklyn, New York — with 60 craftspeople, three dedicated CNC cells, and the same rule Robert started with: if it isn't solid, we don't sell it.</p>
-        </div>
-        <div>
-          <div class="img-ph" style="aspect-ratio:3/4; border-radius:4px; margin-bottom:4px;"><span class="img-ph-label">Portrait of Robert Hollis, founder — at workbench, circa 1990</span></div>
-          <p style="font-size:0.78rem; color:var(--charcoal-lt); text-align:center; margin-top:10px;">Robert Hollis, Founder — Brooklyn, 1990</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TIMELINE -->
-  <section class="section bg-cream-mid">
-    <div class="container">
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 100px);">
-        <div>
-          <div class="label">History</div>
-          <div class="rule"></div>
-          <h2>The milestones that shaped us.</h2>
-          <p style="margin-top:20px; margin-bottom:40px;">Every significant decision we've made has been about deepening our craft — not broadening our margins.</p>
-          <div class="timeline">
-            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1987</div><div class="timeline-title">Founded in a Brooklyn garage</div><div class="timeline-desc">Robert Hollis builds his first custom solid oak door in his Brooklyn garage. Word spreads through the New York architecture community.</div></div>
-            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1993</div><div class="timeline-title">First commercial facility — 6,000 sq ft</div><div class="timeline-desc">Moved into our first proper mill shop in Bushwick, Brooklyn with 12 craftspeople.</div></div>
-            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1999</div><div class="timeline-title">Expanded into architectural moldings</div><div class="timeline-desc">Client demand led us to add crown, base, casing, and panel molding to our product line.</div></div>
-            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2006</div><div class="timeline-title">Fire-rated door certification</div><div class="timeline-desc">Achieved UL listing for fire-rated doors — opening the commercial and hospitality market.</div></div>
-            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2014</div><div class="timeline-title">Current 40,000 sq ft facility opens</div><div class="timeline-desc">Moved into our purpose-built East New York facility with advanced CNC and finishing lines.</div></div>
-            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2026</div><div class="timeline-title">37 years, 60,000+ doors delivered</div><div class="timeline-desc">Still family-owned. Still solid wood. Still the same standard Robert set on day one.</div></div>
+          <h2>Direct to the maker. Accountable on every piece.</h2>
+          <p class="lead" style="margin: 20px 0 16px;">Most millwork suppliers route your project through salespeople, project managers, and sub-contractors before it ever reaches the shop floor. We don't work that way.</p>
+          <div class="approach-list">
+            <div class="approach-item">
+              <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
+              <div>
+                <div class="approach-title">One person, start to finish</div>
+                <div class="approach-desc">You deal with the same person from your first conversation through delivery — someone who knows your project, not a call center rep reading from notes.</div>
+              </div>
+            </div>
+            <div class="approach-item">
+              <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
+              <div>
+                <div class="approach-title">Nothing goes into production without your sign-off</div>
+                <div class="approach-desc">We produce shop drawings and submit finish samples before a single board is cut. Every specification is confirmed before work begins.</div>
+              </div>
+            </div>
+            <div class="approach-item">
+              <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
+              <div>
+                <div class="approach-title">We stand behind every piece we ship</div>
+                <div class="approach-desc">Structural workmanship is warranted for the life of the product. If something fails due to how it was made, we fix it — no expiration dates.</div>
+              </div>
+            </div>
+            <div class="approach-item">
+              <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
+              <div>
+                <div class="approach-title">Based in Brooklyn, NY</div>
+                <div class="approach-desc">829 E New York Ave, Brooklyn, NY 11203. Every door and molding we make is produced right here — American hardwoods, American labor.</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:4px; padding-top:80px;">
-          <div class="img-ph" style="aspect-ratio:4/3; border-radius:4px;"><span class="img-ph-label">Aerial of current Brooklyn facility on E New York Ave</span></div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
-            <div class="img-ph" style="aspect-ratio:1/1; border-radius:4px;"><span class="img-ph-label">CNC router cutting door panel profile</span></div>
-            <div class="img-ph" style="aspect-ratio:1/1; border-radius:4px;"><span class="img-ph-label">Finishing booth — brushing stain on walnut door</span></div>
-          </div>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div class="img-ph" style="aspect-ratio:4/3; border-radius:4px; margin-bottom:4px;"><span class="img-ph-label">Craftsman assembling a solid walnut door panel, Brooklyn workshop</span></div>
+          <div class="img-ph" style="aspect-ratio:16/9; border-radius:4px;"><span class="img-ph-label">Finished solid oak doors ready for delivery, Brooklyn facility</span></div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- VALUES -->
-  <section class="section">
+  <section class="section bg-cream-mid">
     <div class="container">
       <div class="section-intro-center">
         <div class="label">What We Believe</div>
@@ -145,7 +127,7 @@
         <div class="value-item">
           <div class="value-num">02</div>
           <div class="value-title">Craft Over Speed</div>
-          <p>We don't rush. Every door goes through 14 quality checkpoints. Every molding profile is checked for accuracy and consistency before it leaves the facility.</p>
+          <p>We don't rush. Every door goes through quality checkpoints. Every molding profile is checked for accuracy and consistency before it leaves the facility.</p>
         </div>
         <div class="value-item">
           <div class="value-num">03</div>
@@ -155,12 +137,12 @@
         <div class="value-item">
           <div class="value-num">04</div>
           <div class="value-title">Transparent Process</div>
-          <p>No surprises on pricing, lead times, or specifications. You get shop drawings, progress updates, and a direct line to your project manager.</p>
+          <p>No surprises on pricing, lead times, or specifications. You get shop drawings, progress updates, and a direct line to the person making your order.</p>
         </div>
         <div class="value-item">
           <div class="value-num">05</div>
           <div class="value-title">Sustainability</div>
-          <p>All our hardwoods are FSC-certified. Our finishing systems are low-VOC. We run a zero-landfill shop — all sawdust and offcuts are repurposed or composted.</p>
+          <p>We source FSC-certified hardwoods wherever available. Our finishing systems are low-VOC. We run a low-waste shop — offcuts are repurposed, not landfilled.</p>
         </div>
         <div class="value-item">
           <div class="value-num">06</div>
@@ -171,83 +153,12 @@
     </div>
   </section>
 
-  <!-- TEAM -->
-  <section class="section bg-cream-mid">
-    <div class="container">
-      <div class="section-intro">
-        <div class="label">Our People</div>
-        <div class="rule"></div>
-        <h2>The Craftspeople Behind the Work</h2>
-        <p>60 skilled craftspeople, designers, and project managers — all committed to the same standard.</p>
-      </div>
-      <div class="team-grid">
-        <div class="team-card">
-          <div class="img-ph team-img"><span class="img-ph-label">Portrait — Robert Hollis, Founder</span></div>
-          <div class="team-name">Robert Hollis</div>
-          <div class="team-role">Founder &amp; Chairman</div>
-          <p class="team-bio">37 years of craft. Still walks the shop floor every morning.</p>
-        </div>
-        <div class="team-card">
-          <div class="img-ph team-img"><span class="img-ph-label">Portrait — Claire Hollis, CEO</span></div>
-          <div class="team-name">Claire Hollis</div>
-          <div class="team-role">Chief Executive Officer</div>
-          <p class="team-bio">Robert's daughter and the driving force behind our national expansion and hospitality division.</p>
-        </div>
-        <div class="team-card">
-          <div class="img-ph team-img"><span class="img-ph-label">Portrait — Marcus Webb, Head of Production</span></div>
-          <div class="team-name">Marcus Webb</div>
-          <div class="team-role">Head of Production</div>
-          <p class="team-bio">20 years on the shop floor. Oversees every door from lumber selection to final finish.</p>
-        </div>
-        <div class="team-card">
-          <div class="img-ph team-img"><span class="img-ph-label">Portrait — Diane Park, Design Director</span></div>
-          <div class="team-name">Diane Park</div>
-          <div class="team-role">Design Director</div>
-          <p class="team-bio">Former architectural millwork specifier. Translates client vision into precise shop drawings.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CERTIFICATIONS -->
-  <section class="section">
-    <div class="container">
-      <div class="section-intro">
-        <div class="label">Credentials</div>
-        <div class="rule"></div>
-        <h2>Certified, Compliant, and Code-Ready</h2>
-      </div>
-      <div class="cert-row">
-        <div class="cert-item">
-          <div class="cert-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div><div class="cert-label">UL Listed</div><div class="cert-body">Fire-rated doors — 20, 45, 60 &amp; 90 min</div></div>
-        </div>
-        <div class="cert-item">
-          <div class="cert-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <div><div class="cert-label">FSC Certified</div><div class="cert-body">Chain-of-custody hardwood sourcing</div></div>
-        </div>
-        <div class="cert-item">
-          <div class="cert-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg></div>
-          <div><div class="cert-label">AWI Certified</div><div class="cert-body">Architectural Woodwork Institute premium grade</div></div>
-        </div>
-        <div class="cert-item">
-          <div class="cert-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-          <div><div class="cert-label">WDMA Member</div><div class="cert-body">Window &amp; Door Manufacturers Association</div></div>
-        </div>
-        <div class="cert-item">
-          <div class="cert-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-          <div><div class="cert-label">CARB Phase 2</div><div class="cert-body">Low-VOC finishes — compliant nationwide</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <div class="cta-banner">
     <div class="container">
-      <h2>Come See Us in Brooklyn</h2>
-      <p>Visit our showroom and production facility — see the craft up close and work through your project with our design team.</p>
+      <h2>Ready to Work Together?</h2>
+      <p>Tell us about your project — we respond within one business day and can have samples to you within a week.</p>
       <div class="btn-row">
-        <a href="showroom.html" class="btn btn-gold">Schedule a Showroom Visit</a>
+        <a href="quote.html" class="btn btn-gold">Start a Project →</a>
         <a href="contact.html" class="btn btn-outline-light">Contact Us</a>
       </div>
     </div>
