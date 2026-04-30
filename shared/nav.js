@@ -513,6 +513,74 @@
     return 'interior+architecture+wood+door+minimal+clean';
   }
 
+  // Maps label patterns → local file in images/
+  function _localFile(label) {
+    var l = label.toLowerCase();
+    // Barn doors (check before generic "door")
+    if (/glass.*barn|barn.*glass/.test(l))                 return 'door-barn-glass.jpg';
+    if (/reclaimed.*barn|plank.*barn|wide.*sliding/.test(l)) return 'door-barn-reclaimed.jpg';
+    if (/x.brace|z.brace/.test(l))                        return 'door-barn-xbrace.jpg';
+    if (/barn.door|barn.*sliding|sliding.*barn/.test(l))   return 'door-barn-modern.jpg';
+    // Interior doors
+    if (/shaker|5.panel|craftsman|2.panel/.test(l))        return 'door-shaker.jpg';
+    if (/raised.panel/.test(l))                            return 'door-raised-panel.jpg';
+    if (/flush|flat.panel.*door/.test(l))                  return 'door-flush.jpg';
+    if (/glass.lite|10.lite|15.lite|true.divided/.test(l)) return 'door-glass-lite.jpg';
+    // French doors
+    if (/french.door|french.doors|bifold|accordion/.test(l)) return 'door-french.jpg';
+    // Exterior doors
+    if (/arched.*exterior|arched.top|ornate.*exterior/.test(l)) return 'door-exterior-arched.jpg';
+    if (/dutch.door|contemporary.exterior|modern.exterior/.test(l)) return 'door-exterior-modern.jpg';
+    if (/entry.door|front.door|exterior.*door|exterior.*solid|exterior.*grand|sidelight/.test(l)) return 'door-exterior-grand.jpg';
+    // Custom / pivot
+    if (/pivot/.test(l))                                   return 'door-pivot.jpg';
+    if (/custom.*door|made.to.spec|bespoke|custom.*carv|carved/.test(l)) return 'door-custom.jpg';
+    // Fire-rated
+    if (/fire.rated|fire-rated|ul.list|fire.*label/.test(l)) return 'door-fire-rated.jpg';
+    // Generic "door"
+    if (/door/.test(l))                                    return 'door-shaker.jpg';
+    // Crown molding
+    if (/coffered/.test(l))                                return 'molding-coffered.jpg';
+    if (/crown.molding|crown.*ceiling|ceiling.molding|dentil/.test(l)) return 'molding-crown.jpg';
+    // Base molding
+    if (/base.molding|baseboard|base.cap|tall.base/.test(l)) return 'molding-base.jpg';
+    // Casing
+    if (/casing|door.frame|door.casing|staircase.*molding/.test(l)) return 'molding-casing.jpg';
+    // Chair rail
+    if (/chair.rail/.test(l))                              return 'molding-chair-rail.jpg';
+    // Wainscoting / paneling
+    if (/beadboard/.test(l))                               return 'molding-wainscoting.jpg';
+    if (/board.and.batten|board.*batten/.test(l))          return 'molding-board-batten.jpg';
+    if (/shadow.box|picture.frame|gallery.wall/.test(l))   return 'molding-shadow-box.jpg';
+    if (/panel.molding|wall.panel|panel.grid|executive.board/.test(l)) return 'molding-panel.jpg';
+    if (/wainscot/.test(l))                                return 'molding-wainscoting.jpg';
+    // Hardware
+    if (/matte.black.*lever|linear.lever|lever.*black/.test(l)) return 'hardware-lever-black.jpg';
+    if (/lever|door.handle|brass.*handle/.test(l))         return 'hardware-lever-brass.jpg';
+    if (/barn.*hardware|rail.system|barn.*rail/.test(l))   return 'hardware-barn.jpg';
+    if (/knob/.test(l))                                    return 'hardware-knob.jpg';
+    if (/hinge|hardware|handle|pull|cremone|mortise/.test(l)) return 'hardware-lever-brass.jpg';
+    // Workshop / facility
+    if (/cnc|router/.test(l))                              return 'workshop-cnc.jpg';
+    if (/planing|craftsman.*bench|master.craftsman|at.bench/.test(l)) return 'workshop-craftsman.jpg';
+    if (/lumber|wood.stack|cured.hardwood|stack.*hardwood/.test(l)) return 'workshop-lumber.jpg';
+    if (/wide.angle.*facility|brooklyn.facility|brooklyn.*mill|aerial/.test(l)) return 'workshop-facility.jpg';
+    if (/shop.drawing|designer.*review|reviewing/.test(l)) return 'workshop-samples.jpg';
+    if (/wood.*sample|finish.*chip|sample.*chip|finish.*sample/.test(l)) return 'workshop-samples.jpg';
+    if (/workshop|woodwork|carpenter|craftsman/.test(l))   return 'workshop-craftsman.jpg';
+    if (/facility|production|mill/.test(l))                return 'workshop-facility.jpg';
+    // Rooms / interiors
+    if (/boardroom|executive.*panel/.test(l))              return 'room-boardroom.jpg';
+    if (/hotel.lobby|hotel.corridor|suite.entry|hotel.room.door|corridor.door/.test(l)) return 'room-hotel-lobby.jpg';
+    if (/dining.room|full.wainscot/.test(l))               return 'room-dining.jpg';
+    if (/hallway|foyer|corridor/.test(l))                  return 'room-hallway.jpg';
+    // Wood grains
+    if (/white.oak.grain|white.oak.*close/.test(l))        return 'wood-white-oak.jpg';
+    if (/walnut.grain/.test(l))                            return 'wood-walnut.jpg';
+    // No match — use Unsplash fallback
+    return null;
+  }
+
   function loadPhotos() {
     document.querySelectorAll('.img-ph').forEach(function (ph) {
       var labelEl = ph.querySelector('.img-ph-label');
@@ -523,7 +591,7 @@
       var w = Math.max(ph.offsetWidth  || 800, 200);
       var h = Math.max(ph.offsetHeight || 600, 150);
 
-      var src = 'https://source.unsplash.com/featured/'
+      var unsplashSrc = 'https://source.unsplash.com/featured/'
         + Math.round(w * 1.5) + 'x' + Math.round(h * 1.5)
         + '/?' + _query(label) + '&sig=' + _sig(label);
 
@@ -540,11 +608,19 @@
       if (pos === 'static') ph.style.position = 'relative';
 
       var img = document.createElement('img');
-      img.src     = src;
-      img.alt     = label;
+      img.alt   = label;
       img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
       img.loading = 'lazy';
       img.onload  = function () { if (labelEl) labelEl.style.display = 'none'; };
+
+      var localFile = _localFile(label);
+      if (localFile) {
+        img.onerror = function () { img.onerror = null; img.src = unsplashSrc; };
+        img.src = base + 'images/' + localFile;
+      } else {
+        img.src = unsplashSrc;
+      }
+
       ph.insertBefore(img, ph.firstChild);
     });
   }
