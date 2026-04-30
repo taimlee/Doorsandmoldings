@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Download Site Images — Solid Doors & Moldings</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 620px; margin: 60px auto; padding: 24px; color: #222; }
+  h2 { margin-bottom: 6px; }
+  p { color: #555; line-height: 1.6; margin-bottom: 16px; }
+  a { color: #b8872a; }
+  button {
+    background: #c8a45a; color: white; border: none;
+    padding: 16px 32px; font-size: 1.05rem; cursor: pointer;
+    border-radius: 4px; margin-top: 8px;
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .bar-wrap { height: 10px; background: #e8e8e8; border-radius: 5px; margin: 20px 0 8px; }
+  .bar-fill  { height: 100%; background: #c8a45a; border-radius: 5px; width: 0; transition: width 0.25s; }
+  #status { font-size: 0.88rem; color: #555; margin-bottom: 10px; }
+  #log {
+    font-size: 0.78rem; font-family: monospace;
+    max-height: 260px; overflow-y: auto;
+    background: #f6f4f0; padding: 12px; border-radius: 4px;
+    display: none;
+  }
+  .ok  { color: #2a7a2a; }
+  .err { color: #aa2222; }
+  .steps { background: #fffbf0; border: 1px solid #e8d8a0; border-radius: 6px; padding: 18px 20px; margin: 28px 0 0; }
+  .steps h3 { margin: 0 0 12px; font-size: 0.95rem; }
+  .steps ol { margin: 0; padding-left: 20px; }
+  .steps li { margin-bottom: 8px; font-size: 0.88rem; color: #444; }
+</style>
+</head>
+<body>
+
+<h2>Download Site Images</h2>
+<p>
+  Click the button. It will fetch all 39 photos and package them into
+  <strong>one ZIP file</strong> — then you upload that ZIP's contents to GitHub.
+  Takes about 1–2 minutes.
+</p>
+
+<button id="btn" onclick="start()">⬇&nbsp;&nbsp;Download All Images (ZIP)</button>
+
+<div id="progressWrap" style="display:none; margin-top:20px;">
+  <div class="bar-wrap"><div class="bar-fill" id="bar"></div></div>
+  <div id="status">Starting…</div>
+  <div id="log"></div>
+</div>
+
+<div class="steps">
+  <h3>After the ZIP downloads:</h3>
+  <ol>
+    <li>Find <strong>site-images.zip</strong> in your Downloads folder and <strong>extract / unzip</strong> it — you'll get a folder called <em>images</em> with 39 JPG files.</li>
+    <li>Go to <a href="https://github.com/taimlee/Doorsandmoldings/tree/main/site/images" target="_blank">github.com/taimlee/Doorsandmoldings → site → images</a></li>
+    <li>Click <strong>Add file → Upload files</strong></li>
+    <li>Open the extracted <em>images</em> folder and select all 39 JPGs (Ctrl+A), then drag them into GitHub.</li>
+    <li>Scroll down and click <strong>Commit changes</strong>.</li>
+    <li>Wait 1–2 minutes for Netlify to deploy — photos will appear on the site.</li>
+  </ol>
+</div>
+
+<!-- JSZip from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+        integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHveXg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+// ── Image list ───────────────────────────────────────────────────────────────
+// Each entry has a local filename and two sources tried in order:
+//   src1 = specific Unsplash photo ID (direct CDN, fast)
+//   src2 = source.unsplash.com query (fallback)
+// If both fail we skip that image (rare).
+
+var BASE_Q = 'https://source.unsplash.com/1200x800/?';
+
+var IMAGES = [
+  // ── Interior doors
+  { file:'door-shaker.jpg',          id:'rIcDuE91HWk', q:'shaker+5+panel+interior+wood+door+white+clean',      sig:101 },
+  { file:'door-raised-panel.jpg',    id:'6A8IlonoXR4', q:'raised+panel+interior+door+traditional+wood',         sig:102 },
+  { file:'door-flush.jpg',           id:'zF0aSACUPjk', q:'flush+minimal+interior+door+wood+modern+clean',       sig:103 },
+  { file:'door-glass-lite.jpg',      id:'iphWbI4pkSU', q:'glass+panel+interior+door+french+lite+wood',          sig:104 },
+  // ── Exterior doors
+  { file:'door-exterior-grand.jpg',  id:'Tgs4Neb9fVg', q:'grand+entry+door+wood+sidelights+luxury+home',        sig:105 },
+  { file:'door-exterior-arched.jpg', id:'ohz7YsXj14w', q:'arched+exterior+wood+door+ornate+entry+front',        sig:106 },
+  { file:'door-exterior-modern.jpg', id:'fnPPA3hpbgQ', q:'modern+contemporary+exterior+door+white+oak+front',   sig:107 },
+  // ── French doors
+  { file:'door-french.jpg',          id:'TiNh2kcfF0Y', q:'french+doors+glass+wood+interior+sunlight',           sig:108 },
+  // ── Barn doors
+  { file:'door-barn-modern.jpg',     id:'kHy6pcn0nc4', q:'barn+door+sliding+wood+interior+modern+minimal',      sig:109 },
+  { file:'door-barn-xbrace.jpg',     id:'g2luYjMpc14', q:'x+brace+barn+door+farmhouse+pine+wood+sliding',       sig:110 },
+  { file:'door-barn-glass.jpg',      id:'a21S260hKYc', q:'glass+panel+barn+door+modern+interior+sliding',       sig:111 },
+  { file:'door-barn-reclaimed.jpg',  id:'JWMEUgHy7ok', q:'reclaimed+wood+barn+door+rustic+sliding+rail',        sig:112 },
+  // ── Custom / pivot
+  { file:'door-pivot.jpg',           id:'bloY_24ivVM', q:'pivot+door+oversized+wood+modern+luxury+entry',       sig:113 },
+  { file:'door-custom.jpg',          id:'STrvz-H3JcI', q:'custom+handcrafted+wood+door+bespoke+solid',          sig:114 },
+  // ── Fire-rated
+  { file:'door-fire-rated.jpg',      id:'Y7XhCw8ykRo', q:'wood+door+office+corridor+commercial+solid',          sig:115 },
+  // ── Crown molding
+  { file:'molding-crown.jpg',        id:'Cn8Vz8sO9Pw', q:'crown+molding+white+painted+ceiling+architectural',   sig:201 },
+  { file:'molding-coffered.jpg',     id:'8aHbSehdS3k', q:'coffered+ceiling+panel+molding+library+beams',        sig:202 },
+  // ── Base molding
+  { file:'molding-base.jpg',         id:'Idl6CfIYxsA', q:'baseboard+molding+floor+trim+white+painted',          sig:203 },
+  // ── Casing
+  { file:'molding-casing.jpg',       id:'TuhjCrKzJY4', q:'door+window+casing+trim+wood+craftsman+interior',     sig:204 },
+  // ── Chair rail
+  { file:'molding-chair-rail.jpg',   id:'pjQAGRNehew', q:'chair+rail+molding+dining+room+two+tone+wall',        sig:205 },
+  // ── Wainscoting
+  { file:'molding-wainscoting.jpg',  id:'thpCQH4Tolk', q:'wainscoting+interior+hallway+white+painted+wall',     sig:206 },
+  { file:'molding-board-batten.jpg', id:'DxQxKD3pnDU', q:'board+and+batten+wall+panel+farmhouse+interior',      sig:207 },
+  // ── Panel molding
+  { file:'molding-panel.jpg',        id:'OKcqTe4h6jg', q:'wall+panel+molding+grid+formal+painted+white',        sig:208 },
+  { file:'molding-shadow-box.jpg',   id:'bxJ8JMcRcjs', q:'shadow+box+wall+panel+molding+bedroom',               sig:209 },
+  // ── Hardware
+  { file:'hardware-lever-brass.jpg', id:'ZqdRa6vjX4Y', q:'solid+brass+lever+door+handle+hardware+close+up',    sig:301 },
+  { file:'hardware-lever-black.jpg', id:'ZUdwAfOlvEM', q:'matte+black+lever+door+handle+modern+hardware',       sig:302 },
+  { file:'hardware-knob.jpg',        id:'8ea3Kl7pY4k', q:'door+knob+hardware+brass+close+up+metal',             sig:303 },
+  { file:'hardware-barn.jpg',        id:'ZUdwAfOlvEM', q:'barn+door+hardware+matte+black+rail+system+close',    sig:304 },
+  // ── Workshop / about
+  { file:'workshop-craftsman.jpg',   id:null,          q:'craftsman+woodworker+workbench+planing+solid+wood',   sig:401 },
+  { file:'workshop-lumber.jpg',      id:null,          q:'hardwood+lumber+stack+cured+planks+warehouse+wood',   sig:402 },
+  { file:'workshop-facility.jpg',    id:null,          q:'millwork+workshop+production+wood+factory+wide',      sig:403 },
+  { file:'workshop-cnc.jpg',         id:null,          q:'cnc+router+cutting+wood+panel+precision+machine',     sig:404 },
+  { file:'workshop-samples.jpg',     id:null,          q:'wood+stain+finish+sample+chips+spread+design+table',  sig:405 },
+  // ── Rooms / interiors
+  { file:'room-dining.jpg',          id:null,          q:'formal+dining+room+interior+wall+molding+elegant',    sig:501 },
+  { file:'room-hallway.jpg',         id:null,          q:'hallway+entry+interior+corridor+wood+door+panels',    sig:502 },
+  { file:'room-boardroom.jpg',       id:null,          q:'executive+boardroom+solid+wood+doors+wall+paneling',  sig:503 },
+  { file:'room-hotel-lobby.jpg',     id:null,          q:'hotel+lobby+luxury+grand+interior+wood+doors+warm',   sig:504 },
+  // ── Wood grain
+  { file:'wood-white-oak.jpg',       id:null,          q:'white+oak+wood+grain+natural+close+up+texture',       sig:601 },
+  { file:'wood-walnut.jpg',          id:null,          q:'walnut+wood+grain+dark+rich+close+up+texture',        sig:602 },
+];
+
+// ── Fetch helpers ─────────────────────────────────────────────────────────────
+
+function tryFetch(url) {
+  return fetch(url, { mode: 'cors' }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.blob();
+  });
+}
+
+function fetchImage(img) {
+  // Try direct Unsplash CDN photo first (no redirect, fast)
+  var p = Promise.reject(new Error('no id'));
+  if (img.id) {
+    var cdnUrl = 'https://images.unsplash.com/photo-' + img.id + '?w=1200&q=80&auto=format&fit=crop';
+    p = tryFetch(cdnUrl);
+  }
+  // Fallback: source.unsplash query
+  return p.catch(function() {
+    return tryFetch(BASE_Q + img.q + '&sig=' + img.sig);
+  });
+}
+
+// ── Main ─────────────────────────────────────────────────────────────────────
+
+async function start() {
+  var btn    = document.getElementById('btn');
+  var wrap   = document.getElementById('progressWrap');
+  var bar    = document.getElementById('bar');
+  var status = document.getElementById('status');
+  var log    = document.getElementById('log');
+
+  btn.disabled   = true;
+  wrap.style.display = 'block';
+  log.style.display  = 'block';
+
+  var zip    = new JSZip();
+  var folder = zip.folder('images');
+  var ok = 0, fail = 0;
+
+  for (var i = 0; i < IMAGES.length; i++) {
+    var img = IMAGES[i];
+    status.textContent = 'Fetching ' + (i + 1) + ' / ' + IMAGES.length + '  —  ' + img.file;
+    bar.style.width    = ((i / IMAGES.length) * 100) + '%';
+
+    try {
+      var blob = await fetchImage(img);
+      folder.file(img.file, blob);
+      log.innerHTML += '<span class="ok">✓ ' + img.file + '</span><br>';
+      ok++;
+    } catch (e) {
+      log.innerHTML += '<span class="err">✗ ' + img.file + ' (' + e.message + ')</span><br>';
+      fail++;
+    }
+    log.scrollTop = log.scrollHeight;
+
+    // Small pause to avoid hammering Unsplash
+    await new Promise(function(res){ setTimeout(res, 200); });
+  }
+
+  status.textContent = 'Creating ZIP…';
+  var content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+
+  var a = document.createElement('a');
+  a.href     = URL.createObjectURL(content);
+  a.download = 'site-images.zip';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  bar.style.width    = '100%';
+  status.textContent = '✓ Done! ' + ok + ' images downloaded, ' + fail + ' failed. Check your Downloads folder for site-images.zip';
+  btn.disabled       = false;
+  btn.textContent    = '⬇  Download Again';
+}
+</script>
+</body>
+</html>
