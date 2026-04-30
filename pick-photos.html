@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Photo Picker — Solid Doors & Moldings</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; margin: 0; padding: 24px; }
+  h1 { font-size: 1.2rem; margin-bottom: 4px; }
+  p { color: #555; margin-bottom: 24px; font-size: 0.9rem; }
+  #status { background: #1a1714; color: #f0ece4; padding: 12px 16px; border-radius: 6px; margin-bottom: 24px; font-size: 0.85rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,.1); }
+  .card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+  .card-body { padding: 10px 12px; }
+  .card-key { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #b8910a; margin-bottom: 2px; }
+  .card-desc { font-size: 0.78rem; color: #444; line-height: 1.35; }
+  .card-id { font-size: 0.68rem; color: #999; margin-top: 4px; font-family: monospace; }
+  #output-section { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,.1); }
+  #output-section h2 { font-size: 1rem; margin-top: 0; }
+  textarea { width: 100%; height: 400px; font-family: monospace; font-size: 0.75rem; border: 1px solid #ddd; border-radius: 4px; padding: 12px; box-sizing: border-box; }
+  button { margin-top: 8px; background: #b8910a; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+  button:hover { background: #9a7a08; }
+  .progress { height: 6px; background: #e0d9ce; border-radius: 3px; margin-bottom: 20px; }
+  .progress-bar { height: 100%; background: #b8910a; border-radius: 3px; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+<h1>Unsplash Photo Picker — Solid Doors &amp; Moldings</h1>
+<p>Fetching one photo per image category using the Unsplash API. When done, copy the output and send it back.</p>
+<div id="status">Starting…</div>
+<div class="progress"><div class="progress-bar" id="bar"></div></div>
+<div class="grid" id="grid"></div>
+<div id="output-section" style="display:none">
+  <h2>Paste this back into the chat:</h2>
+  <textarea id="output" readonly></textarea>
+  <button onclick="navigator.clipboard.writeText(document.getElementById('output').value).then(()=>this.textContent='Copied!')">Copy to Clipboard</button>
+</div>
+
+<script>
+const KEY = 'iPs8fRYXW8WeezREcyFLWc3A_GebW379fP5JoR2Qk1Y';
+
+const CATS = [
+  { key:'shaker_5panel',       q:'shaker 5 panel interior wood door', o:'portrait'   },
+  { key:'craftsman_2panel',    q:'craftsman 2 panel wood interior door', o:'portrait' },
+  { key:'raised_panel',        q:'raised panel interior door traditional wood', o:'portrait' },
+  { key:'flush_door',          q:'flush modern interior wood door minimal', o:'portrait' },
+  { key:'louvered_door',       q:'louvered interior door white painted', o:'portrait' },
+  { key:'glass_lite_door',     q:'glass lite french interior door panel', o:'portrait' },
+  { key:'custom_arched',       q:'custom arched interior wood door', o:'portrait'   },
+  { key:'barn_modern',         q:'barn door sliding interior modern wood rail', o:'landscape'},
+  { key:'barn_xbrace',         q:'x brace barn door farmhouse wood', o:'portrait'  },
+  { key:'barn_zbrace',         q:'barn door industrial black metal wood', o:'portrait'},
+  { key:'barn_reclaimed',      q:'reclaimed wood barn door rustic sliding', o:'portrait'},
+  { key:'barn_glass',          q:'glass panel barn door modern interior', o:'portrait'},
+  { key:'barn_shaker',         q:'shaker barn door white oak minimal', o:'portrait' },
+  { key:'barn_double',         q:'double bypass barn door walnut bedroom', o:'landscape'},
+  { key:'french_interior',     q:'french doors glass wood interior light', o:'landscape'},
+  { key:'french_exterior',     q:'exterior french door terrace garden wood glass', o:'landscape'},
+  { key:'french_bifold',       q:'bifold folding glass doors interior', o:'landscape'},
+  { key:'french_sunlit',       q:'french doors open garden sunlit natural light', o:'landscape'},
+  { key:'exterior_grand',      q:'grand entry door wood sidelights luxury home', o:'portrait'},
+  { key:'exterior_contemporary',q:'modern contemporary exterior door white oak flush', o:'portrait'},
+  { key:'exterior_arched',     q:'arched ornate exterior wood door entry', o:'portrait'},
+  { key:'exterior_dutch',      q:'dutch door exterior painted wood split', o:'portrait'},
+  { key:'exterior_mahogany',   q:'grand mahogany carved entry door ornate', o:'portrait'},
+  { key:'pivot_door',          q:'pivot door oversized modern wood polished', o:'portrait'},
+  { key:'custom_carved',       q:'custom carved ornate wood door mahogany entry', o:'portrait'},
+  { key:'fire_rated',          q:'fire rated steel metal commercial door', o:'portrait'},
+  { key:'fire_hotel',          q:'hotel corridor room door wood commercial', o:'landscape'},
+  { key:'crown_molding',       q:'crown molding white painted ceiling detail', o:'landscape'},
+  { key:'coffered_ceiling',    q:'coffered ceiling panel molding wood beams', o:'landscape'},
+  { key:'crown_hotel',         q:'hotel lobby crown molding grand interior', o:'landscape'},
+  { key:'baseboard',           q:'baseboard molding floor trim white painted', o:'landscape'},
+  { key:'door_casing',         q:'door casing craftsman trim wood interior', o:'landscape'},
+  { key:'casing_colonial',     q:'colonial door casing trim traditional profile', o:'landscape'},
+  { key:'chair_rail',          q:'chair rail molding dining room wall', o:'landscape'},
+  { key:'chair_rail_formal',   q:'formal dining room chair rail wainscoting', o:'landscape'},
+  { key:'wainscoting',         q:'wainscoting interior hallway white painted wall panel', o:'landscape'},
+  { key:'wainscoting_raised',  q:'raised panel wainscoting formal hallway white', o:'landscape'},
+  { key:'wainscoting_beadboard',q:'beadboard wainscoting white painted cottage', o:'landscape'},
+  { key:'board_batten',        q:'board and batten wall farmhouse interior', o:'landscape'},
+  { key:'shadow_box',          q:'shadow box panel wall molding bedroom', o:'landscape'},
+  { key:'panel_molding',       q:'wall panel molding grid formal interior white', o:'landscape'},
+  { key:'staircase_molding',   q:'staircase wall panel molding installation', o:'landscape'},
+  { key:'lever_brass',         q:'brass lever door handle hardware close up', o:'squarish'},
+  { key:'lever_bronze',        q:'oil rubbed bronze lever door handle hardware', o:'squarish'},
+  { key:'lever_black',         q:'matte black lever door handle modern', o:'squarish'},
+  { key:'lever_brushed_brass', q:'brushed brass lever door handle contemporary', o:'squarish'},
+  { key:'knob_brass',          q:'brass door knob hardware round polished', o:'squarish'},
+  { key:'knob_crystal',        q:'crystal glass door knob brass hardware', o:'squarish'},
+  { key:'cremone_bolt',        q:'cremone bolt brass french door hardware', o:'squarish'},
+  { key:'hinge_brass',         q:'butt hinge brass door hardware metal', o:'squarish'},
+  { key:'entry_pull',          q:'entry door pull bar solid brass architectural', o:'squarish'},
+  { key:'barn_hardware',       q:'barn door rail hardware matte black track', o:'landscape'},
+  { key:'barn_pull',           q:'barn door pull handle wrought iron rustic', o:'squarish'},
+  { key:'mortise_lock',        q:'mortise lock set antique brass door hardware', o:'squarish'},
+  { key:'hardware_display',    q:'door hardware showroom display handles finishes', o:'landscape'},
+  { key:'grain_white_oak',     q:'white oak wood grain natural close up texture', o:'squarish'},
+  { key:'grain_walnut',        q:'walnut wood grain dark rich close up texture', o:'squarish'},
+  { key:'grain_cherry',        q:'cherry wood grain warm reddish close up', o:'squarish'},
+  { key:'grain_mahogany',      q:'mahogany wood grain straight reddish brown close', o:'squarish'},
+  { key:'grain_maple',         q:'maple wood grain light tight close up', o:'squarish'},
+  { key:'grain_alder',         q:'alder wood grain light reddish close up', o:'squarish'},
+  { key:'grain_fir',           q:'douglas fir grain warm knotty wood texture', o:'squarish'},
+  { key:'lumber_stack',        q:'hardwood lumber stack cured planks warehouse', o:'landscape'},
+  { key:'workshop_bench',      q:'craftsman woodworking workbench hand tools', o:'landscape'},
+  { key:'workshop_planing',    q:'craftsman hand planing solid wood workbench', o:'landscape'},
+  { key:'workshop_cnc',        q:'cnc router cutting wood panel machine', o:'landscape'},
+  { key:'workshop_facility',   q:'millwork production facility wood workshop factory', o:'landscape'},
+  { key:'finish_samples',      q:'wood stain finish sample chips design table', o:'landscape'},
+  { key:'portrait_founder',    q:'woodworker craftsman man workbench portrait tools', o:'squarish'},
+  { key:'portrait_ceo',        q:'businesswoman professional portrait executive', o:'squarish'},
+  { key:'portrait_designer',   q:'interior designer professional woman portrait', o:'squarish'},
+  { key:'portrait_production', q:'craftsman workshop man portrait tools', o:'squarish'},
+  { key:'interior_hero',       q:'grand wood entry door luxury interior warm light', o:'landscape'},
+  { key:'interior_living',     q:'modern living room interior wood door open plan', o:'landscape'},
+  { key:'interior_dining',     q:'formal dining room interior molding elegant', o:'landscape'},
+  { key:'interior_hallway',    q:'hallway entry interior corridor wood door elegant', o:'landscape'},
+  { key:'interior_hotel_lobby',q:'hotel lobby luxury grand interior wood doors', o:'landscape'},
+  { key:'interior_hotel_corr', q:'hotel corridor luxury warm wood doors hospitality', o:'landscape'},
+  { key:'interior_boardroom',  q:'executive boardroom wood panel wall doors', o:'landscape'},
+  { key:'interior_office',     q:'commercial office interior wood door modern', o:'landscape'},
+  { key:'brooklyn',            q:'brooklyn new york street brownstone building', o:'landscape'},
+  { key:'showroom',            q:'door showroom display solid wood doors interior', o:'landscape'},
+];
+
+const results = {};
+const grid = document.getElementById('grid');
+const status = document.getElementById('status');
+const bar = document.getElementById('bar');
+
+async function fetchOne(cat, index) {
+  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(cat.q)}&orientation=${cat.o}&per_page=1&client_id=${KEY}`;
+  const r = await fetch(url);
+  const d = await r.json();
+  if (!d.results || d.results.length === 0) return null;
+  const photo = d.results[0];
+  return { id: photo.id, thumb: photo.urls.small, desc: photo.alt_description || photo.description || '' };
+}
+
+async function run() {
+  for (let i = 0; i < CATS.length; i++) {
+    const cat = CATS[i];
+    status.textContent = `Fetching ${i+1}/${CATS.length}: ${cat.key}…`;
+    bar.style.width = ((i / CATS.length) * 100) + '%';
+    try {
+      const photo = await fetchOne(cat, i);
+      if (photo) {
+        results[cat.key] = photo.id;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${photo.thumb}" alt="${cat.key}" loading="lazy"/>
+          <div class="card-body">
+            <div class="card-key">${cat.key.replace(/_/g,' ')}</div>
+            <div class="card-desc">${photo.desc.slice(0,80)}</div>
+            <div class="card-id">${photo.id}</div>
+          </div>`;
+        grid.appendChild(card);
+      }
+    } catch(e) {
+      console.warn(cat.key, e);
+    }
+    await new Promise(r => setTimeout(r, 100));
+  }
+  bar.style.width = '100%';
+  status.textContent = `Done — fetched ${Object.keys(results).length} photos.`;
+  document.getElementById('output-section').style.display = 'block';
+  document.getElementById('output').value = JSON.stringify(results, null, 2);
+}
+
+run();
+</script>
+</body>
+</html>
