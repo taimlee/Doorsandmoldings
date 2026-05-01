@@ -476,8 +476,9 @@ p  { font-size: clamp(0.95rem, 1.2vw, 1.05rem); color: var(--charcoal-mid); line
 }
 @media (max-width: 768px) {
   :root { --nav-h: 60px; }
-  .nav-links, .nav-cta-contact { display: none; }
+  .nav-links, .nav-cta-contact, .nav-cta-quote { display: none; }
   .nav-hamburger { display: flex; }
+  .nav-inner { gap: 0; justify-content: space-between; }
   .grid-3 { grid-template-columns: 1fr; }
   .grid-2 { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; }
