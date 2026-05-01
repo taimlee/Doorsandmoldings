@@ -616,7 +616,7 @@
       var localFile = _localFile(label);
       if (localFile) {
         img.onerror = function () { img.onerror = null; img.src = unsplashSrc; };
-        img.src = base + 'images/' + localFile;
+        img.src = base + localFile;
       } else {
         img.src = unsplashSrc;
       }
