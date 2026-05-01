@@ -56,7 +56,6 @@
           </div>
         </div></div>
       </li>
-      <li class="nav-item"><a href="${base}gallery.html" class="nav-btn">Gallery</a></li>
       <li class="nav-item has-dropdown">
         <button class="nav-btn">Resources <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,4 6,8 10,4"/></svg></button>
         <div class="nav-dropdown"><div class="nav-dropdown-inner">
@@ -109,7 +108,6 @@
   </div>
   <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">
     <a href="${base}hardware.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">Hardware</a>
-    <a href="${base}gallery.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">Gallery</a>
     <a href="${base}finishes.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">Finishes Guide</a>
     <a href="${base}faq.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">FAQ</a>
     <a href="${base}about.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">About</a>
@@ -157,7 +155,6 @@
         <div class="footer-col-title">Company</div>
         <ul>
           <li><a href="${base}about.html">About Us</a></li>
-          <li><a href="${base}gallery.html">Gallery</a></li>
           <li><a href="${base}finishes.html">Finishes Guide</a></li>
           <li><a href="${base}faq.html">FAQ</a></li>
           <li><a href="${base}contact.html">Contact</a></li>
