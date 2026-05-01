@@ -574,6 +574,12 @@
     // Wood grains
     if (/white.oak.grain|white.oak.*close/.test(l))        return 'wood-white-oak.jpg';
     if (/walnut.grain/.test(l))                            return 'wood-walnut.jpg';
+    if (/cherry.*grain|cherry.*warm/.test(l))              return 'wood-cherry.jpg';
+    if (/mahogany.grain|mahogany.*straight/.test(l))       return 'wood-mahogany.jpg';
+    if (/maple.grain|maple.*tight/.test(l))                return 'wood-maple.jpg';
+    if (/alder.grain|alder.*reddish/.test(l))              return 'wood-alder.jpg';
+    if (/douglas.fir|fir.*knotty|fir.*warm/.test(l))      return 'wood-fir.jpg';
+    if (/poplar.grain|poplar.*light|paint.grade/.test(l)) return 'wood-poplar.jpg';
     // No match — use Unsplash fallback
     return null;
   }
