@@ -174,6 +174,13 @@
 </footer>`;
 
   /* ─── Inject ─── */
+  // Favicon
+  if (!document.querySelector('link[rel="icon"]')) {
+    var favicon = document.createElement('link');
+    favicon.rel = 'icon'; favicon.type = 'image/svg+xml';
+    favicon.href = base + 'favicon.svg';
+    document.head.appendChild(favicon);
+  }
   // Nav
   var navEl = document.createElement('div');
   navEl.innerHTML = navHTML;
