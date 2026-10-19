@@ -33,7 +33,9 @@
   const seg = (p, a, b) => ease(clamp((p - a) / (b - a)));
 
   /* ─── Frames ─── */
-  let set = null, frames = [], loaded = [];
+  let set = null, frames = [], loaded = [], loadedCount = 0;
+  let introResolve = null;
+  const introReady = new Promise((res) => { introResolve = res; });
   function frameUrl(s, i) { return 'images/seq/' + s + '/' + String(i).padStart(3, '0') + '.webp'; }
 
   function loadSet(s) {
@@ -41,6 +43,7 @@
     set = s;
     frames = new Array(TOTAL);
     loaded = new Array(TOTAL).fill(false);
+    loadedCount = 0;
     // Coarse-to-fine order: the film is scrubbable almost immediately, then fills in.
     const order = [], seen = new Set();
     [16, 8, 4, 2, 1].forEach((step) => {
@@ -56,9 +59,10 @@
         img.onload = () => {
           active--;
           if (mySet !== set) return;
-          frames[i] = img; loaded[i] = true;
+          frames[i] = img; loaded[i] = true; loadedCount++;
           if (i === 0) { section.classList.add('ds-ready'); requestDraw(true); }
           else requestDraw(true);
+          if (loaded[0] && loadedCount >= 10 && introResolve) { introResolve(); introResolve = null; }
           pump();
         };
         img.onerror = () => { active--; pump(); };
@@ -164,6 +168,44 @@
   }
   function onScroll() { target = readProgress(); requestDraw(false); }
 
+  /* ─── Intro: wordmark + counter, then the cover parts like a pair of doors ─── */
+  function runIntro() {
+    const html = document.documentElement;
+    if (!html.classList.contains('m-intro')) return;
+    try { sessionStorage.setItem('m-intro', '1'); } catch (e) {}
+    const el = document.createElement('div');
+    el.id = 'sdm-intro';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML =
+      '<div class="si-leaf si-l"></div><div class="si-leaf si-r"></div>' +
+      '<div class="si-mark"><span class="si-word">' +
+      'Solid Doors & Moldings'.split('').map((ch, k) => ch === ' ' ? ' ' : '<i style="--i:' + k + '">' + (ch === '&' ? '&amp;' : ch) + '</i>').join('') +
+      '</span><span class="si-sub">Brooklyn, NY</span></div>' +
+      '<div class="si-count"><b>0</b><span>%</span></div><div class="si-line"><i></i></div>';
+    document.body.appendChild(el);
+    const count = el.querySelector('.si-count b'), line = el.querySelector('.si-line i');
+    const t0 = performance.now(), MIN = 1500, MAX = 3200;
+    let done = false, pct = 0;
+    const timeout = new Promise((r) => setTimeout(r, MAX));
+    requestAnimationFrame(function tick(now) {
+      if (done) return;
+      const t = Math.min(1, (now - t0) / MIN);
+      const real = Math.min(1, loadedCount / 10);
+      pct = Math.max(pct, Math.round(Math.min(t, Math.max(real, t * 0.85)) * 100));
+      count.textContent = String(pct);
+      line.style.transform = 'scaleX(' + (pct / 100) + ')';
+      requestAnimationFrame(tick);
+    });
+    Promise.race([introReady, timeout]).then(() => new Promise((r) => setTimeout(r, Math.max(0, MIN - (performance.now() - t0))))).then(() => {
+      done = true;
+      count.textContent = '100'; line.style.transform = 'scaleX(1)';
+      el.classList.add('si-out');
+      html.classList.remove('m-intro');
+      document.body.classList.add('film-revealed');
+      setTimeout(() => el.remove(), 1700);
+    });
+  }
+
   /* ─── Setup ─── */
   function setup() {
     NAV = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
@@ -174,10 +216,12 @@
       return;
     }
     section.classList.add('ds-js');
+    document.body.classList.add('has-film');
     resize();
     target = shown = readProgress();
     render(shown);
     window.addEventListener('scroll', onScroll, { passive: true });
+    runIntro();
   }
 
   window.addEventListener('resize', () => { if (!reduced.matches) { resize(); onScroll(); } });

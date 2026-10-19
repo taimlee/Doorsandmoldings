@@ -35,6 +35,12 @@
     }
   } catch (e) {}
 
+  // Homepage intro: cover the page before first paint; door-story.js runs the reveal.
+  try {
+    var isHome = /\/(index\.html)?$/.test(location.pathname);
+    if (!reduced && isHome && !sessionStorage.getItem('m-intro')) html.classList.add('m-intro');
+  } catch (e) {}
+
   var EXCLUDE = '#door-story, [data-no-motion], #mobile-nav, #main-nav, .m-cursor, #m-top';
   var FADE = [
     '.section-intro', '.section-intro-center', '.card', '.feature-item', '.process-step', '.stat-item',
@@ -235,8 +241,8 @@
       topBtn.classList.toggle('on', y > Math.max(600, heroEnd));
       topBtn.style.setProperty('--m-ring', (150.8 * (1 - p)).toFixed(1));
     }
-    var mobileOpen = (document.getElementById('mobile-nav') || {}).style;
-    if (y < 200 || (mobileOpen && mobileOpen.display === 'block')) html.classList.remove('m-nav-hidden');
+    var mobileOpen = html.classList.contains('menu-open');
+    if (y < 200 || mobileOpen) html.classList.remove('m-nav-hidden');
     else if (y - lastY > 6) html.classList.add('m-nav-hidden');
     else if (lastY - y > 6) html.classList.remove('m-nav-hidden');
     lastY = y;
@@ -313,14 +319,81 @@
     document.documentElement.addEventListener('pointerleave', function () { c.classList.remove('on'); });
   }
 
+  /* ─── Liquid hover: a brief ripple through a photo when a card is entered ─── */
+  function setupLiquid() {
+    if (!finePointer || reduced || !document.body) return;
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+    svg.innerHTML = '<filter id="m-liquid" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="3" result="n"/>' +
+      '<feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter>';
+    document.body.appendChild(svg);
+    var disp = svg.querySelector('feDisplacementMap'), turb = svg.querySelector('feTurbulence');
+    var current = null, raf = 0;
+    function ripple(img) {
+      if (current) current.style.filter = '';
+      current = img; img.style.filter = 'url(#m-liquid)';
+      var t0 = performance.now();
+      cancelAnimationFrame(raf);
+      (function step(now) {
+        var t = Math.min(1, (now - t0) / 900);
+        var s = Math.sin(t * Math.PI) * 26;            // swell then settle
+        disp.setAttribute('scale', s.toFixed(2));
+        turb.setAttribute('baseFrequency', (0.012 + t * 0.01).toFixed(4) + ' ' + (0.02 + t * 0.012).toFixed(4));
+        if (t < 1) raf = requestAnimationFrame(step);
+        else { img.style.filter = ''; if (current === img) current = null; }
+      })(t0);
+    }
+    document.addEventListener('pointerenter', function (e) {
+      var t = e.target;
+      if (!t || !t.closest || e.pointerType !== 'mouse') return;
+      var card = t.closest('.card, .style-card, .feat-prod, .industry-card, .cp-card, .hw-card, .profile-card, .rail-card');
+      if (!card || t !== card) return;
+      var img = card.querySelector('img');
+      if (img) ripple(img);
+    }, true);
+  }
+
   /* ─── Page transitions ─── */
+  var supportsVT = 'onpagereveal' in window && window.CSS && CSS.supports && CSS.supports('view-transition-name: a');
+  var CARD_LINK = '.card, .style-card, .feat-prod, .industry-card, .cp-card, .hw-card, .profile-card, [data-morph]';
+
+  // Shared-element morph: the photo on the card you click becomes the hero photo of the next page.
+  function setupMorph() {
+    if (reduced || !supportsVT) return;
+    window.addEventListener('pagereveal', function (e) {
+      var vt = e.viewTransition;
+      var want = false;
+      try { want = sessionStorage.getItem('m-vt') === '1'; sessionStorage.removeItem('m-vt'); } catch (err) {}
+      if (!vt || !want) return;
+      var hero = document.querySelector('.ds-poster, .cat-hero img, [class*="hero"] img, .img-ph img');
+      if (!hero) return;
+      hero.style.viewTransitionName = 'sdm-hero';
+      vt.finished.then(function () { hero.style.viewTransitionName = ''; });
+    });
+  }
+
   function setupTransitions() {
+    setupMorph();
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a || a.target && a.target !== '_self') return;
+      var card = a.closest(CARD_LINK) || (a.matches(CARD_LINK) ? a : null);
+      var img = card && card.querySelector('img');
+      if (!reduced && supportsVT && img && a.origin === location.origin && a.pathname !== location.pathname) {
+        img.style.viewTransitionName = 'sdm-hero';
+        try { sessionStorage.setItem('m-vt', '1'); } catch (err) {}
+        a.dataset.mMorph = '1'; // the door wipe below leaves this link alone
+      }
+    }, true);
     // Phones: navigate instantly; the door leaves would only add a delay to every tap.
     if (reduced || !finePointer || window.innerWidth < 768) return;
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       var a = e.target.closest && e.target.closest('a[href]');
-      if (!a || a.target && a.target !== '_self' || a.hasAttribute('download')) return;
+      if (!a || a.target && a.target !== '_self' || a.hasAttribute('download') || a.dataset.mMorph) return;
       var url;
       try { url = new URL(a.href, location.href); } catch (err) { return; }
       if (url.origin !== location.origin || !/^https?:$/.test(url.protocol)) return;
@@ -347,6 +420,7 @@
       var lenis = new window.Lenis({ lerp: 0.085, wheelMultiplier: 0.95, smoothWheel: true });
       window.lenis = lenis;
       lenis.on('scroll', requestFrame);
+      document.dispatchEvent(new CustomEvent('lenis:ready', { detail: lenis }));
       (function loop(t) { lenis.raf(t); requestAnimationFrame(loop); })(performance.now());
     };
     document.head.appendChild(s);
@@ -366,6 +440,7 @@
       buildCursor();
       setupTransitions();
       setupSmoothScroll();
+      setupLiquid();
     } else {
       document.querySelectorAll('[data-count], .stat-number').forEach(function (el) { el.dataset.mCounted = '1'; });
     }

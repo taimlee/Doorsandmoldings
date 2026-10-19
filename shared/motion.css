@@ -168,3 +168,17 @@ html.m-nav-hidden #m-progress { top: 0; }
   .m-js .img-ph > img { transform: none !important; }
   .m-cursor, #m-progress { display: none; }
 }
+
+/* ─── Cross-document view transitions (Chromium/Safari); the door wipe covers other browsers ─── */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.55s; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+::view-transition-group(sdm-hero) { animation-duration: 0.95s; animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1); z-index: 10002; }
+::view-transition-image-pair(sdm-hero) { isolation: auto; }
+::view-transition-old(sdm-hero), ::view-transition-new(sdm-hero) {
+  animation: none; mix-blend-mode: normal; height: 100%; width: 100%; object-fit: cover; overflow: clip;
+}
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+
+/* ─── Homepage intro cover: instant black until the film is ready ─── */
+html.m-intro body::before { content: ""; position: fixed; inset: 0; background: #0d0b09; z-index: 10001; }
+html.m-intro { overflow: hidden; }

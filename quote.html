@@ -213,6 +213,7 @@
           <p class="vis-hidden" id="q-status" aria-live="polite"></p>
 
           <form id="quote-form" novalidate>
+            <input type="text" id="q-honey" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
           <div class="q-viewport">
           <!-- Step 1: Product Selection -->
           <div class="quote-step active" id="q-step-1">
@@ -438,6 +439,7 @@
 
 </div>
 <script src="shared/nav.js"></script>
+<script src="shared/forms.js"></script>
 <script>
   var currentStep = 1;
   var maxStep = 1;
@@ -590,10 +592,7 @@
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="q-spin" aria-hidden="true"></span> Submitting…';
 
-    fetch('https://formsubmit.co/ajax/ari@doorsandmoldings.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
+    SDM.sendForm('https://formsubmit.co/ajax/ari@doorsandmoldings.com', {
         name: fname + ' ' + document.getElementById('q-lname').value.trim(),
         email: email,
         phone: phone,
@@ -609,11 +608,10 @@
         budget: document.getElementById('q-budget').value,
         project_location: document.getElementById('q-location').value,
         description: document.getElementById('q-details').value,
+        _honey: (document.getElementById('q-honey') || {}).value || '',
         _subject: 'Quote Request — Solid Doors & Moldings',
         _template: 'table'
-      })
-    })
-    .then(function(r) { return r.json(); })
+      }, { onSlow: function () { submitBtn.innerHTML = '<span class="q-spin" aria-hidden="true"></span> Still sending — this can take up to a minute…'; } })
     .then(function() {
       document.getElementById('q-step-3').classList.remove('active');
       var success = document.getElementById('q-success');
@@ -628,7 +626,7 @@
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Quote Request →';
       var alertBox = document.getElementById('q-alert');
-      alertBox.textContent = 'Something went wrong. Please try again or use the contact form.';
+      alertBox.textContent = 'Your request could not be sent. Please try again in a moment, or use the contact form.';
       alertBox.classList.add('on');
     });
   }

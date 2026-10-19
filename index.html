@@ -32,6 +32,43 @@
   </script>
   <style>
     /* ── Home-specific (everything below the door-story hero) ── */
+    /* ── Signature rail ── */
+    .rail { background: var(--charcoal); color: var(--cream); overflow: hidden; }
+    .rail-pin { position: relative; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: clamp(56px, 8vh, 96px) 0; }
+    .rail-bg { position: absolute; left: 0; top: 50%; transform: translateY(-50%); pointer-events: none; white-space: nowrap; }
+    .rail-bg span { font-family: var(--serif); font-style: italic; font-size: clamp(14rem, 42vw, 40rem); line-height: 0.8; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.07); display: inline-block; will-change: transform; }
+    .rail-head { position: relative; margin-bottom: clamp(28px, 4vh, 48px); }
+    .rail-head h2 { color: var(--cream); font-size: clamp(2rem, 4vw, 3.6rem); }
+    .rail-head h2 em { font-style: italic; color: var(--gold); }
+    .rail-track { position: relative; display: flex; gap: clamp(14px, 2vw, 28px); padding: 0 max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter))); will-change: transform; }
+    .rail-card { position: relative; flex: 0 0 auto; width: clamp(260px, 30vw, 440px); color: inherit; display: block; }
+    .rail-img { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 3px; background: #1a1714; box-shadow: 0 30px 60px rgba(0,0,0,0.35); }
+    .rail-img img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.12); will-change: transform; transition: transform 1.2s var(--ease-out); }
+    .rail-card:hover .rail-img img { transform: scale(1.04); }
+    .rail-cap { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: baseline; padding-top: 16px; }
+    .rail-num { font-family: var(--serif); font-size: 0.9rem; color: var(--gold); grid-row: 1 / 3; align-self: start; padding-top: 4px; }
+    .rail-kicker { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+    .rail-cap h3 { font-size: clamp(1.25rem, 1.9vw, 1.7rem); color: var(--cream); margin: 2px 0 6px; grid-column: 2; }
+    .rail-link { grid-column: 2; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); opacity: 0; transform: translateX(-8px); transition: opacity 0.3s, transform 0.4s var(--ease-out); }
+    .rail-card:hover .rail-link, .rail-card:focus-visible .rail-link { opacity: 1; transform: none; }
+    .rail-end { width: clamp(300px, 34vw, 520px); display: flex; align-items: center; }
+    .rail-end .rail-cap { grid-template-columns: 1fr; padding: 0 0 0 clamp(12px, 3vw, 40px); border-left: 1px solid rgba(255,255,255,0.12); }
+    .rail-end .rail-cap > * { grid-column: 1; }
+    .rail-end .btn { justify-self: start; }
+    .rail-end h3 { font-size: clamp(1.8rem, 3vw, 2.8rem); margin: 8px 0 20px; }
+    .rail-progress { position: relative; margin: clamp(28px, 4vh, 48px) max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter))) 0; height: 1px; background: rgba(255,255,255,0.12); }
+    .rail-progress i { display: block; height: 100%; width: 100%; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; }
+    .rail-pin.is-pinned .rail-progress { position: absolute; left: 0; right: 0; bottom: clamp(28px, 5vh, 56px); margin: 0 max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter))); }
+    @media (max-width: 900px), (hover: none) {
+      .rail-pin { min-height: 0; }
+      .rail-track { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 8px; }
+      .rail-track::-webkit-scrollbar { display: none; }
+      .rail-card { scroll-snap-align: start; width: min(78vw, 360px); }
+      .rail-img img { transform: none; }
+      .rail-link { opacity: 1; transform: none; }
+      .rail-bg span { font-size: 38vw; }
+    }
+
 
     /* Marquee: drifts on its own, speeds up and leans with scroll velocity */
     .marquee-wrap { overflow: hidden; background: var(--gold); padding: 14px 0; }
@@ -359,6 +396,48 @@
     </div>
   </div>
 
+
+  <!-- SIGNATURE RAIL: pinned horizontal scroll on desktop, swipe on phones -->
+  <section class="rail" id="signature" aria-label="Signature doors">
+    <div class="rail-pin">
+      <div class="rail-bg" aria-hidden="true"><span>Doors</span></div>
+      <div class="rail-head container">
+        <div class="label">Signature Work</div>
+        <h2>Six ways to <em>walk in.</em></h2>
+      </div>
+      <div class="rail-track">
+        <a href="doors/exterior-doors.html" class="rail-card" data-morph>
+          <figure class="rail-img"><img src="images/pages/core/door-exterior-grand.jpg" alt="Carved double entry with ironwork glass" loading="lazy" /></figure>
+          <div class="rail-cap"><span class="rail-num">01</span><span class="rail-kicker">Exterior</span><h3>Grand Entry</h3><span class="rail-link">Explore →</span></div>
+        </a>
+        <a href="doors/interior-doors.html" class="rail-card" data-morph>
+          <figure class="rail-img"><img src="images/pages/core/door-raised-panel.jpg" alt="White raised-panel double interior doors" loading="lazy" /></figure>
+          <div class="rail-cap"><span class="rail-num">02</span><span class="rail-kicker">Interior</span><h3>Raised Panel</h3><span class="rail-link">Explore →</span></div>
+        </a>
+        <a href="doors/french-doors.html" class="rail-card" data-morph>
+          <figure class="rail-img"><img src="images/pages/core/door-french.jpg" alt="French door open onto a sunlit balcony" loading="lazy" /></figure>
+          <div class="rail-cap"><span class="rail-num">03</span><span class="rail-kicker">French</span><h3>Glass & Light</h3><span class="rail-link">Explore →</span></div>
+        </a>
+        <a href="doors/barn-doors.html" class="rail-card" data-morph>
+          <figure class="rail-img"><img src="images/pages/core/door-barn-reclaimed.jpg" alt="Reclaimed-wood barn doors with iron strap hinges" loading="lazy" /></figure>
+          <div class="rail-cap"><span class="rail-num">04</span><span class="rail-kicker">Barn</span><h3>Sliding</h3><span class="rail-link">Explore →</span></div>
+        </a>
+        <a href="doors/custom-doors.html" class="rail-card" data-morph>
+          <figure class="rail-img"><img src="images/pages/core/door-custom.jpg" alt="Carved custom double doors in warm sunlight" loading="lazy" /></figure>
+          <div class="rail-cap"><span class="rail-num">05</span><span class="rail-kicker">Custom</span><h3>To Your Drawings</h3><span class="rail-link">Explore →</span></div>
+        </a>
+        <a href="doors/fire-rated-doors.html" class="rail-card" data-morph>
+          <figure class="rail-img"><img src="images/pages/core/door-fire-rated.jpg" alt="Hotel corridor lined with fire-rated wood doors" loading="lazy" /></figure>
+          <div class="rail-cap"><span class="rail-num">06</span><span class="rail-kicker">Fire-Rated</span><h3>Code-Compliant</h3><span class="rail-link">Explore →</span></div>
+        </a>
+        <a href="quote.html" class="rail-card rail-end" data-no-motion>
+          <div class="rail-cap"><span class="rail-kicker">Your project</span><h3>Built to your drawings.</h3><span class="btn btn-gold">Get a Custom Quote →</span></div>
+        </a>
+      </div>
+      <div class="rail-progress" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+
   <!-- FEATURE STRIP -->
   <div class="container">
     <div class="feature-strip" style="margin:0;">
@@ -662,6 +741,52 @@
 </div><!-- /page-content -->
 <script src="shared/nav.js"></script>
 <script src="shared/door-story.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+<script>
+/* Signature rail: pinned horizontal scroll (desktop pointer devices only) */
+(function () {
+  var rail = document.getElementById('signature');
+  if (!rail) return;
+  var pin = rail.querySelector('.rail-pin'), track = rail.querySelector('.rail-track');
+  var bg = rail.querySelector('.rail-bg span'), prog = rail.querySelector('.rail-progress i');
+  var canPin = window.matchMedia('(min-width: 901px) and (hover: hover)').matches && !(window.Motion && Motion.reduced);
+  function syncLenis() {
+    if (!window.lenis || !window.ScrollTrigger) return;
+    window.lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.lagSmoothing(0);
+  }
+  function build() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger);
+    syncLenis();
+    document.addEventListener('lenis:ready', syncLenis);
+    if (!canPin) {
+      // Phones: native swipe; just drive the progress line from the track's scroll
+      track.addEventListener('scroll', function () {
+        var p = track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth);
+        prog.style.transform = 'scaleX(' + p.toFixed(3) + ')';
+      }, { passive: true });
+      return;
+    }
+    pin.classList.add('is-pinned');
+    var dist = function () { return track.scrollWidth - window.innerWidth + 40; };
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: rail, start: 'top top', end: function () { return '+=' + (dist() + window.innerHeight * 0.4); },
+        pin: pin, scrub: 1.1, anticipatePin: 1, invalidateOnRefresh: true,
+        onUpdate: function (st) { prog.style.transform = 'scaleX(' + st.progress.toFixed(3) + ')'; }
+      }
+    });
+    tl.to(track, { x: function () { return -dist(); }, ease: 'none' }, 0)
+      .to(bg, { x: function () { return -dist() * 0.35; }, ease: 'none' }, 0)
+      .fromTo(rail.querySelectorAll('.rail-img img'), { xPercent: -6 }, { xPercent: 6, ease: 'none' }, 0);
+    window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+  }
+  if (window.gsap && window.ScrollTrigger) build();
+  else window.addEventListener('DOMContentLoaded', function () { setTimeout(build, 0); });
+})();
+</script>
 <script>
 (function () {
   var reduced = (window.Motion && Motion.reduced) || window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -81,39 +81,36 @@
 
   /* ─── MOBILE NAV ─── */
   const mobileHTML = `
-<div id="mobile-nav" style="display:none;position:fixed;inset:0;z-index:1100;background:var(--charcoal);overflow-y:auto;padding:24px var(--gutter,24px) 48px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
-    <a href="${base}index.html" style="font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--cream);">Solid Doors &amp; Moldings</a>
-    <button id="mobile-nav-close" style="color:var(--cream);background:none;border:none;cursor:pointer;">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="2" x2="20" y2="20"/><line x1="20" y1="2" x2="2" y2="20"/></svg>
-    </button>
+<div id="mobile-nav" aria-hidden="true">
+  <div class="mm-head">
+    <a href="${base}index.html" class="mm-logo">Solid Doors &amp; Moldings</a>
+    <button id="mobile-nav-close" class="mm-close" aria-label="Close menu"><span></span><span></span></button>
   </div>
-  <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Doors</div>
-  <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:28px;">
-    <a href="${base}doors/interior-doors.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Interior Doors</a>
-    <a href="${base}doors/exterior-doors.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Exterior Doors</a>
-    <a href="${base}doors/french-doors.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">French Doors</a>
-    <a href="${base}doors/barn-doors.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Barn Doors</a>
-    <a href="${base}doors/custom-doors.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Custom Doors</a>
-    <a href="${base}doors/fire-rated-doors.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;">Fire-Rated Doors</a>
+  <nav class="mm-body" aria-label="Mobile">
+    <ul class="mm-list">
+    <li class="mm-item" style="--i:0">
+      <button type="button" class="mm-link mm-toggle" aria-expanded="false" aria-controls="mm-sub-0"><span>Doors</span><i aria-hidden="true"></i></button>
+      <ul class="mm-sub" id="mm-sub-0" hidden><li><a href="${base}doors/interior-doors.html">Interior</a></li><li><a href="${base}doors/exterior-doors.html">Exterior</a></li><li><a href="${base}doors/french-doors.html">French</a></li><li><a href="${base}doors/barn-doors.html">Barn</a></li><li><a href="${base}doors/custom-doors.html">Custom</a></li><li><a href="${base}doors/fire-rated-doors.html">Fire-Rated</a></li></ul>
+    </li>
+    <li class="mm-item" style="--i:1">
+      <button type="button" class="mm-link mm-toggle" aria-expanded="false" aria-controls="mm-sub-1"><span>Moldings</span><i aria-hidden="true"></i></button>
+      <ul class="mm-sub" id="mm-sub-1" hidden><li><a href="${base}moldings/crown-molding.html">Crown</a></li><li><a href="${base}moldings/base-molding.html">Base</a></li><li><a href="${base}moldings/casing.html">Casing</a></li><li><a href="${base}moldings/chair-rail.html">Chair Rail</a></li><li><a href="${base}moldings/panel-molding.html">Panel</a></li><li><a href="${base}moldings/wainscoting.html">Wainscoting</a></li></ul>
+    </li>
+    <li class="mm-item" style="--i:2">
+      <button type="button" class="mm-link mm-toggle" aria-expanded="false" aria-controls="mm-sub-2"><span>Industries</span><i aria-hidden="true"></i></button>
+      <ul class="mm-sub" id="mm-sub-2" hidden><li><a href="${base}industries/hotels.html">Hotels</a></li><li><a href="${base}industries/commercial.html">Commercial</a></li><li><a href="${base}industries/contractors.html">Contractors</a></li><li><a href="${base}industries/designers.html">Designers</a></li></ul>
+    </li>
+    <li class="mm-item" style="--i:3"><a class="mm-link" href="${base}hardware.html"><span>Hardware</span></a></li>
+    <li class="mm-item" style="--i:4"><a class="mm-link" href="${base}finishes.html"><span>Finishes</span></a></li>
+    <li class="mm-item" style="--i:5"><a class="mm-link" href="${base}about.html"><span>About</span></a></li>
+    <li class="mm-item" style="--i:6"><a class="mm-link" href="${base}faq.html"><span>FAQ</span></a></li>
+    <li class="mm-item" style="--i:7"><a class="mm-link" href="${base}contact.html"><span>Contact</span></a></li>
+    </ul>
+  </nav>
+  <div class="mm-foot" style="--i:9">
+    <a href="${base}quote.html" class="mm-cta">Get a Quote →</a>
+    <div class="mm-addr">829 E New York Ave, Brooklyn, NY · by appointment</div>
   </div>
-  <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Moldings</div>
-  <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:28px;">
-    <a href="${base}moldings/crown-molding.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Crown Molding</a>
-    <a href="${base}moldings/base-molding.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Base Molding</a>
-    <a href="${base}moldings/casing.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Casing</a>
-    <a href="${base}moldings/chair-rail.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Chair Rail</a>
-    <a href="${base}moldings/panel-molding.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">Panel Molding</a>
-    <a href="${base}moldings/wainscoting.html" style="font-size:1rem;color:rgba(255,255,255,0.80);padding:10px 0;">Wainscoting</a>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">
-    <a href="${base}hardware.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">Hardware</a>
-    <a href="${base}finishes.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">Finishes Guide</a>
-    <a href="${base}faq.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">FAQ</a>
-    <a href="${base}about.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">About</a>
-    <a href="${base}contact.html" style="font-size:1rem;color:rgba(255,255,255,0.80);">Contact</a>
-  </div>
-  <a href="${base}quote.html" style="display:block;background:var(--gold);color:var(--charcoal);text-align:center;padding:16px;font-weight:700;border-radius:2px;font-size:0.95rem;">Get a Quote →</a>
 </div>`;
 
   /* ─── FOOTER ─── */
@@ -212,17 +209,41 @@
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 30);
   });
 
-  // Hamburger / close
+  // Mobile menu: open/close with a staggered reveal, lock scroll, Esc to close
+  var mm = document.getElementById('mobile-nav');
+  var mmBtn = document.getElementById('nav-hamburger');
+  function openMenu() {
+    if (!mm) return;
+    mm.classList.add('open'); mm.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('menu-open');
+    if (mmBtn) mmBtn.setAttribute('aria-expanded', 'true');
+    if (window.lenis) window.lenis.stop();
+    var first = mm.querySelector('.mm-link'); if (first) setTimeout(function () { first.focus(); }, 350);
+  }
+  function closeMenu() {
+    if (!mm || !mm.classList.contains('open')) return;
+    mm.classList.remove('open'); mm.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('menu-open');
+    if (mmBtn) { mmBtn.setAttribute('aria-expanded', 'false'); mmBtn.focus(); }
+    if (window.lenis) window.lenis.start();
+  }
+  if (mmBtn) mmBtn.setAttribute('aria-expanded', 'false');
   document.addEventListener('click', function (e) {
-    if (e.target.closest('#nav-hamburger')) {
-      var mn = document.getElementById('mobile-nav');
-      if (mn) mn.style.display = 'block';
+    if (e.target.closest('#nav-hamburger')) openMenu();
+    else if (e.target.closest('#mobile-nav-close')) closeMenu();
+    else if (e.target.closest('.mm-toggle')) {
+      var t = e.target.closest('.mm-toggle'), sub = document.getElementById(t.getAttribute('aria-controls'));
+      var open = t.getAttribute('aria-expanded') === 'true';
+      mm.querySelectorAll('.mm-toggle[aria-expanded="true"]').forEach(function (o) {
+        if (o !== t) { o.setAttribute('aria-expanded', 'false'); var s = document.getElementById(o.getAttribute('aria-controls')); if (s) s.hidden = true; }
+      });
+      t.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (sub) sub.hidden = open;
     }
-    if (e.target.closest('#mobile-nav-close')) {
-      var mn = document.getElementById('mobile-nav');
-      if (mn) mn.style.display = 'none';
-    }
+    else if (mm && mm.classList.contains('open') && e.target.closest('#mobile-nav a')) closeMenu();
   });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+  window.addEventListener('pageshow', function () { closeMenu(); });
 
   // FAQ accordion (runs on FAQ page)
   document.querySelectorAll('.faq-question').forEach(function (btn) {

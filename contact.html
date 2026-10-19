@@ -173,6 +173,7 @@
           </div>
 
           <form id="contact-form" novalidate>
+            <input type="text" id="c-honey" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
             <div class="form-row">
               <div class="form-group fl">
                 <input class="form-input" type="text" id="fname" name="fname" required placeholder=" " autocomplete="given-name" aria-describedby="fname-err" />
@@ -247,6 +248,7 @@
 
 </div>
 <script src="shared/nav.js"></script>
+<script src="shared/forms.js"></script>
 <script>
   (function () {
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -333,21 +335,17 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="c-spin" aria-hidden="true"></span> Sending…';
 
-    fetch('https://formsubmit.co/ajax/ari@doorsandmoldings.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
+    SDM.sendForm('https://formsubmit.co/ajax/ari@doorsandmoldings.com', {
         name: fname + ' ' + lname,
         email: email,
         phone: document.getElementById('phone').value.trim(),
         role: document.getElementById('role').value,
         interest: document.getElementById('interest').value,
         message: msg,
+        _honey: (document.getElementById('c-honey') || {}).value || '',
         _subject: 'Website Inquiry — Solid Doors & Moldings',
         _template: 'table'
-      })
-    })
-    .then(function(r) { return r.json(); })
+      }, { onSlow: function () { btn.innerHTML = '<span class="c-spin" aria-hidden="true"></span> Still sending — this can take up to a minute…'; } })
     .then(function() {
       document.getElementById('contact-form').style.display = 'none';
       var ok = document.getElementById('success-msg');
@@ -359,7 +357,7 @@
       btn.disabled = false;
       btn.textContent = 'Send Message →';
       var box = document.getElementById('c-alert');
-      box.textContent = 'Something went wrong. Please try again or use our contact form.';
+      box.textContent = 'Your message could not be sent. Please try again in a moment.';
       box.classList.add('on');
     });
   });
