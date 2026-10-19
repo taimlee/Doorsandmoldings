@@ -1,6 +1,7 @@
 /* ===================================================
    SOLID DOORS & MOLDINGS — Door Story (scroll-driven homepage hero)
-   One pinned stage; shared/door-story.js maps scroll position to scenes.
+   Real footage and photography in a pinned stage; shared/door-story.js
+   maps scroll position to scenes.
    =================================================== */
 
 .door-story {
@@ -8,7 +9,7 @@
   background: var(--charcoal);
   color: var(--cream);
 }
-.door-story.ds-js { height: 760vh; height: 760svh; }
+.door-story.ds-js { height: 820vh; height: 820svh; }
 
 .ds-stage {
   position: sticky; top: var(--nav-h);
@@ -16,229 +17,90 @@
   height: calc(100svh - var(--nav-h));
   overflow: hidden;
   isolation: isolate;
-  --dh: min(calc((100vh - var(--nav-h)) * 0.66), 760px);
-  --dh: min(calc((100svh - var(--nav-h)) * 0.66), 760px);
-  --dw: calc(var(--dh) / 2.2);
 }
 .door-story:not(.ds-js) .ds-stage { position: relative; top: 0; }
 
-/* ─── Background layers ─── */
-.ds-bg { position: absolute; inset: 0; pointer-events: none; }
-.ds-bg-base {
-  background:
-    radial-gradient(ellipse 60% 70% at 66% 52%, oklch(24% 0.022 62) 0%, transparent 70%),
-    var(--charcoal);
-}
-.ds-bg-lumber {
-  background:
-    linear-gradient(rgba(20,17,14,0.72), rgba(20,17,14,0.88)),
-    url(../images/story/workshop-lumber.jpg) center / cover no-repeat;
-  opacity: 0;
-}
-.ds-bg-wall {
-  background:
-    linear-gradient(to bottom, oklch(20% 0.016 62) 0%, oklch(25% 0.020 62) 55%, oklch(19% 0.014 62) 100%);
-  opacity: 0;
-}
-.ds-bg-room {
-  background: url(../images/story/room-hotel-lobby.jpg) center / cover no-repeat;
-  opacity: 0;
-}
-.ds-bg-shade {
-  background: linear-gradient(to right, rgba(20,17,14,0.88) 0%, rgba(20,17,14,0.55) 45%, rgba(20,17,14,0.10) 100%);
-  opacity: 0;
-}
-
-/* ─── World (door + millwork) ─── */
-.ds-world {
+/* Ambient backdrop: a blurred, darkened echo of whatever is in the frame */
+.ds-ambient { position: absolute; inset: -60px; pointer-events: none; }
+.ds-ambient div {
   position: absolute; inset: 0;
-  animation: ds-enter 1.4s var(--ease-out) both;
-  transform-origin: 66% 52%;
+  background-size: cover; background-position: center;
+  filter: blur(48px) saturate(1.1) brightness(0.32);
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-out);
 }
-@keyframes ds-enter {
-  from { opacity: 0; transform: scale(0.96) translateY(12px); }
-  to   { opacity: 1; transform: none; }
+.ds-ambient div.on { opacity: 1; }
+.ds-vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 90% at 68% 50%, rgba(20,17,14,0) 0%, rgba(20,17,14,0.55) 70%, rgba(20,17,14,0.9) 100%),
+    linear-gradient(to right, rgba(20,17,14,0.85) 0%, rgba(20,17,14,0.2) 50%, rgba(20,17,14,0) 100%);
 }
 
+/* The frame: a tall window onto real footage */
 .ds-frame {
   position: absolute;
-  width: var(--dw); height: var(--dh);
-  left: calc(66% - var(--dw) / 2);
-  top: calc(52% - var(--dh) / 2);
-  transform-origin: 0 0;
-  perspective: 1800px;
-  will-change: transform;
+  height: min(76%, 820px);
+  aspect-ratio: 0.69;
+  right: max(calc(var(--gutter) + 96px), calc((100vw - var(--max-w)) / 2 + var(--gutter) + 96px));
+  top: 50%; transform: translateY(-50%);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #0d0b09;
+  box-shadow: 0 40px 90px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+  animation: ds-enter 1.4s var(--ease-out) both;
 }
+@keyframes ds-enter {
+  from { opacity: 0; transform: translateY(calc(-50% + 30px)) scale(0.97); }
+  to   { opacity: 1; transform: translateY(-50%); }
+}
+.ds-frame::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 20;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), inset 0 -120px 120px -60px rgba(0,0,0,0.45);
+}
+.ds-slide {
+  position: absolute; inset: 0;
+  clip-path: inset(0 50% 0 50%);
+  will-change: clip-path, transform;
+}
+.ds-slide[data-scene="0"] { clip-path: none; }
+.ds-slide video, .ds-slide img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.ds-slide .ds-media { position: absolute; inset: 0; will-change: transform; }
+.ds-sub { position: absolute; inset: 0; clip-path: inset(0 100% 0 0); }
+.ds-sub:first-child { clip-path: none; }
+.ds-sub::after { /* sliding-door edge */
+  content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 2px;
+  background: var(--gold); opacity: var(--edge, 0);
+}
+.ds-tag {
+  position: absolute; left: 18px; bottom: 16px; z-index: 21;
+  font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  display: flex; align-items: center; gap: 10px;
+}
+.ds-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.25); }
 
-.ds-glow {
-  position: absolute; left: 50%; top: 50%;
-  width: 360%; height: 170%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse at center, rgba(255,196,120,0.30) 0%, rgba(255,170,90,0.08) 35%, transparent 65%);
-  opacity: 0.25;
+/* Final scene: the frame opens up to the whole screen */
+.ds-full {
+  position: absolute; inset: 0; z-index: 1;
+  clip-path: inset(50% 50% 50% 50%);
   pointer-events: none;
 }
-
-/* Crown + base run the full width of the wall */
-.ds-crown, .ds-base {
-  position: absolute; left: -400%; width: 900%;
-  transform: scaleX(0);
-  transform-origin: 50% 50%;
-}
-.ds-crown {
-  top: calc(var(--dh) * -0.19);
-  height: calc(var(--dh) * 0.055);
-  background: linear-gradient(to bottom,
-    oklch(90% 0.012 80) 0%, oklch(96% 0.010 80) 14%,
-    oklch(80% 0.014 78) 16%, oklch(93% 0.010 80) 34%,
-    oklch(70% 0.016 76) 52%, oklch(88% 0.012 80) 62%,
-    oklch(95% 0.010 80) 82%, oklch(62% 0.018 74) 100%);
-  box-shadow: 0 10px 18px rgba(0,0,0,0.35);
-}
-.ds-base {
-  bottom: 0;
-  height: calc(var(--dh) * 0.07);
-  background: linear-gradient(to bottom,
-    oklch(70% 0.016 76) 0%, oklch(95% 0.010 80) 10%,
-    oklch(88% 0.012 80) 22%, oklch(93% 0.010 80) 26%, oklch(90% 0.012 80) 100%);
-  box-shadow: 0 -3px 10px rgba(0,0,0,0.25);
-}
-.ds-floor {
-  position: absolute; left: -400%; width: 900%; top: 100%; height: 1px;
-  background: rgba(255,255,255,0.08);
-}
-.ds-spill {
-  position: absolute; top: 100%; left: -60%; width: 220%; height: calc(var(--dh) * 0.35);
-  background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(255,200,130,0.35) 0%, transparent 70%);
-  opacity: 0; pointer-events: none;
-}
-
-/* The opening behind the door */
-.ds-opening {
-  position: absolute; inset: 0; overflow: hidden;
-  background: #0c0a08;
-}
-.ds-opening-img {
-  position: absolute; inset: 0;
-  background: url(../images/story/room-hotel-lobby.jpg) center / auto 100% no-repeat;
-  transform: scale(1.2);
-}
-.ds-opening::after {
+.ds-full img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ds-full::after {
   content: ''; position: absolute; inset: 0;
-  box-shadow: inset 0 0 calc(var(--dw) * 0.15) rgba(0,0,0,0.7);
-}
-
-/* Casing (SVG, door units: 100 wide × 220 tall) */
-.ds-casing {
-  position: absolute;
-  left: -40%; top: calc(-36 / 220 * 100%);
-  width: 180%; height: calc(262 / 220 * 100%);
-  overflow: visible; pointer-events: none;
-}
-.ds-casing-draw path {
-  fill: none; stroke: var(--gold); stroke-width: 0.6;
-  stroke-dasharray: 1 1; stroke-dashoffset: 1;
-}
-.ds-casing-draw path.fine { stroke-width: 0.35; opacity: 0.6; }
-.ds-casing-fill { opacity: 0; }
-
-/* ─── The door ─── */
-.ds-door {
-  position: absolute; inset: 0;
-  transform-origin: 0 50%;
-  transform-style: preserve-3d;
-  will-change: transform;
-  --joint: 1;
-  --mix: 0;
-}
-.ds-piece {
-  position: absolute;
-  backface-visibility: hidden;
-}
-.ds-piece > .wa, .ds-piece > .wb {
-  position: absolute; inset: 0;
-  background-image: var(--wa);
-  background-size: auto var(--dh);
-  background-repeat: repeat;
-  background-position: calc(var(--px, 0px) * -1) calc(var(--py, 0px) * -1);
-}
-.ds-piece > .wb { background-image: var(--wb); opacity: var(--mix); }
-.ds-piece::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.30), inset 1px 1px 0 rgba(255,236,205,0.07);
-  opacity: var(--joint);
-}
-.ds-slab::after {
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45), inset 0 0 calc(var(--dw) * 0.12) rgba(0,0,0,0.25);
-  opacity: 1;
-}
-.ds-panel::after {
-  box-shadow:
-    inset 0 0 0 1px rgba(0,0,0,0.45),
-    inset calc(var(--dw) * 0.016) calc(var(--dw) * 0.016) 0 rgba(0,0,0,0.30),
-    inset calc(var(--dw) * -0.010) calc(var(--dw) * -0.010) 0 rgba(255,236,205,0.10),
-    inset 0 0 calc(var(--dw) * 0.06) rgba(0,0,0,0.35);
-}
-.ds-panel .bevel {
-  position: absolute; inset: calc(var(--dw) * 0.045);
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,0.22),
-    calc(var(--dw) * -0.006) calc(var(--dw) * -0.006) 0 rgba(255,236,205,0.10),
-    calc(var(--dw) * 0.008) calc(var(--dw) * 0.008) calc(var(--dw) * 0.02) rgba(0,0,0,0.30);
-  opacity: var(--raise, 1);
-}
-.ds-panel .glass {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(125deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,0.07) 58%, rgba(255,255,255,0) 68%),
-    url(../images/story/room-hotel-lobby.jpg);
-  background-repeat: no-repeat;
-  background-size: 100% 100%, var(--gw, 300px) var(--gh, 600px);
-  background-position: 0 0, var(--gx, 0px) var(--gy, 0px);
-  opacity: var(--glass, 0);
-}
-.ds-door-light {
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(100deg, rgba(255,240,220,0.10) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.30) 100%);
-}
-.ds-underglow {
-  position: absolute; left: 6%; right: 6%; bottom: -1px; height: 2px;
-  background: linear-gradient(to right, transparent, rgba(255,205,140,0.95), transparent);
-  box-shadow: 0 0 14px 3px rgba(255,190,110,0.45);
-  opacity: 0.8;
-}
-
-/* Lever */
-.ds-lever {
-  position: absolute; left: 92%; top: 49%; width: 0; height: 0;
-  opacity: 0;
-  --press: 0deg;
-}
-.ds-lever .bar {
-  position: absolute;
-  width: calc(var(--dw) * 0.30); height: calc(var(--dw) * 0.036);
-  left: calc(var(--dw) * -0.30); top: calc(var(--dw) * -0.018);
-  border-radius: 999px;
-  background: linear-gradient(to bottom, #f4d892 0%, #c8973a 45%, #8a611c 100%);
-  box-shadow: 0 calc(var(--dw) * 0.012) calc(var(--dw) * 0.02) rgba(0,0,0,0.5);
-  transform-origin: 100% 50%;
-  transform: rotate(var(--press));
-}
-.ds-lever .rose {
-  position: absolute;
-  width: calc(var(--dw) * 0.095); height: calc(var(--dw) * 0.095);
-  left: calc(var(--dw) * -0.0475); top: calc(var(--dw) * -0.0475);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fbe7b0 0%, #c8973a 50%, #6e4a14 100%);
-  box-shadow: 0 calc(var(--dw) * 0.01) calc(var(--dw) * 0.025) rgba(0,0,0,0.55);
+  background: linear-gradient(to right, rgba(20,17,14,0.88) 0%, rgba(20,17,14,0.55) 45%, rgba(20,17,14,0.15) 100%);
 }
 
 /* ─── Captions ─── */
 .ds-caps {
-  position: absolute;
+  position: absolute; z-index: 2;
   left: max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter)));
   top: 0; bottom: 0;
-  width: min(440px, 38vw);
+  width: min(460px, 40vw);
   pointer-events: none;
 }
 .ds-cap {
@@ -268,11 +130,11 @@
   line-height: 1.1; margin-bottom: 18px;
 }
 .ds-cap p {
-  color: rgba(255,255,255,0.62);
+  color: rgba(255,255,255,0.66);
   font-size: clamp(0.98rem, 1.3vw, 1.1rem);
   margin-bottom: 22px;
 }
-.ds-cap .lead { color: rgba(255,255,255,0.58); max-width: 440px; margin-bottom: 36px; }
+.ds-cap .lead { color: rgba(255,255,255,0.62); max-width: 440px; margin-bottom: 36px; }
 .ds-link {
   font-size: 0.80rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--gold); transition: color 0.2s;
@@ -285,7 +147,7 @@
   margin-top: 56px;
   display: flex; align-items: center; gap: 12px;
   font-size: 0.75rem; letter-spacing: 0.10em; text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.40);
 }
 .hero-scroll-hint::before {
   content: ''; display: block; width: 1px; height: 48px;
@@ -295,7 +157,7 @@
 }
 @keyframes ds-hint { from { background-position: 0 100%; } to { background-position: 0 -100%; } }
 
-/* Swapping word (species / style) */
+/* Swapping word (species / style / molding) */
 .ds-swap {
   position: relative; height: 1.25em;
   font-family: var(--serif); font-style: italic;
@@ -309,24 +171,20 @@
 }
 .ds-swap span.on { opacity: 1; transform: none; }
 
-.ds-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-.ds-chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 6px 12px 6px 6px; border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.55);
-  transition: all 0.25s var(--ease-out);
+.ds-count {
+  display: flex; gap: 6px; margin-bottom: 22px;
 }
-.ds-chip.no-sw { padding-left: 12px; }
-.ds-chip i {
-  width: 18px; height: 18px; border-radius: 50%;
-  background-size: cover; background-position: center;
+.ds-count i {
+  width: 28px; height: 2px; background: rgba(255,255,255,0.18); position: relative; overflow: hidden;
 }
-.ds-chip.on { border-color: var(--gold); color: var(--cream); background: rgba(180,130,50,0.14); }
+.ds-count i::after {
+  content: ''; position: absolute; inset: 0; background: var(--gold);
+  transform: scaleX(var(--f, 0)); transform-origin: 0 50%;
+}
 
 /* ─── Scene rail ─── */
 .ds-rail {
-  position: absolute; top: 50%; transform: translateY(-50%);
+  position: absolute; z-index: 3; top: 50%; transform: translateY(-50%);
   right: max(20px, calc(var(--gutter) / 2));
   display: flex; flex-direction: column; gap: 6px;
 }
@@ -351,7 +209,7 @@
 .door-story:not(.ds-js) .ds-rail { display: none; }
 
 .ds-progress {
-  position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  position: absolute; z-index: 3; left: 0; right: 0; top: 0; height: 2px;
   background: rgba(255,255,255,0.06);
 }
 .ds-progress span {
@@ -360,41 +218,40 @@
 }
 
 /* ─── Mobile / tablet ─── */
-@media (max-width: 900px) {
-  .ds-stage {
-    --dh: min(calc((100vh - var(--nav-h)) * 0.42), 110vw);
-    --dh: min(calc((100svh - var(--nav-h)) * 0.42), 110vw);
-  }
-  .ds-world { transform-origin: 50% 30%; }
+@media (max-width: 1100px) {
+  .ds-frame { right: max(var(--gutter), 64px); height: min(70%, 720px); }
+  .ds-caps { width: min(400px, 40vw); }
+}
+@media (max-width: 860px) {
   .ds-frame {
-    left: calc(50% - var(--dw) / 2);
-    top: calc(var(--dh) * 0.22 + 8px);
+    left: 16px; right: 16px; top: 14px; height: 50%;
+    aspect-ratio: auto; transform: none;
+    animation-name: ds-enter-sm;
   }
+  @keyframes ds-enter-sm { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .ds-vignette { background: linear-gradient(to top, rgba(20,17,14,0.95) 0%, rgba(20,17,14,0.6) 45%, rgba(20,17,14,0.2) 100%); }
   .ds-caps {
     left: var(--gutter); right: var(--gutter); width: auto;
-    top: auto; bottom: 0; height: 52%;
+    top: auto; bottom: 0; height: 48%;
   }
-  .ds-cap {
-    top: auto; bottom: 28px; transform: translateY(var(--cy, 0px));
-    text-align: center;
-  }
+  .ds-cap { top: auto; bottom: 24px; transform: translateY(var(--cy, 0px)); text-align: center; }
   .ds-cap-num { justify-content: center; margin-bottom: 10px; }
   .ds-cap-num::before { display: none; }
-  .ds-cap h1 { font-size: clamp(2.1rem, 9vw, 3rem); margin-bottom: 14px; }
+  .ds-cap h1 { font-size: clamp(2.1rem, 9vw, 3rem); margin-bottom: 12px; }
   .ds-cap h2 { font-size: clamp(1.6rem, 6.6vw, 2.2rem); margin-bottom: 10px; }
   .ds-cap p { font-size: 0.92rem; margin-bottom: 14px; }
-  .ds-cap .lead { margin: 0 auto 20px; font-size: 0.95rem; }
+  .ds-cap .lead { margin: 0 auto 18px; font-size: 0.95rem; }
   .ds-cap .hide-sm, .hero-accent-line, .hero-scroll-hint { display: none; }
   .hero-ctas { justify-content: center; }
   .hero-ctas .btn { padding: 12px 20px; font-size: 0.84rem; }
   .ds-swap { font-size: 1.5rem; margin-bottom: 10px; }
   .ds-swap span { left: 50%; transform: translate(-50%, 0.4em); }
   .ds-swap span.on { transform: translate(-50%, 0); }
-  .ds-chips { justify-content: center; margin-bottom: 12px; }
+  .ds-count { justify-content: center; margin-bottom: 12px; }
   .ds-rail { display: none; }
-  .ds-bg-shade { background: linear-gradient(to top, rgba(20,17,14,0.92) 0%, rgba(20,17,14,0.55) 50%, rgba(20,17,14,0.15) 100%); }
+  .ds-full::after { background: linear-gradient(to top, rgba(20,17,14,0.92) 0%, rgba(20,17,14,0.55) 50%, rgba(20,17,14,0.15) 100%); }
 }
-@media (max-width: 900px) and (max-height: 700px) {
+@media (max-width: 860px) and (max-height: 700px) {
   .ds-cap .lead { display: none; }
 }
 
@@ -402,7 +259,7 @@
 @media (prefers-reduced-motion: reduce) {
   .door-story.ds-js { height: auto; }
   .door-story.ds-js .ds-stage { position: relative; top: 0; }
-  .ds-world { animation: none; }
+  .ds-frame { animation: none; }
   .ds-rail, .ds-progress { display: none; }
   .hero-scroll-hint::before { animation: none; }
 }

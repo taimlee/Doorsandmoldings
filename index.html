@@ -151,66 +151,53 @@
   <!-- HERO — scroll-driven door story (shared/door-story.js) -->
   <section class="door-story" id="door-story">
     <div class="ds-stage">
-      <div class="ds-bg ds-bg-base"></div>
-      <div class="ds-bg ds-bg-lumber"></div>
-      <div class="ds-bg ds-bg-wall"></div>
-      <div class="ds-bg ds-bg-room"></div>
-
-      <div class="ds-world" aria-hidden="true">
-        <div class="ds-frame">
-          <div class="ds-glow"></div>
-          <div class="ds-crown"></div>
-          <div class="ds-base"></div>
-          <div class="ds-floor"></div>
-          <div class="ds-spill"></div>
-          <div class="ds-opening"><div class="ds-opening-img"></div></div>
-          <svg class="ds-casing" viewBox="-40 -36 180 262" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="ds-leg" x1="0" x2="1" y1="0" y2="0">
-                <stop offset="0" stop-color="#d9d2c4"/><stop offset="0.25" stop-color="#f3eee4"/>
-                <stop offset="0.4" stop-color="#bdb4a3"/><stop offset="0.55" stop-color="#ece6da"/>
-                <stop offset="1" stop-color="#a59b88"/>
-              </linearGradient>
-              <linearGradient id="ds-head" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0" stop-color="#d9d2c4"/><stop offset="0.25" stop-color="#f3eee4"/>
-                <stop offset="0.4" stop-color="#bdb4a3"/><stop offset="0.55" stop-color="#ece6da"/>
-                <stop offset="1" stop-color="#a59b88"/>
-              </linearGradient>
-            </defs>
-            <g class="ds-casing-fill">
-              <rect x="-13" y="-13" width="13" height="233" fill="url(#ds-leg)"/>
-              <rect x="100" y="-13" width="13" height="233" fill="url(#ds-leg)"/>
-              <rect x="-13" y="-13" width="126" height="13" fill="url(#ds-head)"/>
-              <rect x="-16" y="-18" width="132" height="5" fill="#f1ebdf"/>
-            </g>
-            <g class="ds-casing-draw">
-              <path pathLength="1" d="M -13 220 V -13 H 113 V 220"/>
-              <path pathLength="1" d="M 0 220 V 0 H 100 V 220"/>
-              <path pathLength="1" class="fine" d="M -7 220 V -7 H 107 V 220"/>
-              <path pathLength="1" d="M -16 -13 V -18 H 116 V -13 Z"/>
-            </g>
-          </svg>
-          <div class="ds-door">
-            <div class="ds-piece ds-slab ds-fixed" data-rect="0,0" data-ex="0,0,-20" style="left:0;top:0;width:100%;height:100%"><i class="wa"></i><i class="wb"></i></div>
-            <div class="ds-piece ds-fixed" data-rect="0,0" data-ex="-0.32,0,20" style="left:0;top:0;width:14%;height:100%"><i class="wa"></i><i class="wb"></i></div>
-            <div class="ds-piece ds-fixed" data-rect="86,0" data-ex="0.32,0,20" style="left:86%;top:0;width:14%;height:100%"><i class="wa"></i><i class="wb"></i></div>
-            <div class="ds-piece ds-fixed" data-rect="14,0" data-ex="0,-0.10,40" style="left:14%;top:0;width:72%;height:7%"><i class="wa"></i><i class="wb"></i></div>
-            <div class="ds-piece ds-fixed" data-rect="14,46" data-ex="0,0,60" style="left:14%;top:46%;width:72%;height:6%"><i class="wa"></i><i class="wb"></i></div>
-            <div class="ds-piece ds-fixed" data-rect="14,88" data-ex="0,0.10,40" style="left:14%;top:88%;width:72%;height:12%"><i class="wa"></i><i class="wb"></i></div>
-            <div class="ds-piece ds-panel"><i class="wa"></i><i class="wb"></i><i class="glass"></i><i class="bevel"></i></div>
-            <div class="ds-piece ds-panel"><i class="wa"></i><i class="wb"></i><i class="glass"></i><i class="bevel"></i></div>
-            <div class="ds-piece ds-panel"><i class="wa"></i><i class="wb"></i><i class="glass"></i><i class="bevel"></i></div>
-            <div class="ds-piece ds-panel"><i class="wa"></i><i class="wb"></i><i class="glass"></i><i class="bevel"></i></div>
-            <div class="ds-piece ds-panel"><i class="wa"></i><i class="wb"></i><i class="glass"></i><i class="bevel"></i></div>
-            <div class="ds-piece ds-panel"><i class="wa"></i><i class="wb"></i><i class="glass"></i><i class="bevel"></i></div>
-            <div class="ds-door-light"></div>
-            <div class="ds-lever"><i class="bar"></i><i class="rose"></i></div>
-          </div>
-          <div class="ds-underglow"></div>
-        </div>
+      <div class="ds-ambient" aria-hidden="true">
+        <div class="on" style="background-image:url(images/story/clip-door.jpg)"></div>
+        <div style="background-image:url(images/story/clip-planing.jpg)"></div>
+        <div style="background-image:url(images/story/sp-walnut.jpg)"></div>
+        <div style="background-image:url(images/story/st-raised.jpg)"></div>
+        <div style="background-image:url(images/story/md-panel.jpg)"></div>
+        <div style="background-image:url(images/story/clip-hardware.jpg)"></div>
+        <div style="background-image:url(images/story/clip-shop.jpg)"></div>
+        <div style="background-image:url(images/story/room-hotel-lobby.jpg)"></div>
       </div>
+      <div class="ds-vignette" aria-hidden="true"></div>
 
-      <div class="ds-bg ds-bg-shade"></div>
+      <div class="ds-full" aria-hidden="true"><img src="images/story/room-hotel-lobby.jpg" alt="" loading="lazy" /></div>
+
+      <div class="ds-frame" aria-hidden="true">
+        <div class="ds-slide" data-scene="0">
+          <div class="ds-media"><video class="ds-scrub" src="images/story/clip-door.mp4" poster="images/story/clip-door.jpg" muted playsinline preload="auto"></video></div>
+        </div>
+        <div class="ds-slide" data-scene="1">
+          <div class="ds-media"><video src="images/story/clip-planing.mp4" poster="images/story/clip-planing.jpg" muted playsinline loop preload="none"></video></div>
+        </div>
+        <div class="ds-slide" data-scene="2">
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/sp-walnut.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/sp-mahogany.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/sp-maple.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/sp-alder.jpg" alt="" loading="lazy" /></div></div>
+        </div>
+        <div class="ds-slide" data-scene="3">
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/st-raised.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/st-french.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/st-pivot.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/st-entry.jpg" alt="" loading="lazy" /></div></div>
+        </div>
+        <div class="ds-slide" data-scene="4">
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/md-panel.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/md-crown.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/md-wainscot.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/md-coffered.jpg" alt="" loading="lazy" /></div></div>
+        </div>
+        <div class="ds-slide" data-scene="5">
+          <div class="ds-media"><video src="images/story/clip-hardware.mp4" poster="images/story/clip-hardware.jpg" muted playsinline loop preload="none" style="object-position:30% 50%"></video></div>
+        </div>
+        <div class="ds-slide" data-scene="6">
+          <div class="ds-media"><video src="images/story/clip-shop.mp4" poster="images/story/clip-shop.jpg" muted playsinline loop preload="none" style="object-position:22% 50%"></video></div>
+        </div>
+        <div class="ds-tag"><span class="ds-tag-text">Solid wood</span></div>
+      </div>
 
       <div class="ds-caps">
         <div class="ds-cap" data-cap="0">
@@ -234,17 +221,12 @@
           <div class="ds-cap-num">02 · Species</div>
           <h2>Choose the wood.</h2>
           <div class="ds-swap">
-            <span data-species-word class="on">Mahogany</span>
-            <span data-species-word>White Oak</span>
-            <span data-species-word>Cherry</span>
-            <span data-species-word>Walnut</span>
+            <span data-word class="on">Walnut</span>
+            <span data-word>Mahogany</span>
+            <span data-word>Maple</span>
+            <span data-word>Alder</span>
           </div>
-          <div class="ds-chips hide-sm">
-            <span class="ds-chip on" data-species-chip><i style="background-image:url(images/story/wood-mahogany.jpg)"></i>Mahogany</span>
-            <span class="ds-chip" data-species-chip><i style="background-image:url(images/story/wood-white-oak.jpg)"></i>White Oak</span>
-            <span class="ds-chip" data-species-chip><i style="background-image:url(images/story/wood-cherry.jpg)"></i>Cherry</span>
-            <span class="ds-chip" data-species-chip><i style="background-image:url(images/story/wood-walnut.jpg)"></i>Walnut</span>
-          </div>
+          <div class="ds-count"><i></i><i></i><i></i><i></i></div>
           <p>12+ hardwood species, each with its own grain, color and way of aging.</p>
           <a href="finishes.html" class="ds-link hide-sm">Materials &amp; Finishes Guide →</a>
         </div>
@@ -253,17 +235,12 @@
           <div class="ds-cap-num">03 · Style</div>
           <h2>Any style. Any size.</h2>
           <div class="ds-swap">
-            <span data-style-word class="on">Six-Panel</span>
-            <span data-style-word>Modern Flush</span>
-            <span data-style-word>Shaker</span>
-            <span data-style-word>French</span>
+            <span data-word class="on">Raised Panel</span>
+            <span data-word>French</span>
+            <span data-word>Modern Pivot</span>
+            <span data-word>Grand Entry</span>
           </div>
-          <div class="ds-chips hide-sm">
-            <span class="ds-chip no-sw on" data-style-chip>Six-Panel</span>
-            <span class="ds-chip no-sw" data-style-chip>Flush</span>
-            <span class="ds-chip no-sw" data-style-chip>Shaker</span>
-            <span class="ds-chip no-sw" data-style-chip>French</span>
-          </div>
+          <div class="ds-count"><i></i><i></i><i></i><i></i></div>
           <p>Interior, exterior, French, barn, fire-rated or fully custom, built to your drawings.</p>
           <a href="doors/interior-doors.html" class="ds-link hide-sm">Explore Doors →</a>
         </div>
@@ -271,6 +248,13 @@
         <div class="ds-cap" data-cap="4">
           <div class="ds-cap-num">04 · Moldings</div>
           <h2>Framed by<br/><em>the details.</em></h2>
+          <div class="ds-swap">
+            <span data-word class="on">Panel Molding</span>
+            <span data-word>Crown</span>
+            <span data-word>Wainscoting</span>
+            <span data-word>Coffered Ceilings</span>
+          </div>
+          <div class="ds-count"><i></i><i></i><i></i><i></i></div>
           <p>Casing, crown and base molding milled to match your doors. 400+ profiles in solid hardwood.</p>
           <a href="moldings/crown-molding.html" class="ds-link hide-sm">Explore Moldings →</a>
         </div>
@@ -283,6 +267,13 @@
         </div>
 
         <div class="ds-cap" data-cap="6">
+          <div class="ds-cap-num">06 · The Shop</div>
+          <h2>Made in<br/><em>Brooklyn.</em></h2>
+          <p>Milled, assembled, sanded and finished in our Brooklyn facility. You work directly with the maker.</p>
+          <a href="about.html" class="ds-link hide-sm">About Us →</a>
+        </div>
+
+        <div class="ds-cap" data-cap="7">
           <div class="ds-cap-num">Hotels · Offices · Homes</div>
           <h2>Step <em>inside.</em></h2>
           <p>Every door we build is made to be walked through for decades. Tell us about your project.</p>
@@ -300,6 +291,7 @@
         <button type="button"><span>Style</span></button>
         <button type="button"><span>Moldings</span></button>
         <button type="button"><span>Hardware</span></button>
+        <button type="button"><span>The Shop</span></button>
         <button type="button"><span>Step Inside</span></button>
       </nav>
       <div class="ds-progress"><span></span></div>
