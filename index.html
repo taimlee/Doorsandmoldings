@@ -84,7 +84,6 @@
     .wk-hint { position: absolute; z-index: 5; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.6); opacity: var(--wk-hint, 1); transition: opacity 0.4s; }
     .wk-skip { position: absolute; z-index: 7; right: max(var(--gutter), 24px); bottom: 26px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 3px; opacity: var(--wk-skip, 1); transition: color 0.2s, opacity 0.4s; }
     .wk-skip:hover { color: var(--cream); border-color: var(--gold); }
-    .has-mobile-cta .wk-skip { bottom: calc(84px + env(safe-area-inset-bottom)); right: auto; left: var(--gutter); }
     .wk-hint i { width: 1px; height: 42px; background: linear-gradient(to bottom, transparent, var(--gold) 50%, transparent); background-size: 100% 200%; animation: ds-hint 2s ease-in-out infinite; }
     @media (max-width: 860px) {
       .walk { --wkW: 1000px; --wkH: 1200px; --wkD: 1250px; }
@@ -100,6 +99,7 @@
       .wk-end { width: 380px; height: 600px; margin: -300px 0 0 -190px; }
       .wk-hint { display: none; }
       .has-mobile-cta .wk-arrive { top: 46%; }
+      .has-mobile-cta .wk-skip { bottom: calc(84px + env(safe-area-inset-bottom)); right: auto; left: var(--gutter); }
     }
     @media (prefers-reduced-motion: reduce) { .walk.wk-js { height: auto; } .walk.wk-js .wk-stage { display: none; } .walk.wk-js .wk-fallback { display: block; } }
 
