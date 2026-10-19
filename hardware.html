@@ -13,43 +13,201 @@
   {"@context":"https://schema.org","@type":"CollectionPage","name":"Door Hardware — Handles, Knobs & Pulls","description":"Premium solid brass, bronze, and stainless door hardware from Solid Doors & Moldings.","url":"https://soliddoorsandmoldings.com/hardware.html","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://soliddoorsandmoldings.com/"},{"@type":"ListItem","position":2,"name":"Hardware","item":"https://soliddoorsandmoldings.com/hardware.html"}]}}
   </script>
   <style>
-    .hw-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 0; overflow: hidden; }
-    .hw-hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,80px); align-items: end; padding-bottom: 0; }
-    .hw-hero-img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-    .hw-hero-img { aspect-ratio: 1/1; }
+    #sets { scroll-margin-top: var(--nav-h); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
 
-    .finish-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+    /* ─── Hero ─── */
+    .hw-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 0; overflow: hidden; position: relative; }
+    .hw-hero::before { content:''; position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse 60% 70% at 78% 60%, rgba(180,130,50,0.10), transparent 70%); }
+    .hw-hero-inner { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.05fr); gap: clamp(40px,6vw,80px); align-items: end; padding-bottom: 0; position: relative; }
+
+    /* Viewer: a framed window onto real photography and footage */
+    .hv { position: relative; }
+    .hv-stage {
+      position: relative; aspect-ratio: 1 / 1; max-height: min(640px, calc(100vh - 280px)); min-height: 360px; width: 100%;
+      overflow: hidden; background: #0d0b09; border-radius: 3px 3px 0 0;
+      box-shadow: 0 40px 90px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+      isolation: isolate;
+    }
+    .hv-slide { position: absolute; inset: 0; margin: 0; clip-path: inset(0 0 0 100%); transition: clip-path 1s cubic-bezier(0.77,0,0.18,1); z-index: 1; }
+    .hv-slide.is-on { clip-path: inset(0 0 0 0); z-index: 2; }
+    .hv-slide.is-out { clip-path: inset(0 0 0 0); z-index: 1; }
+    .hv-slide img, .hv-slide video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transform: scale(1.08); transition: transform 6s var(--ease-out); }
+    .hv-slide.is-on img, .hv-slide.is-on video { transform: scale(1); }
+    .hv-slide::after { content:''; position:absolute; inset:0; background: linear-gradient(to bottom, rgba(10,8,6,0.55) 0%, rgba(10,8,6,0) 26%, rgba(10,8,6,0) 70%, rgba(10,8,6,0.5) 100%); pointer-events:none; }
+    .hv-cap {
+      position: absolute; left: 20px; top: 26px; z-index: 5;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.82);
+    }
+    .hv-cap::before { content:''; width:6px; height:6px; border-radius:50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.25); }
+    .hv-thumbs { position: absolute; right: 16px; bottom: 16px; z-index: 6; display: flex; gap: 8px; }
+    .hv-thumb {
+      width: 58px; height: 58px; padding: 0; border-radius: 2px; overflow: hidden; position: relative;
+      border: 1px solid rgba(255,255,255,0.25); opacity: 0.62;
+      transition: opacity .3s, transform .4s var(--ease-out), border-color .3s;
+    }
+    .hv-thumb img { width:100%; height:100%; object-fit: cover; }
+    .hv-thumb:hover { opacity: 0.95; transform: translateY(-3px); }
+    .hv-thumb[aria-pressed="true"] { opacity: 1; border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+    .hv-thumb:focus-visible, .hv-pause:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .hv-pause {
+      position: absolute; top: 16px; right: 16px; z-index: 6; width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(20,17,14,0.55); color: var(--cream); display: grid; place-items: center;
+      border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(6px); transition: opacity .3s, background .2s;
+    }
+    .hv-pause:hover { background: rgba(20,17,14,0.8); }
+    .hv-pause svg { width: 14px; height: 14px; }
+    .hv-pause[hidden] { display: none; }
+
+    /* ─── Filter chips ─── */
+    .finish-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; align-items: center; }
     .finish-chip {
       display: flex; align-items: center; gap: 8px;
       font-size: 0.80rem; font-weight: 600; padding: 8px 18px;
       border: 1.5px solid var(--cream-dark); border-radius: 100px;
-      cursor: pointer; transition: all 0.15s; background: none; color: var(--charcoal-lt);
+      cursor: pointer; transition: border-color .2s, color .2s, background .3s var(--ease-out); background: none; color: var(--charcoal-lt);
     }
-    .finish-chip .swatch { width: 14px; height: 14px; border-radius: 50%; }
-    .finish-chip.active, .finish-chip:hover { border-color: var(--charcoal); color: var(--charcoal); }
+    .finish-chip .swatch { width: 14px; height: 14px; border-radius: 50%; transition: transform .4s var(--ease-out); }
+    .finish-chip:hover { border-color: var(--charcoal); color: var(--charcoal); }
+    .finish-chip.active { border-color: var(--charcoal); color: var(--cream); background: var(--charcoal); }
+    .finish-chip.active .swatch { transform: scale(1.15); box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
+    .finish-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .hw-count { font-size: 0.75rem; color: var(--charcoal-lt); margin-left: auto; letter-spacing: 0.04em; }
 
+    /* ─── Cards ─── */
     .hw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2vw, 24px); }
-    .hw-card { background: white; border-radius: 2px; overflow: hidden; transition: all 0.25s var(--ease-out); }
-    .hw-card:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.10); }
-    .hw-card-img { aspect-ratio: 1/1; position: relative; }
+    .hw-card { background: white; border-radius: 2px; overflow: hidden; transition: box-shadow 0.35s var(--ease-out); position: relative; }
+    .hw-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.10); }
+    .hw-card[hidden] { display: none; }
+    .hw-card-img { aspect-ratio: 1/1; position: relative; overflow: hidden; background: #ede9e1; }
+    .hw-open { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; display: block; cursor: zoom-in; }
+    .hw-open:focus-visible { outline: 2px solid var(--gold); outline-offset: -4px; z-index: 4; }
+    .hw-ph {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transform: scale(1.06);
+      transition: opacity .7s var(--ease-out), transform 1.1s var(--ease-out);
+    }
+    .hw-ph.is-on { opacity: 1; transform: scale(1); }
+    .hw-card:hover .hw-ph.is-on { transform: scale(1.06); }
+    video.hw-ph { pointer-events: none; }
+    .hw-shown {
+      position: absolute; left: 12px; bottom: 12px; z-index: 3; pointer-events: none;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--charcoal); background: rgba(255,255,255,0.88); padding: 4px 9px; border-radius: 2px;
+      backdrop-filter: blur(4px);
+      transform: translateY(6px); opacity: 0; transition: opacity .35s, transform .45s var(--ease-out);
+    }
+    .hw-card:hover .hw-shown, .hw-card:focus-within .hw-shown, .hw-shown.flash { opacity: 1; transform: none; }
+    .hw-zoom-ic {
+      position: absolute; top: 12px; right: 12px; z-index: 3; width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.9); color: var(--charcoal); display: grid; place-items: center; pointer-events: none;
+      opacity: 0; transform: scale(0.8); transition: opacity .3s, transform .4s var(--ease-out);
+    }
+    .hw-zoom-ic svg { width: 14px; height: 14px; }
+    .hw-card:hover .hw-zoom-ic, .hw-open:focus-visible ~ .hw-zoom-ic { opacity: 1; transform: none; }
     .hw-card-body { padding: 18px; }
     .hw-card-name { font-family: var(--serif); font-size: 1rem; margin-bottom: 4px; }
     .hw-card-material { font-size: 0.75rem; color: var(--charcoal-lt); margin-bottom: 10px; }
-    .hw-card-finishes { display: flex; gap: 5px; margin-bottom: 12px; }
-    .hw-finish-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.10); cursor: pointer; }
+    .hw-card-finishes { display: flex; gap: 8px; margin-bottom: 12px; }
+    .hw-finish-dot {
+      width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,0.10); cursor: pointer; padding: 0;
+      position: relative; transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+    }
+    .hw-finish-dot::before { content:''; position:absolute; inset:-8px; } /* larger touch target */
+    .hw-finish-dot::after { content:''; position:absolute; inset:0; border-radius:50%; background: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,255,255,0) 45%, rgba(0,0,0,0.15)); }
+    .hw-finish-dot:hover { transform: scale(1.18); }
+    .hw-finish-dot[aria-pressed="true"] { box-shadow: 0 0 0 2px white, 0 0 0 3.5px var(--charcoal); }
+    .hw-finish-dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
     .hw-card-price { font-size: 0.92rem; font-weight: 700; color: var(--charcoal); }
-    .hw-card-cta { font-size: 0.75rem; font-weight: 600; color: var(--gold-dark); letter-spacing: 0.04em; display: block; margin-top: 8px; }
+    .hw-card-cta { font-size: 0.75rem; font-weight: 600; color: var(--gold-dark); letter-spacing: 0.04em; display: inline-block; margin-top: 8px; transition: transform .3s var(--ease-out); }
+    .hw-card-cta:hover { transform: translateX(4px); }
 
+    /* ─── Pulls, hinges & accessories: list beside real footage ─── */
+    .acc-wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(40px, 7vw, 100px); align-items: start; }
+    .acc-aside { position: sticky; top: calc(var(--nav-h) + 32px); }
+    .acc-frame { position: relative; aspect-ratio: 4/5; max-height: 62vh; overflow: hidden; border-radius: 3px; background: #1a1714; box-shadow: 0 30px 70px rgba(0,0,0,0.18); }
+    .acc-frame video, .acc-frame img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; }
+    .acc-list { border-top: 1px solid var(--cream-dark); }
+    .acc-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; align-items: center;
+      padding: 22px 0; border-bottom: 1px solid var(--cream-dark); position: relative;
+    }
+    .acc-row::before {
+      content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px; background: var(--gold);
+      transform: scaleX(0); transform-origin: 0 50%; transition: transform .6s var(--ease-out);
+    }
+    .acc-row:hover::before, .acc-row:focus-within::before { transform: scaleX(1); }
+    .acc-row .hw-card-name { font-size: clamp(1.05rem, 1.6vw, 1.3rem); margin-bottom: 2px; transition: transform .5s var(--ease-out); }
+    .acc-row:hover .hw-card-name { transform: translateX(6px); }
+    .acc-row .hw-card-material { margin-bottom: 0; }
+    .acc-row .acc-right { text-align: right; grid-row: span 2; }
+    .acc-row .hw-card-cta { margin-top: 4px; }
+
+    /* ─── Finish guide ─── */
     .finish-guide { background: var(--charcoal); padding: clamp(48px, 7vw, 80px) 0; }
     .finish-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
-    .finish-card { text-align: center; }
-    .finish-sample { height: 80px; border-radius: 4px; margin-bottom: 10px; }
-    .finish-name { font-size: 0.75rem; font-weight: 600; color: var(--cream); }
-    .finish-code { font-size: 0.68rem; color: rgba(255,255,255,0.40); }
+    .finish-card { text-align: center; display: block; width: 100%; padding: 0; color: inherit; border-radius: 4px; }
+    .finish-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+    .finish-sample { height: 80px; border-radius: 4px; margin-bottom: 10px; position: relative; overflow: hidden; display: block; transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
+    .finish-sample::before { content:''; position:absolute; inset:0; background: linear-gradient(160deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 42%, rgba(0,0,0,0.22) 100%); }
+    .finish-sample::after { content:''; position:absolute; top:0; bottom:0; left:-70%; width:45%; background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-18deg); transition: left .9s var(--ease-out); }
+    .finish-card:hover .finish-sample, .finish-card:focus-visible .finish-sample { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
+    .finish-card:hover .finish-sample::after, .finish-card:focus-visible .finish-sample::after { left: 130%; }
+    .finish-name { font-size: 0.75rem; font-weight: 600; color: var(--cream); display: block; }
+    .finish-code { font-size: 0.68rem; color: rgba(255,255,255,0.40); display: block; }
+    .finish-hint { font-size: 0.68rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-top: 6px; opacity: 0; transition: opacity .3s; }
+    .finish-card:hover .finish-hint, .finish-card:focus-visible .finish-hint { opacity: 1; }
+
+    /* ─── Lightbox ─── */
+    .lb { border: 0; padding: 0; margin: auto; background: transparent; max-width: min(1100px, 94vw); width: 100%; max-height: 94vh; overflow: visible; color: var(--cream); }
+    .lb::backdrop { background: rgba(14,12,10,0.88); backdrop-filter: blur(6px); }
+    .lb[open] { animation: lb-in .5s var(--ease-out); }
+    .lb[open]::backdrop { animation: lb-fade .4s ease; }
+    @keyframes lb-in { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
+    @keyframes lb-fade { from { opacity: 0; } to { opacity: 1; } }
+    .lb-inner { display: grid; grid-template-columns: 1.5fr 1fr; background: var(--charcoal); border-radius: 3px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.6); }
+    .lb-media { position: relative; background: #0d0b09; aspect-ratio: 1/1; max-height: 86vh; overflow: hidden; }
+    .lb-media img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; transition: opacity .4s; }
+    .lb-media img.loading { opacity: 0; }
+    .lb-body { padding: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+    .lb-body h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); color: var(--cream); }
+    .lb-mat { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+    .lb-fin { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-top: 10px; }
+    .lb-price { font-weight: 700; margin-top: 14px; }
+    .lb-body .btn { margin-top: 22px; align-self: flex-start; }
+    .lb-nav { display: flex; gap: 8px; margin-top: 28px; }
+    .lb-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); color: var(--cream); display: grid; place-items: center; transition: background .2s, border-color .2s; }
+    .lb-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--cream); }
+    .lb-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .lb-btn svg { width: 16px; height: 16px; }
+    .lb-close { position: absolute; top: -54px; right: 0; }
 
     @media(max-width:1024px){ .hw-grid { grid-template-columns: repeat(3,1fr); } .finish-row { grid-template-columns: repeat(3,1fr); } }
-    @media(max-width:768px){ .hw-grid { grid-template-columns: repeat(2,1fr); } .hw-hero-inner { grid-template-columns: 1fr; } }
-    @media(max-width:500px){ .hw-grid { grid-template-columns: 1fr; } .finish-row { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:900px){ .acc-wrap { grid-template-columns: 1fr; } .acc-aside { position: relative; top: 0; } .acc-frame { aspect-ratio: 16/10; max-height: none; } }
+    @media(max-width:768px){
+      .hw-grid { grid-template-columns: repeat(2,1fr); }
+      .hw-hero-inner { grid-template-columns: minmax(0,1fr); }
+      .hv { margin: 0 calc(var(--gutter) * -1); }
+      .hv-stage { aspect-ratio: 4/3.4; border-radius: 0; min-height: 0; max-height: none; }
+      .hv-thumb { width: 48px; height: 48px; }
+      .lb-inner { grid-template-columns: 1fr; }
+      .lb-media { aspect-ratio: 4/3; }
+      .lb-close { top: 10px; right: 10px; z-index: 3; background: rgba(20,17,14,0.6); }
+      .hw-count { width: 100%; margin-left: 0; }
+    }
+    @media(max-width:500px){
+      .hw-grid { grid-template-columns: 1fr; } .finish-row { grid-template-columns: repeat(2,1fr); }
+      .hv-cap { left: 14px; top: 22px; }
+      .hv-thumbs { left: 14px; right: auto; bottom: 14px; }
+      .acc-row { grid-template-columns: 1fr; }
+      .acc-row .acc-right { text-align: left; grid-row: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hv-slide, .hv-slide img, .hv-slide video, .hw-ph, .finish-sample, .finish-sample::after, .acc-row .hw-card-name { transition: none !important; }
+      .hv-slide img, .hv-slide video, .hw-ph, .hw-card:hover .hw-ph.is-on { transform: none !important; }
+      .lb[open], .lb[open]::backdrop { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -72,11 +230,28 @@
             <a href="finishes.html" class="btn btn-outline-light">Order Samples</a>
           </div>
         </div>
-        <div class="hw-hero-img-row">
-          <div class="img-ph hw-hero-img"><span class="img-ph-label">Solid brass lever handle — polished</span></div>
-          <div class="img-ph hw-hero-img"><span class="img-ph-label">Matte black door pull — modern</span></div>
-          <div class="img-ph hw-hero-img"><span class="img-ph-label">Oil-rubbed bronze knob set</span></div>
-          <div class="img-ph hw-hero-img"><span class="img-ph-label">Satin nickel hinge set — close</span></div>
+        <div class="hv" data-no-motion>
+          <div class="hv-stage" data-cursor="Detail">
+            <figure class="hv-slide is-on" data-k="0">
+              <video muted playsinline loop preload="metadata" poster="images/story/clip-hardware.jpg" aria-label="Lever handle on a dark panelled door, slow camera move">
+                <source src="images/story/clip-hardware.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="hv-slide" data-k="1"><img src="images/pages/pg-hardware-lever-brass.jpg" alt="Brass lever handle with keyhole escutcheon on a dark wood panel door" loading="lazy" /></figure>
+            <figure class="hv-slide" data-k="2"><img src="images/pages/pg-hardware-lever-black.jpg" alt="Matte black lever handle on a white door" loading="lazy" /></figure>
+            <figure class="hv-slide" data-k="3"><img src="images/pages/pg-hardware-knob.jpg" alt="Brass knob on a dark green panel" loading="lazy" /></figure>
+            <div class="hv-cap" aria-live="polite"><span class="hv-cap-text">Lever · dark panelled door</span></div>
+            <button type="button" class="hv-pause" aria-label="Pause video">
+              <svg class="i-pause" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="3" y="2" width="3" height="10"/><rect x="8" y="2" width="3" height="10"/></svg>
+              <svg class="i-play" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="display:none"><path d="M4 2l8 5-8 5z"/></svg>
+            </button>
+            <div class="hv-thumbs" role="group" aria-label="Choose a photo">
+              <button type="button" class="hv-thumb" data-k="0" aria-pressed="true" data-cap="Lever · dark panelled door"><img src="images/story/clip-hardware.jpg" alt="" /><span class="sr-only">Lever on a dark door (video)</span></button>
+              <button type="button" class="hv-thumb" data-k="1" aria-pressed="false" data-cap="Lever · brass"><img src="images/pages/pg-hw-lever-brass-sq.jpg" alt="" /><span class="sr-only">Brass lever</span></button>
+              <button type="button" class="hv-thumb" data-k="2" aria-pressed="false" data-cap="Lever · matte black"><img src="images/pages/pg-hw-lever-black-sq.jpg" alt="" /><span class="sr-only">Matte black lever</span></button>
+              <button type="button" class="hv-thumb" data-k="3" aria-pressed="false" data-cap="Knob · brass"><img src="images/pages/pg-hw-knob-sq.jpg" alt="" /><span class="sr-only">Brass knob</span></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -105,7 +280,7 @@
   </div>
 
   <!-- LEVERS & KNOBS -->
-  <section class="section">
+  <section class="section" id="sets">
     <div class="container">
       <div class="section-intro">
         <div class="label">Levers &amp; Knobs</div>
@@ -114,128 +289,185 @@
         <p>Every set available in keyed entry, privacy, passage, and dummy configurations.</p>
       </div>
 
-      <div class="finish-tabs">
-        <button class="finish-chip active" data-finish="all">All Finishes</button>
-        <button class="finish-chip" data-finish="brass"><span class="swatch" style="background:#c8a951;"></span>Polished Brass</button>
-        <button class="finish-chip" data-finish="bronze"><span class="swatch" style="background:#6b4226;"></span>Oil-Rubbed Bronze</button>
-        <button class="finish-chip" data-finish="nickel"><span class="swatch" style="background:#9fa3a8;"></span>Satin Nickel</button>
-        <button class="finish-chip" data-finish="black"><span class="swatch" style="background:#2a2a2a;"></span>Matte Black</button>
-        <button class="finish-chip" data-finish="chrome"><span class="swatch" style="background:#d4d8dc;border:1.5px solid #ccc;"></span>Polished Chrome</button>
+      <div class="finish-tabs" role="group" aria-label="Filter sets by finish">
+        <button type="button" class="finish-chip active" data-finish="all" aria-pressed="true">All Finishes</button>
+        <button type="button" class="finish-chip" data-finish="brass" aria-pressed="false"><span class="swatch" style="background:#c8a951;"></span>Polished Brass</button>
+        <button type="button" class="finish-chip" data-finish="bronze" aria-pressed="false"><span class="swatch" style="background:#6b4226;"></span>Oil-Rubbed Bronze</button>
+        <button type="button" class="finish-chip" data-finish="nickel" aria-pressed="false"><span class="swatch" style="background:#9fa3a8;"></span>Satin Nickel</button>
+        <button type="button" class="finish-chip" data-finish="black" aria-pressed="false"><span class="swatch" style="background:#2a2a2a;"></span>Matte Black</button>
+        <button type="button" class="finish-chip" data-finish="chrome" aria-pressed="false"><span class="swatch" style="background:#d4d8dc;border:1.5px solid #ccc;"></span>Polished Chrome</button>
+        <span class="hw-count" aria-live="polite"></span>
       </div>
 
+      <!-- Each card: one <img>/<video> per finish we have a real photo of; dots crossfade between them. -->
       <div class="hw-grid">
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Craftsman lever set — solid brass, satin finish</span></div>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Craftsman Lever</span>
+              <img class="hw-ph" data-finish="brass" src="images/pages/pg-hw-lever-brass-sq.jpg" data-large="images/pages/pg-hardware-lever-brass.jpg" alt="Brass lever handle on a dark panelled door" loading="lazy" />
+              <img class="hw-ph" data-finish="black" data-src="images/pages/pg-hw-lever-black-sq.jpg" data-large="images/pages/pg-hardware-lever-black.jpg" alt="Matte black lever handle on a white door" />
+              <img class="hw-ph" data-finish="nickel chrome" data-src="images/pages/pg-hw-clip-sq.jpg" data-large="images/story/clip-hardware.jpg" alt="Silver-tone lever handle on a dark door" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Craftsman Lever</div>
             <div class="hw-card-material">Solid Brass · 5 finishes</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#c8a951;" title="Polished Brass"></div>
-              <div class="hw-finish-dot" style="background:#9fa3a8;" title="Satin Nickel"></div>
-              <div class="hw-finish-dot" style="background:#6b4226;" title="Oil-Rubbed Bronze"></div>
-              <div class="hw-finish-dot" style="background:#2a2a2a;" title="Matte Black"></div>
-              <div class="hw-finish-dot" style="background:#d4d8dc;border:1.5px solid #ccc;" title="Polished Chrome"></div>
+              <button type="button" class="hw-finish-dot" style="background:#c8a951;" title="Polished Brass"></button>
+              <button type="button" class="hw-finish-dot" style="background:#9fa3a8;" title="Satin Nickel"></button>
+              <button type="button" class="hw-finish-dot" style="background:#6b4226;" title="Oil-Rubbed Bronze"></button>
+              <button type="button" class="hw-finish-dot" style="background:#2a2a2a;" title="Matte Black"></button>
+              <button type="button" class="hw-finish-dot" style="background:#d4d8dc;border:1.5px solid #ccc;" title="Polished Chrome"></button>
             </div>
             <div class="hw-card-price">From $285 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Arch lever — oil rubbed bronze</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Arch Lever</span>
+              <img class="hw-ph" data-finish="nickel" src="images/pages/pg-hw-clip-sq.jpg" data-large="images/story/clip-hardware.jpg" data-video="images/story/clip-hardware.mp4" alt="Ornate lever handle on a dark panelled door" loading="lazy" />
+              <img class="hw-ph" data-finish="brass" data-src="images/pages/pg-hw-lever-brass-grip.jpg" data-large="images/pages/pg-hardware-lever-brass.jpg" alt="Brass lever handle on a dark door" />
+              <img class="hw-ph" data-finish="black" data-src="images/pages/pg-hw-lever-black-sq.jpg" data-large="images/pages/pg-hardware-lever-black.jpg" alt="Matte black lever handle on a white door" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Arch Lever</div>
             <div class="hw-card-material">Solid Brass · 5 finishes</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#c8a951;"></div>
-              <div class="hw-finish-dot" style="background:#9fa3a8;"></div>
-              <div class="hw-finish-dot" style="background:#6b4226;"></div>
-              <div class="hw-finish-dot" style="background:#2a2a2a;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#c8a951;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#9fa3a8;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#6b4226;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#2a2a2a;"></button>
             </div>
             <div class="hw-card-price">From $310 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Round knob set — polished brass, traditional</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Heritage Round Knob</span>
+              <img class="hw-ph" data-finish="brass" src="images/pages/pg-hw-knob-sq.jpg" data-large="images/pages/pg-hardware-knob.jpg" alt="Round brass knob, close-up" loading="lazy" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Heritage Round Knob</div>
             <div class="hw-card-material">Solid Brass · 4 finishes</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#c8a951;"></div>
-              <div class="hw-finish-dot" style="background:#9fa3a8;"></div>
-              <div class="hw-finish-dot" style="background:#6b4226;"></div>
-              <div class="hw-finish-dot" style="background:#d4d8dc;border:1.5px solid #ccc;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#c8a951;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#9fa3a8;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#6b4226;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#d4d8dc;border:1.5px solid #ccc;"></button>
             </div>
             <div class="hw-card-price">From $195 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Linear lever — matte black, modern minimal</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Linear Lever</span>
+              <img class="hw-ph" data-finish="black" src="images/pages/pg-hw-lever-black-sq.jpg" data-large="images/pages/pg-hardware-lever-black.jpg" alt="Matte black lever handle on a white door" loading="lazy" />
+              <img class="hw-ph" data-finish="nickel" data-src="images/pages/pg-hw-clip-sq.jpg" data-large="images/story/clip-hardware.jpg" alt="Silver-tone lever handle on a dark door" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Linear Lever</div>
             <div class="hw-card-material">Solid Stainless · 2 finishes</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#2a2a2a;"></div>
-              <div class="hw-finish-dot" style="background:#9fa3a8;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#2a2a2a;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#9fa3a8;"></button>
             </div>
             <div class="hw-card-price">From $340 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Crystal knob — brass rose, faceted glass</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Crystal Facet Knob</span>
+              <img class="hw-ph" data-finish="brass" src="images/pages/pg-hardware-knob-s.jpg" data-large="images/pages/pg-hardware-knob.jpg" alt="Brass knobs on dark green panels below a marble top" loading="lazy" style="object-position:40% 60%;" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Crystal Facet Knob</div>
             <div class="hw-card-material">Solid Brass Rose · Hand-cut Crystal</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#c8a951;"></div>
-              <div class="hw-finish-dot" style="background:#6b4226;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#c8a951;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#6b4226;"></button>
             </div>
             <div class="hw-card-price">From $420 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Barn door pull — wrought iron, rustic</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Barn Door Pull</span>
+              <img class="hw-ph" data-finish="black" src="images/pages/pg-hw-barn.jpg" data-large="images/pages/pg-hw-barn.jpg" alt="Black iron strap hardware on a white plank barn door" loading="lazy" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Barn Door Pull</div>
             <div class="hw-card-material">Hand-forged Steel · 2 finishes</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#2a2a2a;"></div>
-              <div class="hw-finish-dot" style="background:#6b4226;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#2a2a2a;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#6b4226;"></button>
             </div>
             <div class="hw-card-price">From $165 / pull</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Offset lever — brushed brass, contemporary</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Offset Lever</span>
+              <img class="hw-ph" data-finish="brass" src="images/pages/pg-hw-lever-brass-grip.jpg" data-large="images/pages/pg-hardware-lever-brass.jpg" alt="Brass lever handle grip, close-up" loading="lazy" />
+              <img class="hw-ph" data-finish="black" data-src="images/pages/pg-hw-lever-black-sq.jpg" data-large="images/pages/pg-hardware-lever-black.jpg" alt="Matte black lever handle on a white door" />
+              <img class="hw-ph" data-finish="nickel" data-src="images/pages/pg-hw-clip-sq.jpg" data-large="images/story/clip-hardware.jpg" alt="Silver-tone lever handle on a dark door" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Offset Lever</div>
             <div class="hw-card-material">Solid Brass · 3 finishes</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#c8a951;"></div>
-              <div class="hw-finish-dot" style="background:#9fa3a8;"></div>
-              <div class="hw-finish-dot" style="background:#2a2a2a;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#c8a951;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#9fa3a8;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#2a2a2a;"></button>
             </div>
             <div class="hw-card-price">From $295 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Mortise lock set — antique brass, estate style</span></div>
+        </article>
+        <article class="hw-card">
+          <div class="hw-card-img">
+            <button type="button" class="hw-open" data-cursor="View"><span class="sr-only">View larger photo: Estate Mortise Set</span>
+              <img class="hw-ph" data-finish="brass" src="images/pages/pg-hw-lever-brass-plate.jpg" data-large="images/pages/pg-hardware-lever-brass.jpg" alt="Brass backplate with keyhole on a dark wood door" loading="lazy" />
+            </button>
+            <span class="hw-zoom-ic" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14M7 5v4M5 7h4"/></svg></span>
+            <span class="hw-shown"></span>
+          </div>
           <div class="hw-card-body">
             <div class="hw-card-name">Estate Mortise Set</div>
             <div class="hw-card-material">Solid Brass · Mortise Lock Included</div>
             <div class="hw-card-finishes">
-              <div class="hw-finish-dot" style="background:#c8a951;"></div>
-              <div class="hw-finish-dot" style="background:#6b4226;"></div>
+              <button type="button" class="hw-finish-dot" style="background:#c8a951;"></button>
+              <button type="button" class="hw-finish-dot" style="background:#6b4226;"></button>
             </div>
             <div class="hw-card-price">From $680 / set</div>
             <a href="quote.html" class="hw-card-cta">Request Quote →</a>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </section>
@@ -243,44 +475,29 @@
   <!-- PULLS & HINGES -->
   <section class="section bg-cream-mid">
     <div class="container">
-      <div class="section-intro">
-        <div class="label">Pulls, Hinges &amp; Accessories</div>
-        <div class="rule"></div>
-        <h2>Everything to Complete the Door</h2>
-      </div>
-      <div class="hw-grid">
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Architectural entry pull — 18" solid brass bar</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Arch Entry Pull — 18"</div><div class="hw-card-material">Solid Brass · 5 finishes</div><div class="hw-card-price">From $240 / pull</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
+      <div class="acc-wrap">
+        <div class="acc-aside">
+          <div class="section-intro" style="margin-bottom:32px;">
+            <div class="label">Pulls, Hinges &amp; Accessories</div>
+            <div class="rule"></div>
+            <h2>Everything to Complete the Door</h2>
+          </div>
+          <div class="acc-frame" data-reveal="scale">
+            <video class="io-video" muted playsinline loop preload="none" poster="images/story/clip-door.jpg" aria-label="A panelled door swinging open onto a bookcase-lined room">
+              <source src="images/story/clip-door.mp4" type="video/mp4" />
+            </video>
+          </div>
         </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">J-pull — matte black, modern entry</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">J-Pull — 24"</div><div class="hw-card-material">Solid Steel · Matte Black</div><div class="hw-card-price">From $185 / pull</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Ball-bearing butt hinge — satin nickel pair</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Ball-Bearing Hinge — 4"</div><div class="hw-card-material">Solid Brass · Heavy Duty</div><div class="hw-card-price">From $38 / pair</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Flush bolt — solid brass, door top/bottom</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Flush Bolt</div><div class="hw-card-material">Solid Brass · 3 finishes</div><div class="hw-card-price">From $95 / set</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Door stop — solid brass wall mount</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Wall-Mount Door Stop</div><div class="hw-card-material">Solid Brass · 5 finishes</div><div class="hw-card-price">From $48 / each</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Door closer — surface mount, commercial grade</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Surface Closer</div><div class="hw-card-material">Aluminum · ADA Compliant</div><div class="hw-card-price">From $165 / each</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Cremone bolt — brass, French door closure</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Cremone Bolt</div><div class="hw-card-material">Solid Brass · French Door</div><div class="hw-card-price">From $320 / set</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
-        <div class="hw-card">
-          <div class="hw-card-img img-ph"><span class="img-ph-label">Barn door hardware kit — matte black rail system</span></div>
-          <div class="hw-card-body"><div class="hw-card-name">Barn Door Rail Kit</div><div class="hw-card-material">Steel · 6' or 8' rail lengths</div><div class="hw-card-price">From $395 / kit</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div>
-        </div>
+        <ul class="acc-list">
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Arch Entry Pull — 18"</div><div class="hw-card-material">Solid Brass · 5 finishes</div></div><div class="acc-right"><div class="hw-card-price">From $240 / pull</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">J-Pull — 24"</div><div class="hw-card-material">Solid Steel · Matte Black</div></div><div class="acc-right"><div class="hw-card-price">From $185 / pull</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Ball-Bearing Hinge — 4"</div><div class="hw-card-material">Solid Brass · Heavy Duty</div></div><div class="acc-right"><div class="hw-card-price">From $38 / pair</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Flush Bolt</div><div class="hw-card-material">Solid Brass · 3 finishes</div></div><div class="acc-right"><div class="hw-card-price">From $95 / set</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Wall-Mount Door Stop</div><div class="hw-card-material">Solid Brass · 5 finishes</div></div><div class="acc-right"><div class="hw-card-price">From $48 / each</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Surface Closer</div><div class="hw-card-material">Aluminum · ADA Compliant</div></div><div class="acc-right"><div class="hw-card-price">From $165 / each</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Cremone Bolt</div><div class="hw-card-material">Solid Brass · French Door</div></div><div class="acc-right"><div class="hw-card-price">From $320 / set</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+          <li class="acc-row" data-reveal><div><div class="hw-card-name">Barn Door Rail Kit</div><div class="hw-card-material">Steel · 6' or 8' rail lengths</div></div><div class="acc-right"><div class="hw-card-price">From $395 / kit</div><a href="quote.html" class="hw-card-cta">Request Quote →</a></div></li>
+        </ul>
       </div>
     </div>
   </section>
@@ -295,12 +512,12 @@
         <p style="color:rgba(255,255,255,0.50);">Custom patinas available. Sample chips available for $8/each.</p>
       </div>
       <div class="finish-row">
-        <div class="finish-card"><div class="finish-sample" style="background:#c8a951;"></div><div class="finish-name">Polished Brass</div><div class="finish-code">PB</div></div>
-        <div class="finish-card"><div class="finish-sample" style="background:#b8945a;"></div><div class="finish-name">Satin Brass</div><div class="finish-code">SB</div></div>
-        <div class="finish-card"><div class="finish-sample" style="background:#6b4226;"></div><div class="finish-name">Oil-Rubbed Bronze</div><div class="finish-code">ORB</div></div>
-        <div class="finish-card"><div class="finish-sample" style="background:#9fa3a8;"></div><div class="finish-name">Satin Nickel</div><div class="finish-code">SN</div></div>
-        <div class="finish-card"><div class="finish-sample" style="background:#d4d8dc; border:1px solid rgba(255,255,255,0.1);"></div><div class="finish-name">Polished Chrome</div><div class="finish-code">PC</div></div>
-        <div class="finish-card"><div class="finish-sample" style="background:#2a2a2a;"></div><div class="finish-name">Matte Black</div><div class="finish-code">MB</div></div>
+        <button type="button" class="finish-card" data-target="brass"><span class="finish-sample" style="background:#c8a951;"></span><span class="finish-name">Polished Brass</span><span class="finish-code">PB</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>
+        <button type="button" class="finish-card" data-target="brass"><span class="finish-sample" style="background:#b8945a;"></span><span class="finish-name">Satin Brass</span><span class="finish-code">SB</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>
+        <button type="button" class="finish-card" data-target="bronze"><span class="finish-sample" style="background:#6b4226;"></span><span class="finish-name">Oil-Rubbed Bronze</span><span class="finish-code">ORB</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>
+        <button type="button" class="finish-card" data-target="nickel"><span class="finish-sample" style="background:#9fa3a8;"></span><span class="finish-name">Satin Nickel</span><span class="finish-code">SN</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>
+        <button type="button" class="finish-card" data-target="chrome"><span class="finish-sample" style="background:#d4d8dc; border:1px solid rgba(255,255,255,0.1);"></span><span class="finish-name">Polished Chrome</span><span class="finish-code">PC</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>
+        <button type="button" class="finish-card" data-target="black"><span class="finish-sample" style="background:#2a2a2a;"></span><span class="finish-name">Matte Black</span><span class="finish-code">MB</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>
       </div>
     </div>
   </section>
@@ -317,6 +534,284 @@
   </div>
 
 </div>
+
+<dialog class="lb" aria-labelledby="lb-title" data-no-motion>
+  <button type="button" class="lb-btn lb-close" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg></button>
+  <div class="lb-inner">
+    <div class="lb-media"><img alt="" /></div>
+    <div class="lb-body">
+      <div class="label">Levers &amp; Knobs</div>
+      <h2 id="lb-title"></h2>
+      <div class="lb-mat"></div>
+      <div class="lb-fin"></div>
+      <div class="lb-price"></div>
+      <a href="quote.html" class="btn btn-gold btn-sm">Request Quote →</a>
+      <div class="lb-nav">
+        <button type="button" class="lb-btn lb-prev" aria-label="Previous set"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button>
+        <button type="button" class="lb-btn lb-next" aria-label="Next set"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
 <script src="shared/nav.js"></script>
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var COLORS = { '#c8a951': 'brass', '#9fa3a8': 'nickel', '#6b4226': 'bronze', '#2a2a2a': 'black', '#d4d8dc': 'chrome' };
+  var NAMES = { brass: 'Polished Brass', nickel: 'Satin Nickel', bronze: 'Oil-Rubbed Bronze', black: 'Matte Black', chrome: 'Polished Chrome' };
+  function hex(rgb) {
+    var m = rgb.match(/\d+/g); if (!m) return '';
+    return '#' + m.slice(0, 3).map(function (n) { return ('0' + (+n).toString(16)).slice(-2); }).join('');
+  }
+
+  /* Videos: play only while visible (and never on reduced motion unless asked). */
+  var vio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var v = e.target;
+      if (e.isIntersecting && !reduced && !v.dataset.userPaused && !v.dataset.hold) { v.play().catch(function () {}); }
+      else v.pause();
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('video.io-video').forEach(function (v) { vio.observe(v); });
+
+  /* ─── Hero viewer ─── */
+  var stage = document.querySelector('.hv-stage');
+  var slides = Array.prototype.slice.call(stage.querySelectorAll('.hv-slide'));
+  var thumbs = Array.prototype.slice.call(stage.querySelectorAll('.hv-thumb'));
+  var heroVideo = stage.querySelector('video');
+  var pauseBtn = stage.querySelector('.hv-pause');
+  var capText = stage.querySelector('.hv-cap-text');
+  var current = 0;
+  heroVideo.classList.add('io-video');
+  if (reduced) heroVideo.dataset.userPaused = '1';
+  vio.observe(heroVideo);
+
+  function syncPauseBtn() {
+    var paused = heroVideo.paused;
+    pauseBtn.setAttribute('aria-label', paused ? 'Play video' : 'Pause video');
+    pauseBtn.querySelector('.i-pause').style.display = paused ? 'none' : '';
+    pauseBtn.querySelector('.i-play').style.display = paused ? '' : 'none';
+  }
+  heroVideo.addEventListener('play', syncPauseBtn);
+  heroVideo.addEventListener('pause', syncPauseBtn);
+  syncPauseBtn();
+  pauseBtn.addEventListener('click', function () {
+    if (heroVideo.paused) { delete heroVideo.dataset.userPaused; heroVideo.play().catch(function () {}); }
+    else { heroVideo.dataset.userPaused = '1'; heroVideo.pause(); }
+  });
+
+  function show(k) {
+    if (k === current) return;
+    var prev = slides[current];
+    slides.forEach(function (s) { s.classList.remove('is-out'); });
+    prev.classList.remove('is-on'); prev.classList.add('is-out');
+    slides[k].classList.add('is-on');
+    setTimeout(function () { prev.classList.remove('is-out'); }, reduced ? 0 : 1050);
+    thumbs.forEach(function (t, i) { t.setAttribute('aria-pressed', i === k ? 'true' : 'false'); });
+    capText.textContent = thumbs[k].dataset.cap;
+    current = k;
+    pauseBtn.hidden = k !== 0;
+    if (k === 0) { delete heroVideo.dataset.hold; if (!heroVideo.dataset.userPaused) heroVideo.play().catch(function () {}); }
+    else { heroVideo.dataset.hold = '1'; heroVideo.pause(); }
+  }
+  thumbs.forEach(function (t, i) { t.addEventListener('click', function () { show(i); }); });
+  // Hover the frame to play the clip (fine pointers).
+  if (finePointer) {
+    stage.addEventListener('pointerenter', function () { if (current === 0 && heroVideo.paused && !heroVideo.dataset.userPaused) heroVideo.play().catch(function () {}); });
+  }
+
+  /* ─── Cards: finish dots crossfade between real photos ─── */
+  var grid = document.querySelector('.hw-grid');
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.hw-card'));
+
+  cards.forEach(function (card) {
+    var name = card.querySelector('.hw-card-name').textContent;
+    var dots = Array.prototype.slice.call(card.querySelectorAll('.hw-finish-dot'));
+    var finishes = [];
+    dots.forEach(function (d) {
+      var f = COLORS[hex(d.style.backgroundColor)] || '';
+      d.dataset.finish = f;
+      finishes.push(f);
+      d.title = NAMES[f];
+      d.setAttribute('aria-label', name + ': show ' + NAMES[f]);
+      d.setAttribute('aria-pressed', 'false');
+      d.addEventListener('click', function () { setFinish(card, f, true); });
+    });
+    card.dataset.finishes = finishes.join(' ');
+    var first = card.querySelector('.hw-ph');
+    first.classList.add('is-on');
+    card.dataset.default = first.dataset.finish.split(' ')[0];
+    setFinish(card, card.dataset.default, false);
+
+    // Arch Lever: hover plays the real clip in place of its still.
+    var vsrc = first.dataset.video;
+    if (vsrc && finePointer && !reduced) {
+      var v = document.createElement('video');
+      v.className = 'hw-ph'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
+      v.setAttribute('aria-hidden', 'true');
+      v.poster = first.getAttribute('src');
+      v.src = vsrc;
+      v.style.objectPosition = '42% 50%';
+      first.after(v);
+      card.addEventListener('pointerenter', function () {
+        if (!first.classList.contains('is-on')) return;
+        v.classList.add('is-on'); v.play().catch(function () {});
+      });
+      card.addEventListener('pointerleave', function () { v.classList.remove('is-on'); v.pause(); });
+    }
+  });
+
+  function photoFor(card, f) {
+    var target = null;
+    card.querySelectorAll('img.hw-ph').forEach(function (img) { if ((' ' + img.dataset.finish + ' ').indexOf(' ' + f + ' ') > -1) target = img; });
+    return target;
+  }
+  // used: optional set of photo URLs already on screen, so a filtered grid never repeats a photo.
+  function setFinish(card, f, flash, used) {
+    card.dataset.current = f;
+    card.querySelectorAll('.hw-finish-dot').forEach(function (d) { d.setAttribute('aria-pressed', d.dataset.finish === f ? 'true' : 'false'); });
+    var target = photoFor(card, f);
+    if (used) {
+      var key = target && (target.getAttribute('src') || target.dataset.src);
+      if (!target || used.has(key)) target = card.querySelector('img.hw-ph');
+      used.add(target.getAttribute('src') || target.dataset.src);
+    }
+    if (target) {
+      if (!target.getAttribute('src') && target.dataset.src) target.src = target.dataset.src;
+      card.querySelectorAll('.hw-ph').forEach(function (img) { img.classList.toggle('is-on', img === target); });
+    }
+    var shown = card.querySelector('.hw-shown');
+    shown.textContent = NAMES[f];
+    if (flash) {
+      shown.classList.add('flash');
+      clearTimeout(shown._t);
+      shown._t = setTimeout(function () { shown.classList.remove('flash'); }, 1800);
+    }
+  }
+
+  /* ─── Filter chips with FLIP ─── */
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.finish-chip'));
+  var count = document.querySelector('.hw-count');
+  var filter = 'all', busy = false, pending = null;
+  function release() { busy = false; if (pending) { var p = pending; pending = null; applyFilter(p); } }
+
+  function visibleCards() { return cards.filter(function (c) { return !c.hidden; }); }
+  function matches(card, f) { return f === 'all' || (' ' + card.dataset.finishes + ' ').indexOf(' ' + f + ' ') > -1; }
+
+  function applyFilter(f) {
+    if (busy) { pending = f; return; }
+    if (f === filter) return;
+    busy = true; filter = f;
+    chips.forEach(function (c) {
+      var on = c.dataset.finish === f;
+      c.classList.toggle('active', on);
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    var staying = [], leaving = [], entering = [];
+    cards.forEach(function (c) {
+      var m = matches(c, f);
+      if (!c.hidden && m) staying.push(c);
+      else if (!c.hidden && !m) leaving.push(c);
+      else if (c.hidden && m) entering.push(c);
+    });
+    // Each remaining card switches to the chosen finish where we have it.
+    var used = new Set();
+    // Cards whose own photo already shows this finish claim it first.
+    var ownFirst = cards.filter(function (c) { return matches(c, f); }).sort(function (a, b) {
+      var fa = f === 'all' || photoFor(a, f) === a.querySelector('img.hw-ph');
+      var fb = f === 'all' || photoFor(b, f) === b.querySelector('img.hw-ph');
+      return (fb ? 1 : 0) - (fa ? 1 : 0);
+    });
+    ownFirst.forEach(function (c) { setFinish(c, f === 'all' ? c.dataset.default : f, false, used); });
+
+    var n = staying.length + entering.length;
+    count.textContent = 'Showing ' + n + ' of ' + cards.length + ' sets';
+
+    if (reduced || !grid.animate) {
+      leaving.forEach(function (c) { c.hidden = true; });
+      entering.forEach(function (c) { c.hidden = false; });
+      window.Motion && Motion.refresh(grid); release(); return;
+    }
+    var first = new Map();
+    staying.forEach(function (c) { first.set(c, c.getBoundingClientRect()); });
+    var outs = leaving.map(function (c) {
+      return c.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.94)' }], { duration: 260, easing: 'cubic-bezier(0.4,0,1,1)', fill: 'forwards' }).finished;
+    });
+    // Fallback timer: animations can stall in background tabs.
+    var done = false;
+    Promise.race([Promise.all(outs), new Promise(function (r) { setTimeout(r, 420); })]).then(function () {
+      if (done) return; done = true;
+      leaving.forEach(function (c) { c.hidden = true; c.getAnimations().forEach(function (a) { a.cancel(); }); });
+      entering.forEach(function (c) { c.hidden = false; c.style.opacity = '0'; });
+      staying.forEach(function (c) {
+        var a = first.get(c), b = c.getBoundingClientRect();
+        var dx = a.left - b.left, dy = a.top - b.top;
+        if (dx || dy) c.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }], { duration: 650, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+      });
+      entering.forEach(function (c, i) {
+        c.classList.remove('m-r'); c.style.opacity = '';
+        c.animate([{ opacity: 0, transform: 'translateY(24px) scale(0.97)' }, { opacity: 1, transform: 'none' }], { duration: 650, delay: 120 + i * 70, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'backwards' });
+      });
+      setTimeout(release, 300);
+      if (window.Motion) Motion.refresh(grid);
+    });
+  }
+  chips.forEach(function (c) { c.addEventListener('click', function () { applyFilter(c.dataset.finish); }); });
+
+  // Finish guide swatches jump to the matching sets.
+  document.querySelectorAll('.finish-card').forEach(function (b) {
+    var name = b.querySelector('.finish-name').textContent;
+    b.setAttribute('aria-label', name + ' — show sets available in this finish');
+    b.addEventListener('click', function () {
+      var sets = document.getElementById('sets');
+      sets.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      setTimeout(function () { applyFilter(b.dataset.target); }, reduced ? 0 : 650);
+      var chip = chips.filter(function (c) { return c.dataset.finish === b.dataset.target; })[0];
+      if (chip) setTimeout(function () { chip.focus({ preventScroll: true }); }, reduced ? 0 : 700);
+    });
+  });
+
+  /* ─── Lightbox ─── */
+  var lb = document.querySelector('.lb');
+  var lbImg = lb.querySelector('.lb-media img');
+  var lbIndex = 0, opener = null;
+  function fill(card) {
+    var img = card.querySelector('img.hw-ph.is-on') || card.querySelector('img.hw-ph');
+    lbImg.classList.add('loading');
+    var src = img.dataset.large || img.src;
+    var pre = new Image();
+    pre.onload = pre.onerror = function () { lbImg.src = src; lbImg.alt = img.alt; lbImg.classList.remove('loading'); };
+    pre.src = src;
+    lb.querySelector('#lb-title').textContent = card.querySelector('.hw-card-name').textContent;
+    lb.querySelector('.lb-mat').textContent = card.querySelector('.hw-card-material').textContent;
+    lb.querySelector('.lb-fin').textContent = 'Finish selected: ' + NAMES[card.dataset.current];
+    lb.querySelector('.lb-price').textContent = card.querySelector('.hw-card-price').textContent;
+  }
+  function openLb(card) {
+    opener = card.querySelector('.hw-open');
+    lbIndex = visibleCards().indexOf(card);
+    fill(card);
+    if (typeof lb.showModal === 'function') lb.showModal(); else lb.setAttribute('open', '');
+    lb.querySelector('.lb-close').focus();
+  }
+  function step(d) {
+    var list = visibleCards();
+    lbIndex = (lbIndex + d + list.length) % list.length;
+    fill(list[lbIndex]);
+  }
+  cards.forEach(function (c) { c.querySelector('.hw-open').addEventListener('click', function () { openLb(c); }); });
+  lb.querySelector('.lb-close').addEventListener('click', function () { lb.close(); });
+  lb.querySelector('.lb-prev').addEventListener('click', function () { step(-1); });
+  lb.querySelector('.lb-next').addEventListener('click', function () { step(1); });
+  lb.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+  });
+  lb.addEventListener('click', function (e) { if (e.target === lb) lb.close(); });
+  lb.addEventListener('close', function () { if (opener) opener.focus(); });
+})();
+</script>
 </body>
 </html>

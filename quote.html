@@ -9,58 +9,157 @@
   <link rel="stylesheet" href="shared/motion.css" />
   <script src="shared/motion.js"></script>
   <style>
-    .quote-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); }
-    .quote-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(48px,8vw,100px); align-items: start; }
-    .quote-card { background: white; border-radius: 4px; padding: clamp(28px,4vw,48px); box-shadow: 0 4px 48px rgba(0,0,0,0.10); }
-    .step-indicator { display: flex; gap: 0; margin-bottom: 36px; }
-    .step { flex: 1; text-align: center; }
-    .step-num {
-      width: 32px; height: 32px; border-radius: 50%; font-size: 0.80rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; margin: 0 auto 6px;
-      background: var(--cream-dark); color: var(--charcoal-lt); transition: all 0.3s;
-    }
-    .step.active .step-num { background: var(--charcoal); color: var(--cream); }
-    .step.done .step-num { background: var(--gold); color: var(--charcoal); }
-    .step-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--charcoal-lt); }
-    .step.active .step-label { color: var(--charcoal); }
-    .step-connector { flex: 0.5; height: 1px; background: var(--cream-dark); margin-top: 16px; }
+    .vis-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
+    /* Hero on a real photograph, slow push-in */
+    .quote-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); position: relative; overflow: hidden; isolation: isolate; }
+    .ph-hero-bg { position: absolute; inset: -12% 0; z-index: -1; overflow: hidden; }
+    .ph-hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); animation: ph-push 16s var(--ease-out) forwards; }
+    .ph-hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,17,14,0.95) 0%, rgba(20,17,14,0.82) 45%, rgba(20,17,14,0.55) 100%); }
+    @keyframes ph-push { to { transform: scale(1); } }
+
+    .quote-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(48px,8vw,100px); align-items: start; }
+    .quote-card { background: white; border-radius: 4px; padding: clamp(24px,4vw,48px); box-shadow: 0 4px 48px rgba(0,0,0,0.10); position: relative; overflow: hidden; }
+
+    /* Progress */
+    .q-progress { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--cream-mid); }
+    .q-progress span { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--q, 0.3333)); transition: transform 0.8s var(--ease-out); }
+    .step-indicator { display: flex; align-items: flex-start; gap: 0; margin-bottom: 36px; list-style: none; }
+    .step { flex: 1; text-align: center; }
+    .step-btn { display: block; width: 100%; padding: 0; color: inherit; cursor: default; border-radius: 2px; }
+    .step-btn:not(:disabled) { cursor: pointer; }
+    .step-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+    .step-num {
+      width: 34px; height: 34px; border-radius: 50%; font-size: 0.80rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
+      background: var(--cream-dark); color: var(--charcoal-lt);
+      transition: background 0.4s var(--ease-out), color 0.4s, transform 0.4s var(--ease-out), box-shadow 0.4s;
+      position: relative;
+    }
+    .step.active .step-num { background: var(--charcoal); color: var(--cream); transform: scale(1.08); box-shadow: 0 0 0 5px rgba(20,17,14,0.08); }
+    .step.done .step-num { background: var(--gold); color: var(--charcoal); }
+    .step.done .step-num b { display: none; }
+    .step-num svg { width: 14px; height: 14px; display: none; }
+    .step.done .step-num svg { display: block; animation: q-pop 0.45s var(--ease-out); }
+    .step.done .step-btn:hover .step-num { box-shadow: 0 0 0 5px rgba(180,130,50,0.18); }
+    .step-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--charcoal-lt); transition: color 0.3s; }
+    .step.active .step-label { color: var(--charcoal); }
+    .step-connector { flex: 0.5; height: 2px; background: var(--cream-dark); margin-top: 16px; position: relative; overflow: hidden; }
+    .step-connector span { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.6s var(--ease-out); }
+    .step-connector.filled span { transform: scaleX(1); }
+    @keyframes q-pop { from { transform: scale(0.3); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* Steps */
+    .q-viewport { position: relative; transition: height 0.5s var(--ease-out); }
     .quote-step { display: none; }
     .quote-step.active { display: block; }
+    .quote-step h3:focus { outline: none; }
+    .quote-step.q-in  { animation: q-in 0.5s var(--ease-out) both; }
+    .quote-step.q-out { animation: q-out 0.26s ease both; }
+    .quote-step.q-in.back  { animation-name: q-in-back; }
+    .quote-step.q-out.back { animation-name: q-out-back; }
+    @keyframes q-in       { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: none; } }
+    @keyframes q-in-back  { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: none; } }
+    @keyframes q-out      { to { opacity: 0; transform: translateX(-28px); } }
+    @keyframes q-out-back { to { opacity: 0; transform: translateX(28px); } }
+    .quote-step.q-in .q-stag { animation: q-rise 0.6s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 45ms + 80ms); }
+    @keyframes q-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-    .product-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    /* Option cards */
+    .q-sel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
+    .q-sel-head p { font-size: 0.88rem; margin: 0; }
+    .q-count { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-dark); white-space: nowrap; }
+    .product-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
     .product-option {
-      border: 1.5px solid var(--cream-dark); border-radius: 4px; padding: 16px;
-      cursor: pointer; transition: all 0.15s; text-align: center;
+      position: relative; display: flex; align-items: center; gap: 14px;
+      border: 1.5px solid var(--cream-dark); border-radius: 4px; padding: 10px 40px 10px 10px;
+      cursor: pointer; text-align: left; background: white;
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s, transform 0.25s var(--ease-out);
     }
-    .product-option:hover { border-color: var(--charcoal); }
+    .product-option:hover { border-color: var(--charcoal-lt); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(20,17,14,0.07); }
     .product-option.selected { border-color: var(--gold); background: var(--gold-pale); }
-    .product-option-icon { font-size: 1.5rem; margin-bottom: 6px; }
-    .product-option-label { font-size: 0.82rem; font-weight: 600; color: var(--charcoal); }
-    .product-option-sub { font-size: 0.72rem; color: var(--charcoal-lt); margin-top: 2px; }
+    .product-option:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .po-input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+    .po-media { width: 64px; height: 64px; flex-shrink: 0; border-radius: 2px; overflow: hidden; background: var(--cream-mid); }
+    .po-media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 0.8s var(--ease-out), filter 0.4s; filter: saturate(0.85); }
+    .product-option:hover .po-media img, .product-option.selected .po-media img { transform: scale(1.16); filter: none; }
+    .product-option-label { font-size: 0.86rem; font-weight: 600; color: var(--charcoal); display: block; line-height: 1.3; }
+    .product-option-sub { font-size: 0.72rem; color: var(--charcoal-lt); margin-top: 3px; display: block; line-height: 1.4; }
+    .po-check {
+      position: absolute; right: 12px; top: 50%; width: 20px; height: 20px; margin-top: -10px;
+      border-radius: 50%; border: 1.5px solid var(--cream-dark); background: white;
+      display: grid; place-items: center; color: var(--charcoal);
+      transition: background 0.25s, border-color 0.25s, transform 0.35s var(--ease-out);
+    }
+    .po-check svg { width: 11px; height: 11px; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset 0.35s var(--ease-out) 0.05s; }
+    .product-option.selected .po-check { background: var(--gold); border-color: var(--gold); transform: scale(1.1); }
+    .product-option.selected .po-check svg { stroke-dashoffset: 0; }
 
+    /* Fields */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .quote-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
-    .btn-prev { font-size: 0.80rem; font-weight: 600; color: var(--charcoal-lt); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: color 0.15s; background: none; border: none; padding: 0; }
-    .btn-prev:hover { color: var(--charcoal); }
+    .form-input, .form-select, .form-textarea { transition: border-color 0.2s, box-shadow 0.25s, background 0.2s; }
+    .form-input:hover, .form-select:hover, .form-textarea:hover { border-color: var(--charcoal-lt); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.14); }
+    .form-group.is-invalid .form-input { border-color: #b4402a; background: #fff8f6; }
+    .form-group.is-invalid .form-input:focus { box-shadow: 0 0 0 4px rgba(180,64,42,0.14); }
+    .form-group.is-valid .form-input { border-color: oklch(62% 0.09 140); }
+    .q-err { font-size: 0.76rem; color: #a03722; margin-top: 6px; min-height: 0; display: none; }
+    .form-group.is-invalid .q-err { display: block; animation: q-shake 0.4s ease; }
+    @keyframes q-shake { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
+    .q-alert { display: none; font-size: 0.84rem; color: #a03722; background: #fff3f0; border-left: 3px solid #b4402a; padding: 10px 14px; margin-top: 20px; border-radius: 2px; }
+    .q-alert.on { display: block; }
 
-    .why-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px; }
-    .why-num { font-family: var(--serif); font-size: 2rem; font-weight: 700; color: var(--cream-dark); line-height: 1; flex-shrink: 0; width: 40px; }
-    .why-text h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .q-summary { background: var(--cream); border-radius: 4px; padding: 14px 16px; margin-bottom: 24px; display: none; }
+    .q-summary.on { display: block; }
+    .q-summary-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .q-summary-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--charcoal-lt); }
+    .q-summary-edit { font-size: 0.76rem; font-weight: 600; color: var(--gold-dark); text-decoration: underline; text-underline-offset: 3px; }
+    .q-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .q-chip { font-size: 0.74rem; font-weight: 500; padding: 4px 10px; border-radius: 999px; background: white; border: 1px solid var(--cream-dark); color: var(--charcoal-mid); }
+
+    .quote-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+    .btn-prev { font-size: 0.80rem; font-weight: 600; color: var(--charcoal-lt); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: color 0.15s, gap 0.2s; background: none; border: none; padding: 8px 0; }
+    .btn-prev:hover { color: var(--charcoal); gap: 10px; }
+    .btn-prev:focus-visible, .quote-nav .btn:focus-visible, .q-summary-edit:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .btn[disabled] { opacity: 0.75; cursor: progress; }
+    .q-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: q-spin 0.7s linear infinite; display: inline-block; }
+    @keyframes q-spin { to { transform: rotate(360deg); } }
+
+    /* What happens next */
+    .why-list { position: relative; margin-top: 32px; }
+    .why-list::before { content: ''; position: absolute; left: 19px; top: 34px; bottom: 30px; width: 1px; background: var(--cream-dark); }
+    .why-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px; position: relative; }
+    .why-num { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--gold-dark); line-height: 1; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--cream); border: 1px solid var(--cream-dark); display: grid; place-items: center; position: relative; }
+    .why-text h4 { font-size: 0.95rem; margin-bottom: 4px; padding-top: 2px; }
     .why-text p { font-size: 0.83rem; color: var(--charcoal-lt); }
+    .why-photo { aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; position: relative; background: var(--cream-mid); }
+    .why-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--ease-out); }
+    .why-photo:hover img { transform: scale(1.05); }
 
     .success-card { text-align: center; padding: 40px 0; display: none; }
-    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold-dark); }
+    .success-card.on { animation: q-in 0.6s var(--ease-out) both; }
+    .success-card h3:focus { outline: none; }
+    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold-dark); animation: q-pop 0.6s var(--ease-out) both; }
     .success-icon svg { width: 28px; height: 28px; }
+    .success-icon polyline { stroke-dasharray: 30; stroke-dashoffset: 30; animation: q-draw 0.6s var(--ease-out) 0.35s forwards; }
+    @keyframes q-draw { to { stroke-dashoffset: 0; } }
 
-    @media(max-width:900px){ .quote-layout { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
-    @media(max-width:500px){ .product-selector { grid-template-columns: 1fr; } }
+    @media(max-width:900px){ .quote-layout { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .why-photo { display: none; } }
+    @media(max-width:560px){ .product-selector { grid-template-columns: 1fr; } .q-sel-head { flex-direction: column; gap: 4px; } .quote-nav .btn { white-space: normal; text-align: center; } }
+    @media (prefers-reduced-motion: reduce) {
+      .ph-hero-bg img { animation: none; transform: none; }
+      .quote-step.q-in, .quote-step.q-out, .quote-step.q-in .q-stag, .success-card.on, .success-icon, .step.done .step-num svg { animation: none !important; }
+      .success-icon polyline { animation: none; stroke-dashoffset: 0; }
+      .q-viewport, .q-progress span, .step-connector span, .po-media img, .product-option { transition: none !important; }
+      .form-group.is-invalid .q-err { animation: none; }
+    }
   </style>
 </head>
 <body>
 <div class="page-content">
 
   <section class="quote-hero">
+    <div class="ph-hero-bg" aria-hidden="true" data-parallax="0.12"><img src="images/pages/core/bg-workshop-lumber.jpg" alt="" /></div>
     <div class="container">
       <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
         <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
@@ -80,73 +179,89 @@
         <div>
           <div class="label" style="margin-bottom:20px;">What Happens Next</div>
           <div class="rule"></div>
-          <div style="margin-top:32px;">
-            <div class="why-item"><div class="why-num">01</div><div class="why-text"><h4>We Review Your Request</h4><p>Within 48 hours, a project manager reviews your specs and contacts you to confirm details.</p></div></div>
-            <div class="why-item"><div class="why-num">02</div><div class="why-text"><h4>Detailed Quote Delivered</h4><p>You receive an itemized quote with species options, finish selections, and lead time.</p></div></div>
-            <div class="why-item"><div class="why-num">03</div><div class="why-text"><h4>Shop Drawings (if Custom)</h4><p>For custom or non-standard work, we produce shop drawings for your approval before production starts.</p></div></div>
-            <div class="why-item"><div class="why-num">04</div><div class="why-text"><h4>Production &amp; Delivery</h4><p>Once approved, we build your order in our Brooklyn facility and deliver it — crated, wrapped, and on time.</p></div></div>
+          <div class="why-list">
+            <div class="why-item" data-reveal="left"><div class="why-num">01</div><div class="why-text"><h4>We Review Your Request</h4><p>Within 48 hours, a project manager reviews your specs and contacts you to confirm details.</p></div></div>
+            <div class="why-item" data-reveal="left"><div class="why-num">02</div><div class="why-text"><h4>Detailed Quote Delivered</h4><p>You receive an itemized quote with species options, finish selections, and lead time.</p></div></div>
+            <div class="why-item" data-reveal="left"><div class="why-num">03</div><div class="why-text"><h4>Shop Drawings (if Custom)</h4><p>For custom or non-standard work, we produce shop drawings for your approval before production starts.</p></div></div>
+            <div class="why-item" data-reveal="left"><div class="why-num">04</div><div class="why-text"><h4>Production &amp; Delivery</h4><p>Once approved, we build your order in our Brooklyn facility and deliver it — crated, wrapped, and on time.</p></div></div>
           </div>
           <div class="rule-full" style="margin:32px 0;"></div>
+          <div class="why-photo" data-reveal="scale"><img src="images/pages/core/workshop-samples.jpg" alt="Assorted hardwood samples in a range of species and tones" loading="lazy" /></div>
         </div>
 
         <!-- Right: Form -->
-        <div class="quote-card">
+        <div class="quote-card" data-no-motion>
+          <div class="q-progress" aria-hidden="true"><span></span></div>
           <!-- Step Indicator -->
-          <div class="step-indicator">
-            <div class="step active" id="step-ind-1"><div class="step-num">1</div><div class="step-label">Products</div></div>
-            <div class="step-connector"></div>
-            <div class="step" id="step-ind-2"><div class="step-num">2</div><div class="step-label">Details</div></div>
-            <div class="step-connector"></div>
-            <div class="step" id="step-ind-3"><div class="step-num">3</div><div class="step-label">Contact</div></div>
-          </div>
+          <ol class="step-indicator" aria-label="Quote request steps">
+            <li class="step active" id="step-ind-1"><button type="button" class="step-btn" data-go="1" aria-current="step"><span class="step-num"><b>1</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><span class="step-label">Products</span></button></li>
+            <li class="step-connector" aria-hidden="true"><span></span></li>
+            <li class="step" id="step-ind-2"><button type="button" class="step-btn" data-go="2" disabled><span class="step-num"><b>2</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><span class="step-label">Details</span></button></li>
+            <li class="step-connector" aria-hidden="true"><span></span></li>
+            <li class="step" id="step-ind-3"><button type="button" class="step-btn" data-go="3" disabled><span class="step-num"><b>3</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><span class="step-label">Contact</span></button></li>
+          </ol>
+          <p class="vis-hidden" id="q-status" aria-live="polite"></p>
 
+          <form id="quote-form" novalidate>
+          <div class="q-viewport">
           <!-- Step 1: Product Selection -->
           <div class="quote-step active" id="q-step-1">
-            <h3 style="margin-bottom:6px;">What are you looking for?</h3>
-            <p style="margin-bottom:24px; font-size:0.88rem;">Select all that apply.</p>
-            <div class="product-selector">
-              <div class="product-option" data-val="interior-doors">
-                <div class="product-option-icon">🚪</div>
-                <div class="product-option-label">Interior Doors</div>
-                <div class="product-option-sub">Shaker, panel, flush</div>
-              </div>
-              <div class="product-option" data-val="exterior-doors">
-                <div class="product-option-icon">🏠</div>
-                <div class="product-option-label">Exterior Doors</div>
-                <div class="product-option-sub">Entry, front, patio</div>
-              </div>
-              <div class="product-option" data-val="french-doors">
-                <div class="product-option-icon">🪟</div>
-                <div class="product-option-label">French Doors</div>
-                <div class="product-option-sub">Interior &amp; exterior pairs</div>
-              </div>
-              <div class="product-option" data-val="barn-doors">
-                <div class="product-option-icon">🛖</div>
-                <div class="product-option-label">Barn Doors</div>
-                <div class="product-option-sub">Sliding with hardware</div>
-              </div>
-              <div class="product-option" data-val="custom-doors">
-                <div class="product-option-icon">✏️</div>
-                <div class="product-option-label">Custom Doors</div>
-                <div class="product-option-sub">Made-to-specification</div>
-              </div>
-              <div class="product-option" data-val="fire-rated">
-                <div class="product-option-icon">🔥</div>
-                <div class="product-option-label">Fire-Rated Doors</div>
-                <div class="product-option-sub">UL listed, 20–90 min</div>
-              </div>
-              <div class="product-option" data-val="moldings">
-                <div class="product-option-icon">📐</div>
-                <div class="product-option-label">Moldings</div>
-                <div class="product-option-sub">Crown, base, casing</div>
-              </div>
-              <div class="product-option" data-val="hardware">
-                <div class="product-option-icon">🔑</div>
-                <div class="product-option-label">Hardware</div>
-                <div class="product-option-sub">Handles, knobs, hinges</div>
-              </div>
+            <h3 style="margin-bottom:6px;" id="q-prod-h" tabindex="-1">What are you looking for?</h3>
+            <div class="q-sel-head">
+              <p id="q-prod-d">Select all that apply.</p>
+              <span class="q-count" id="q-count" aria-live="polite"></span>
             </div>
-            <div class="form-group">
+            <div class="product-selector" role="group" aria-labelledby="q-prod-h" aria-describedby="q-prod-d">
+              <label class="product-option q-stag" data-val="interior-doors">
+                <input type="checkbox" class="po-input" value="interior-doors" />
+                <span class="po-media"><img src="images/pages/core/thumb-door-raised-panel.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">Interior Doors</span><span class="product-option-sub">Shaker, panel, flush</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="exterior-doors">
+                <input type="checkbox" class="po-input" value="exterior-doors" />
+                <span class="po-media"><img src="images/pages/core/thumb-door-exterior-grand.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">Exterior Doors</span><span class="product-option-sub">Entry, front, patio</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="french-doors">
+                <input type="checkbox" class="po-input" value="french-doors" />
+                <span class="po-media"><img src="images/pages/core/thumb-door-french.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">French Doors</span><span class="product-option-sub">Interior &amp; exterior pairs</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="barn-doors">
+                <input type="checkbox" class="po-input" value="barn-doors" />
+                <span class="po-media"><img src="images/pages/core/thumb-door-barn-modern.jpg" alt="" loading="lazy" style="object-position:70% 50%" /></span>
+                <span><span class="product-option-label">Barn Doors</span><span class="product-option-sub">Sliding with hardware</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="custom-doors">
+                <input type="checkbox" class="po-input" value="custom-doors" />
+                <span class="po-media"><img src="images/pages/core/thumb-door-custom.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">Custom Doors</span><span class="product-option-sub">Made-to-specification</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="fire-rated">
+                <input type="checkbox" class="po-input" value="fire-rated" />
+                <span class="po-media"><img src="images/pages/core/thumb-door-fire-rated.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">Fire-Rated Doors</span><span class="product-option-sub">UL listed, 20–90 min</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="moldings">
+                <input type="checkbox" class="po-input" value="moldings" />
+                <span class="po-media"><img src="images/pages/core/thumb-molding-crown.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">Moldings</span><span class="product-option-sub">Crown, base, casing</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+              <label class="product-option q-stag" data-val="hardware">
+                <input type="checkbox" class="po-input" value="hardware" />
+                <span class="po-media"><img src="images/pages/core/thumb-hardware-lever-brass.jpg" alt="" loading="lazy" /></span>
+                <span><span class="product-option-label">Hardware</span><span class="product-option-sub">Handles, knobs, hinges</span></span>
+                <span class="po-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              </label>
+            </div>
+            <div class="form-group q-stag">
               <label class="form-label" for="q-project-type">Project Type</label>
               <select class="form-select" id="q-project-type">
                 <option value="">Select type</option>
@@ -159,7 +274,7 @@
                 <option>Other</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-timeline">Desired Timeline</label>
               <select class="form-select" id="q-timeline">
                 <option value="">Select timeline</option>
@@ -172,15 +287,15 @@
             </div>
             <div class="quote-nav">
               <span></span>
-              <button class="btn btn-primary" onclick="goStep(2)">Next: Project Details →</button>
+              <button type="submit" class="btn btn-primary">Next: Project Details →</button>
             </div>
           </div>
 
           <!-- Step 2: Project Details -->
           <div class="quote-step" id="q-step-2">
-            <h3 style="margin-bottom:6px;">Project Details</h3>
+            <h3 style="margin-bottom:6px;" tabindex="-1">Project Details</h3>
             <p style="margin-bottom:24px; font-size:0.88rem;">The more you share, the more accurate our quote will be.</p>
-            <div class="form-row">
+            <div class="form-row q-stag">
               <div class="form-group">
                 <label class="form-label" for="q-qty">Approximate Quantity</label>
                 <input class="form-input" type="number" id="q-qty" placeholder="e.g. 12 doors" />
@@ -190,7 +305,7 @@
                 <input class="form-input" type="text" id="q-size" placeholder='e.g. 80"×36"×1¾"' />
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-species">Preferred Wood Species</label>
               <select class="form-select" id="q-species">
                 <option value="">No preference / advise me</option>
@@ -206,7 +321,7 @@
                 <option>Other (describe below)</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-finish">Finish Preference</label>
               <select class="form-select" id="q-finish">
                 <option value="">No preference / advise me</option>
@@ -217,11 +332,11 @@
                 <option>Natural Oil / Hardwax</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-details">Project Description</label>
               <textarea class="form-textarea" id="q-details" placeholder="Describe your project — style, any special requirements, relevant drawings or specs..."></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-budget">Approximate Budget</label>
               <select class="form-select" id="q-budget">
                 <option value="">Prefer not to say</option>
@@ -233,40 +348,48 @@
               </select>
             </div>
             <div class="quote-nav">
-              <button class="btn-prev" onclick="goStep(1)">← Back</button>
-              <button class="btn btn-primary" onclick="goStep(3)">Next: Your Info →</button>
+              <button type="button" class="btn-prev" data-go="1">← Back</button>
+              <button type="submit" class="btn btn-primary">Next: Your Info →</button>
             </div>
           </div>
 
           <!-- Step 3: Contact Info -->
           <div class="quote-step" id="q-step-3">
-            <h3 style="margin-bottom:6px;">Your Contact Information</h3>
+            <h3 style="margin-bottom:6px;" tabindex="-1">Your Contact Information</h3>
             <p style="margin-bottom:24px; font-size:0.88rem;">We'll reach out to confirm details and deliver your quote.</p>
-            <div class="form-row">
+            <div class="q-summary q-stag" id="q-summary">
+              <div class="q-summary-top"><span class="q-summary-title">Your selections</span><button type="button" class="q-summary-edit" data-go="1">Edit</button></div>
+              <div class="q-chips" id="q-chips"></div>
+            </div>
+            <div class="form-row q-stag">
               <div class="form-group">
                 <label class="form-label" for="q-fname">First Name *</label>
-                <input class="form-input" type="text" id="q-fname" required />
+                <input class="form-input" type="text" id="q-fname" required autocomplete="given-name" aria-describedby="q-fname-err" />
+                <p class="q-err" id="q-fname-err">Please enter your first name.</p>
               </div>
               <div class="form-group">
                 <label class="form-label" for="q-lname">Last Name *</label>
-                <input class="form-input" type="text" id="q-lname" required />
+                <input class="form-input" type="text" id="q-lname" required autocomplete="family-name" aria-describedby="q-lname-err" />
+                <p class="q-err" id="q-lname-err">Please enter your last name.</p>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-company">Company / Firm</label>
-              <input class="form-input" type="text" id="q-company" />
+              <input class="form-input" type="text" id="q-company" autocomplete="organization" />
             </div>
-            <div class="form-row">
+            <div class="form-row q-stag">
               <div class="form-group">
                 <label class="form-label" for="q-email">Email *</label>
-                <input class="form-input" type="email" id="q-email" required />
+                <input class="form-input" type="email" id="q-email" required autocomplete="email" aria-describedby="q-email-err" />
+                <p class="q-err" id="q-email-err">Please enter a valid email address.</p>
               </div>
               <div class="form-group">
                 <label class="form-label" for="q-phone">Phone *</label>
-                <input class="form-input" type="tel" id="q-phone" required />
+                <input class="form-input" type="tel" id="q-phone" required autocomplete="tel" aria-describedby="q-phone-err" />
+                <p class="q-err" id="q-phone-err">Please enter a phone number.</p>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-role">I Am A</label>
               <select class="form-select" id="q-role">
                 <option>Homeowner</option>
@@ -278,20 +401,23 @@
                 <option>Other</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group q-stag">
               <label class="form-label" for="q-location">Project Location</label>
               <input class="form-input" type="text" id="q-location" placeholder="City, State" />
             </div>
+            <div class="q-alert" id="q-alert" role="alert"></div>
             <div class="quote-nav">
-              <button class="btn-prev" onclick="goStep(2)">← Back</button>
-              <button class="btn btn-gold" onclick="submitQuote()">Submit Quote Request →</button>
+              <button type="button" class="btn-prev" data-go="2">← Back</button>
+              <button type="submit" class="btn btn-gold">Submit Quote Request →</button>
             </div>
           </div>
+          </div><!-- /q-viewport -->
+          </form>
 
           <!-- Success -->
           <div class="success-card" id="q-success">
-            <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <h3 style="margin-bottom:8px;">Quote Request Received!</h3>
+            <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h3 style="margin-bottom:8px;" tabindex="-1">Quote Request Received!</h3>
             <p style="margin-bottom:24px;">Thank you. A project manager will contact you within 48 business hours with a detailed quote. Check your email for a confirmation.</p>
             <a href="index.html" class="btn btn-outline btn-sm">Return Home</a>
           </div>
@@ -304,26 +430,146 @@
 <script src="shared/nav.js"></script>
 <script>
   var currentStep = 1;
+  var maxStep = 1;
+  var qReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var STEP_NAMES = { 1: 'Products', 2: 'Details', 3: 'Contact' };
 
+  /* ─── Option cards: real checkboxes; .selected mirrors the checked state ─── */
+  function updateCount() {
+    var n = document.querySelectorAll('.product-option.selected').length;
+    document.getElementById('q-count').textContent = n ? n + ' selected' : '';
+  }
   document.querySelectorAll('.product-option').forEach(function(opt) {
-    opt.addEventListener('click', function() { this.classList.toggle('selected'); });
+    var input = opt.querySelector('.po-input');
+    input.addEventListener('change', function() {
+      opt.classList.toggle('selected', input.checked);
+      updateCount();
+    });
+  });
+  document.querySelectorAll('.q-stag').forEach(function(el) {
+    var step = el.closest('.quote-step');
+    var list = Array.prototype.slice.call(step.querySelectorAll('.q-stag'));
+    el.style.setProperty('--i', list.indexOf(el));
   });
 
-  function goStep(n) {
-    document.getElementById('q-step-' + currentStep).classList.remove('active');
-    document.getElementById('step-ind-' + currentStep).classList.remove('active');
-    if (n > currentStep) document.getElementById('step-ind-' + currentStep).classList.add('done');
-    currentStep = n;
-    document.getElementById('q-step-' + n).classList.add('active');
-    document.getElementById('step-ind-' + n).classList.add('active');
-    document.querySelector('.quote-card').scrollIntoView ? window.scrollTo(0, document.querySelector('.quote-card').offsetTop - 100) : null;
+  /* ─── Step navigation ─── */
+  function setIndicator(n) {
+    for (var i = 1; i <= 3; i++) {
+      var ind = document.getElementById('step-ind-' + i);
+      var btn = ind.querySelector('.step-btn');
+      ind.classList.toggle('active', i === n);
+      ind.classList.toggle('done', i < n || (i < maxStep && i !== n));
+      btn.disabled = i > maxStep;
+      if (i === n) btn.setAttribute('aria-current', 'step'); else btn.removeAttribute('aria-current');
+      btn.setAttribute('aria-label', 'Step ' + i + ' of 3: ' + STEP_NAMES[i] + (i < n || (i < maxStep && i !== n) ? ', completed' : ''));
+    }
+    document.querySelectorAll('.step-connector').forEach(function(c, k) { c.classList.toggle('filled', k + 1 < Math.max(n, maxStep)); });
+    document.querySelector('.q-progress span').style.setProperty('--q', (n / 3).toFixed(4));
+    document.getElementById('q-status').textContent = 'Step ' + n + ' of 3: ' + STEP_NAMES[n];
   }
+
+  function renderSummary() {
+    var chips = [];
+    document.querySelectorAll('.product-option.selected .product-option-label').forEach(function(l) { chips.push(l.textContent); });
+    ['q-project-type', 'q-timeline', 'q-species', 'q-finish'].forEach(function(id) {
+      var v = document.getElementById(id).value; if (v) chips.push(v);
+    });
+    var box = document.getElementById('q-chips');
+    box.innerHTML = '';
+    chips.forEach(function(t) { var s = document.createElement('span'); s.className = 'q-chip'; s.textContent = t; box.appendChild(s); });
+    document.getElementById('q-summary').classList.toggle('on', chips.length > 0);
+  }
+
+  var stepBusy = false;
+  function goStep(n) {
+    if (n === currentStep || stepBusy) return;
+    var from = document.getElementById('q-step-' + currentStep);
+    var to = document.getElementById('q-step-' + n);
+    var back = n < currentStep;
+    var viewport = document.querySelector('.q-viewport');
+    currentStep = n;
+    maxStep = Math.max(maxStep, n);
+    if (n === 3) renderSummary();
+    setIndicator(n);
+
+    function show() {
+      from.classList.remove('active', 'q-in', 'q-out', 'back');
+      to.classList.remove('q-out');
+      to.classList.toggle('back', back);
+      to.classList.add('active', 'q-in');
+      var h3 = to.querySelector('h3');
+      if (h3) h3.focus({ preventScroll: true });
+      var card = document.querySelector('.quote-card');
+      var top = card.getBoundingClientRect().top;
+      if (top < 0 || top > window.innerHeight * 0.5) window.scrollTo({ top: window.scrollY + top - 100, behavior: qReduced ? 'auto' : 'smooth' });
+    }
+    if (qReduced) { show(); return; }
+    stepBusy = true;
+    viewport.style.height = viewport.offsetHeight + 'px';
+    from.classList.toggle('back', back);
+    from.classList.add('q-out');
+    setTimeout(function() {
+      show();
+      viewport.style.height = to.offsetHeight + 'px';
+      setTimeout(function() { viewport.style.height = ''; to.classList.remove('q-in'); stepBusy = false; }, 620);
+    }, 240);
+  }
+
+  document.addEventListener('click', function(e) {
+    var go = e.target.closest('[data-go]');
+    if (!go || go.disabled) return;
+    goStep(parseInt(go.getAttribute('data-go'), 10));
+  });
+
+  /* ─── Inline validation (step 3) ─── */
+  var RULES = {
+    'q-fname': function(v) { return !!v; },
+    'q-lname': function(v) { return !!v; },
+    'q-email': function(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+    'q-phone': function(v) { return !!v; }
+  };
+  function checkField(id, show) {
+    var input = document.getElementById(id);
+    var ok = RULES[id](input.value.trim());
+    var group = input.closest('.form-group');
+    if (show || group.classList.contains('is-invalid')) {
+      group.classList.toggle('is-invalid', !ok);
+      group.classList.toggle('is-valid', ok);
+      input.setAttribute('aria-invalid', ok ? 'false' : 'true');
+    }
+    return ok;
+  }
+  Object.keys(RULES).forEach(function(id) {
+    var input = document.getElementById(id);
+    input.addEventListener('blur', function() { if (input.value.trim() || input.dataset.touched) checkField(id, true); input.dataset.touched = '1'; });
+    input.addEventListener('input', function() { checkField(id, false); });
+  });
+  function validateStep3() {
+    var firstBad = null;
+    Object.keys(RULES).forEach(function(id) { if (!checkField(id, true) && !firstBad) firstBad = id; });
+    var alertBox = document.getElementById('q-alert');
+    if (firstBad) {
+      alertBox.textContent = 'Please fill in all required fields.';
+      alertBox.classList.add('on');
+      document.getElementById(firstBad).focus();
+      return false;
+    }
+    alertBox.classList.remove('on');
+    alertBox.textContent = '';
+    return true;
+  }
+
+  document.getElementById('quote-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (currentStep < 3) goStep(currentStep + 1);
+    else submitQuote();
+  });
 
   function submitQuote() {
     var fname = document.getElementById('q-fname').value.trim();
     var email = document.getElementById('q-email').value.trim();
     var phone = document.getElementById('q-phone').value.trim();
-    if (!fname || !email || !phone) { alert('Please fill in all required fields.'); return; }
+    if (!validateStep3() || !fname || !email || !phone) return;
 
     var selectedProducts = [];
     document.querySelectorAll('.product-option.selected').forEach(function(el) {
@@ -332,7 +578,7 @@
 
     var submitBtn = document.querySelector('#q-step-3 .btn-gold');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting…';
+    submitBtn.innerHTML = '<span class="q-spin" aria-hidden="true"></span> Submitting…';
 
     fetch('https://formsubmit.co/ajax/info@soliddoorsandmoldings.com', {
       method: 'POST',
@@ -360,15 +606,24 @@
     .then(function(r) { return r.json(); })
     .then(function() {
       document.getElementById('q-step-3').classList.remove('active');
-      document.getElementById('q-success').style.display = 'block';
+      var success = document.getElementById('q-success');
+      success.style.display = 'block';
+      success.classList.add('on');
       document.querySelector('.step-indicator').style.display = 'none';
+      document.querySelector('.q-progress span').style.setProperty('--q', '1');
+      document.getElementById('q-status').textContent = 'Quote Request Received!';
+      success.querySelector('h3').focus({ preventScroll: true });
     })
     .catch(function() {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Quote Request →';
-      alert('Something went wrong. Please try again or use the contact form.');
+      var alertBox = document.getElementById('q-alert');
+      alertBox.textContent = 'Something went wrong. Please try again or use the contact form.';
+      alertBox.classList.add('on');
     });
   }
+
+  setIndicator(1);
 </script>
 </body>
 </html>

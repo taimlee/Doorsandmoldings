@@ -11,7 +11,7 @@
     .cat-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
     .cat-hero-text{padding-bottom:clamp(48px,7vw,80px);max-width:620px;}
     .cat-img-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;}
-    .cat-img{aspect-ratio:4/3;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
+    .cat-img{aspect-ratio:4/5;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
     .styles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,28px);}
     .style-card{border:1.5px solid var(--cream-dark);border-radius:2px;overflow:hidden;transition:all 0.2s var(--ease-out);}
     .style-card:hover{border-color:var(--charcoal);box-shadow:0 10px 40px rgba(0,0,0,0.08);}
@@ -22,6 +22,111 @@
     .spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,64px);align-items:start;}
     @media(max-width:900px){.styles-grid{grid-template-columns:repeat(2,1fr);}.spec-grid{grid-template-columns:1fr;}.cat-img-row{grid-template-columns:1fr;}}
     @media(max-width:600px){.styles-grid{grid-template-columns:1fr;}}
+
+    /* ── Step through: the French doors part as you scroll ── */
+    .fx{position:relative;background:var(--charcoal);margin-top:clamp(48px,8vw,96px);}
+    .fx-stage{position:relative;height:min(80vh,760px);overflow:hidden;isolation:isolate;}
+    .fx-on{height:300vh;height:300svh;}
+    .fx-on .fx-stage{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));height:calc(100svh - var(--nav-h));}
+    .fx-stage .pf{position:absolute;inset:0;background:transparent;}
+    .fx-stage .pf img{transition:none;transform:none;}
+    .fx-room{display:none;}
+    .fx-on .fx-room{display:block;}
+    .fx-doors{position:absolute;inset:0;transform-origin:50% 52%;will-change:transform;}
+    .fx-l{clip-path:none;}
+    .fx-r{display:none;}
+    .fx-on .fx-l{clip-path:inset(0 50% 0 0);}
+    .fx-on .fx-r{display:block;clip-path:inset(0 0 0 50%);}
+    .fx-on .fx-leaf{will-change:transform,opacity;}
+    .fx-shade{position:absolute;inset:0;pointer-events:none;z-index:2;
+      background:linear-gradient(90deg,rgba(14,12,10,0.78) 0%,rgba(14,12,10,0.35) 42%,rgba(14,12,10,0) 70%);}
+    .fx-copy{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);z-index:3;pointer-events:none;}
+    .fx-copy .label{display:block;margin-bottom:18px;}
+    .fx-line{display:block;font-family:var(--serif);font-weight:600;color:var(--cream);font-size:clamp(1.9rem,4.4vw,3.8rem);line-height:1.12;letter-spacing:-0.015em;max-width:12ch;}
+    .fx-line + .fx-line{margin-top:.12em;}
+    .fx-on .fx-line{opacity:0.16;transform:translate3d(0,18px,0);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out);}
+    .fx-on .fx-line.on{opacity:1;transform:none;}
+    .fx-bar{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;height:1px;background:rgba(255,255,255,0.14);z-index:3;display:none;}
+    .fx-on .fx-bar{display:block;}
+    .fx-bar i{position:absolute;inset:0;background:var(--gold);transform-origin:0 50%;transform:scaleX(var(--p,0));}
+    @media(max-width:700px){
+      .fx-shade{background:linear-gradient(180deg,rgba(14,12,10,0.1) 30%,rgba(14,12,10,0.8) 100%);}
+      .fx-copy{top:auto;bottom:56px;transform:none;}
+      .fx-line{font-size:clamp(1.7rem,8vw,2.4rem);max-width:none;}
+    }
+    /* ── Page kit: real-photo frames, lightbox, video, spec rows ── */
+    :where(.pf){position:relative;overflow:hidden;background:#1a1714;margin:0;}
+    .pf img,.pf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease-out);}
+    .pf .pf-px{position:absolute;inset:-6% 0;will-change:transform;}
+    .pf-open{position:absolute;inset:0;z-index:4;display:block;width:100%;height:100%;background:transparent;cursor:zoom-in;}
+    .pf-open::after{content:'';position:absolute;right:14px;top:14px;width:38px;height:38px;border-radius:50%;
+      background:rgba(20,17,14,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5efe6' stroke-width='1.8'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/16px no-repeat;
+      opacity:0;transform:scale(.8);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+    .pf:hover .pf-open::after,.pf-open:focus-visible::after{opacity:1;transform:none;}
+    .pf-open:focus-visible{outline:2px solid var(--gold);outline-offset:-4px;}
+    @media (hover:none){.pf-open::after{opacity:.9;transform:none;width:32px;height:32px;right:10px;top:10px;}}
+    .pf:hover img{transform:scale(1.04);}
+    .style-card:hover .pf img{transform:scale(1.07);}
+    .pf-tag{position:absolute;left:14px;bottom:12px;z-index:3;font-size:.64rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,236,.9);text-shadow:0 1px 8px rgba(0,0,0,.5);pointer-events:none;}
+    .pf.grain::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(20,17,14,0) 40%,rgba(20,17,14,.55));}
+    @media (prefers-reduced-motion:no-preference){
+      .m-js .pf.k-wipe{clip-path:inset(100% 0 0 0);transition:clip-path 1.1s cubic-bezier(.77,0,.18,1) var(--kd,0s);}
+      .m-js .pf.k-wipe img,.m-js .pf.k-wipe video{transform:scale(1.22);transition:transform 1.7s var(--ease-out) var(--kd,0s);}
+      .m-js .pf.k-wipe.k-in{clip-path:inset(0 0 0 0);}
+      .m-js .pf.k-wipe.k-in img,.m-js .pf.k-wipe.k-in video{transform:none;}
+      .m-js .spec-table.k-rows tr{opacity:0;transform:translate3d(-14px,0,0);transition:opacity .7s var(--ease-out) calc(var(--i,0) * 60ms + .15s),transform .7s var(--ease-out) calc(var(--i,0) * 60ms + .15s);}
+      .m-js .spec-table.k-rows.k-in tr{opacity:1;transform:none;}
+    }
+    @media (prefers-reduced-motion:reduce){.pf img,.pf video{transition:none;transform:none!important;}}
+    .spec-table td{transition:background .25s,color .25s;}
+    .spec-table tr:hover td{background:rgba(180,130,60,.07);}
+    .spec-table tr:hover td:first-child{color:var(--gold-dark);}
+    .spec-table td:first-child{padding-left:8px;}
+    /* Hero row: real photos; the hovered tile widens */
+    .cat-img-row{transition:grid-template-columns .9s var(--ease-out);}
+    @media (hover:hover) and (min-width:901px){
+      .cat-img-row:has(> :nth-child(1):hover){grid-template-columns:2.25fr .9fr .9fr;}
+      .cat-img-row:has(> :nth-child(2):hover){grid-template-columns:1.7fr 1.45fr .9fr;}
+      .cat-img-row:has(> :nth-child(3):hover){grid-template-columns:1.7fr .9fr 1.45fr;}
+    }
+    @media (max-width:900px){
+      .cat-img-row{grid-template-columns:1fr 1fr!important;}
+      .cat-img-row > :first-child{grid-column:1 / -1;aspect-ratio:4/3;height:auto;min-height:0;}
+      .cat-img-row > :not(:first-child){aspect-ratio:4/5;}
+    }
+    /* Video toggle */
+    .vid-toggle{position:absolute;left:12px;top:12px;z-index:5;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+      background:rgba(20,17,14,.5);color:#f5efe6;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s;}
+    .vid-toggle:hover{background:rgba(20,17,14,.8);}
+    .vid-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+    .vid-toggle svg{width:14px;height:14px;}
+    .vid-toggle .i-play{display:none;}
+    .vid-toggle[aria-pressed="false"] .i-play{display:block;}
+    .vid-toggle[aria-pressed="false"] .i-pause{display:none;}
+    /* Lightbox */
+    .lb{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(14,12,10,.96);color:#f5efe6;overflow:hidden;}
+    .lb::backdrop{background:rgba(14,12,10,.6);}
+    .lb[open]{display:flex;flex-direction:column;}
+    .lb-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:72px clamp(12px,7vw,110px) 12px;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
+    .lb-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 30px 80px rgba(0,0,0,.5);-webkit-user-drag:none;}
+    .lb-bar{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px clamp(16px,7vw,110px) 22px;}
+    .lb-cap{font-size:.86rem;color:rgba(245,239,230,.75);margin:0;}
+    .lb-count{font-size:.7rem;font-weight:600;letter-spacing:.16em;color:var(--gold);white-space:nowrap;}
+    .lb-btn{position:absolute;z-index:2;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#f5efe6;border:1px solid rgba(255,255,255,.22);background:rgba(20,17,14,.4);transition:background .2s,border-color .2s;}
+    .lb-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--charcoal);}
+    .lb-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+    .lb-btn svg{width:18px;height:18px;}
+    .lb-close{top:14px;right:14px;}
+    .lb-prev{left:clamp(8px,2vw,28px);top:50%;margin-top:-24px;}
+    .lb-next{right:clamp(8px,2vw,28px);top:50%;margin-top:-24px;}
+    .lb-one .lb-prev,.lb-one .lb-next,.lb-one .lb-count{display:none;}
+    @media (max-width:600px){.lb-prev,.lb-next{top:auto;bottom:64px;margin:0;}}
+    @media (prefers-reduced-motion:no-preference){
+      .lb[open]{animation:lb-in .4s var(--ease-out);}
+      .lb-img.lb-anim{animation:lb-img .55s var(--ease-out);}
+    }
+    @keyframes lb-in{from{opacity:0;}to{opacity:1;}}
+    @keyframes lb-img{from{opacity:0;transform:translate3d(calc(var(--dir,0) * 40px),0,0) scale(.97);}to{opacity:1;transform:none;}}
   </style>
 </head>
 <body>
@@ -39,15 +144,24 @@
         <p class="lead" style="color:rgba(255,255,255,0.55);margin-bottom:32px;">French doors are both a design element and a spatial decision — they connect rooms, flood interiors with light, and make every threshold a moment. Ours are solid wood, built to last decades.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <a href="../quote.html" class="btn btn-gold">Get a Quote</a>
-          
+
         </div>
       </div>
     </div>
     <div class="container" style="padding-left:0;padding-right:0;max-width:100%;">
       <div class="cat-img-row">
-        <div class="img-ph cat-img tall"><span class="img-ph-label">Pair of French doors open to sunlit garden — white painted</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Interior French door — White Oak, 15-lite TDL</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Exterior French door — black painted, terrace view</span></div>
+        <figure class="pf cat-img tall k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-french.jpg" alt="Pair of glazed French doors standing open into a room" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: pair of glazed French doors standing open into a room"></button>
+        </figure>
+        <figure class="pf cat-img k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-shaker.jpg" alt="Wood door with glass lites over a lower panel, in a sunlit dining room" style="object-position:84% 50%;" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: wood door with glass lites over a lower panel, in a sunlit dining room"></button>
+        </figure>
+        <figure class="pf cat-img k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-glass-lite.jpg" alt="Full-glass framed doors in a lobby" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: full-glass framed doors in a lobby"></button>
+        </figure>
       </div>
     </div>
   </section>
@@ -59,16 +173,34 @@
     <div class="feature-item"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div><div class="feature-title">Custom Configurations</div><div class="feature-desc">With transoms, sidelights, and screens</div></div></div>
   </div></div>
 
+  <section class="fx" id="fx" aria-label="Step through a pair of French doors">
+    <div class="fx-stage">
+      <figure class="pf fx-room"><img src="../images/pages/doors/room-hallway.jpg" alt="" loading="lazy" /></figure>
+      <div class="fx-doors">
+        <figure class="pf fx-leaf fx-l"><img src="../images/pages/doors/door-french.jpg" alt="Pair of glazed French doors standing open into a room" loading="lazy" /></figure>
+        <figure class="pf fx-leaf fx-r" aria-hidden="true"><img src="../images/pages/doors/door-french.jpg" alt="" loading="lazy" /></figure>
+      </div>
+      <div class="fx-shade"></div>
+      <div class="fx-copy" data-no-motion><div class="container">
+        <span class="label">French Doors</span>
+        <span class="fx-line">They connect rooms,</span>
+        <span class="fx-line">flood interiors with light,</span>
+        <span class="fx-line">and make every threshold a moment.</span>
+      </div></div>
+      <div class="fx-bar" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
       <div class="section-intro"><div class="label">Configurations</div><div class="rule"></div><h2>Choose Your French Door Setup</h2></div>
       <div class="styles-grid">
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">15-lite true divided light French door — interior pair</span></div><div class="style-body"><div class="style-name">15-Lite TDL</div><p class="style-desc">Classic divided light with 15 individual glass panes per leaf. The most traditional and refined French door profile.</p><div class="style-price">From $1,800 / pair</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Full glass French door — minimal muntins, modern</span></div><div class="style-body"><div class="style-name">Full Lite</div><p class="style-desc">Maximum light, minimal frame. A single pane per door leaf — clean and contemporary.</p><div class="style-price">Contact us for pricing</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Half-glass panel French door — bottom wood, top glass</span></div><div class="style-body"><div class="style-name">Half Lite with Panel</div><p class="style-desc">Solid panel at the base, glass at the top. Balances light and privacy — great for bedrooms and formal rooms.</p><div class="style-price">From $1,650 / pair</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">French door with transom — exterior garden door</span></div><div class="style-body"><div class="style-name">With Transom</div><p class="style-desc">Add a fixed or operable transom above for additional light and height. A dramatic architectural statement.</p><div class="style-price">From $2,400 / unit</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Pocketing French door — slides into wall</span></div><div class="style-body"><div class="style-name">Pocketing French</div><p class="style-desc">Pairs that slide into the wall cavity — no swing clearance required. Perfect for smaller rooms and high-traffic openings.</p><div class="style-price">From $2,200 / pair</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Bifold French door — 4 panels, accordion open</span></div><div class="style-body"><div class="style-name">Bifold / Accordion</div><p class="style-desc">Multiple hinged panels that fold flat against the wall. Creates a full open connection between interior and exterior.</p><div class="style-price">From $3,200 / system</div></div></div>
+        <div class="style-card"><figure class="pf style-img k-wipe" data-lb><img src="../images/pages/doors/door-french.jpg" alt="Pair of divided-light French doors standing open" loading="lazy" /><button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: pair of divided-light French doors standing open"></button></figure><div class="style-body"><div class="style-name">15-Lite TDL</div><p class="style-desc">Classic divided light with 15 individual glass panes per leaf. The most traditional and refined French door profile.</p><div class="style-price">From $1,800 / pair</div></div></div>
+        <div class="style-card"><figure class="pf style-img k-wipe" data-lb><img src="../images/pages/doors/door-glass-lite.jpg" alt="Full-glass framed doors with minimal frames in a lobby" loading="lazy" /><button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: full-glass framed doors with minimal frames in a lobby"></button></figure><div class="style-body"><div class="style-name">Full Lite</div><p class="style-desc">Maximum light, minimal frame. A single pane per door leaf — clean and contemporary.</p><div class="style-price">Contact us for pricing</div></div></div>
+        <div class="style-card"><figure class="pf style-img k-wipe" data-lb><img src="../images/pages/doors/door-shaker.jpg" alt="Wood door with glass lites above a solid lower panel" loading="lazy" style="object-position:84% 50%;" /><button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: wood door with glass lites above a solid lower panel"></button></figure><div class="style-body"><div class="style-name">Half Lite with Panel</div><p class="style-desc">Solid panel at the base, glass at the top. Balances light and privacy — great for bedrooms and formal rooms.</p><div class="style-price">From $1,650 / pair</div></div></div>
+        <div class="style-card"><figure class="pf style-img grain k-wipe"><img src="../images/pages/doors/wood-white-oak.jpg" alt="White oak grain close-up" loading="lazy" /><span class="pf-tag">Grain shown: White Oak</span></figure><div class="style-body"><div class="style-name">With Transom</div><p class="style-desc">Add a fixed or operable transom above for additional light and height. A dramatic architectural statement.</p><div class="style-price">From $2,400 / unit</div></div></div>
+        <div class="style-card"><figure class="pf style-img grain k-wipe"><img src="../images/pages/doors/wood-cherry.jpg" alt="Cherry grain close-up" loading="lazy" /><span class="pf-tag">Grain shown: Cherry</span></figure><div class="style-body"><div class="style-name">Pocketing French</div><p class="style-desc">Pairs that slide into the wall cavity — no swing clearance required. Perfect for smaller rooms and high-traffic openings.</p><div class="style-price">From $2,200 / pair</div></div></div>
+        <div class="style-card"><figure class="pf style-img grain k-wipe"><img src="../images/story/sp-mahogany.jpg" alt="Mahogany grain close-up" loading="lazy" /><span class="pf-tag">Grain shown: Mahogany</span></figure><div class="style-body"><div class="style-name">Bifold / Accordion</div><p class="style-desc">Multiple hinged panels that fold flat against the wall. Creates a full open connection between interior and exterior.</p><div class="style-price">From $3,200 / system</div></div></div>
       </div>
     </div>
   </section>
@@ -104,4 +236,247 @@
   </div></div>
 </div>
 <script src="../shared/nav.js"></script>
+<script>
+/* Page kit: photo wipes, lightbox, in-view video, spec-row reveals. */
+var Kit = (function () {
+  var html = document.documentElement;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var animate = !reduced && html.classList.contains('m-js');
+
+  /* ── Wipe reveals (polled: a fully clipped frame never "intersects") ── */
+  var pending = [];
+  function watchWipes(root) {
+    (root || document).querySelectorAll('.pf.k-wipe').forEach(function (el) {
+      if (!animate) { el.classList.remove('k-wipe'); return; }
+      if (pending.indexOf(el) < 0) pending.push(el);
+    });
+    checkWipes();
+  }
+  function checkWipes() {
+    if (!pending.length) return;
+    var vh = window.innerHeight, batch = [];
+    pending = pending.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      if ((r.width || r.height) && r.top < vh * 0.94 && r.bottom > 0) { batch.push(el); return false; }
+      return true;
+    });
+    batch.forEach(function (el, i) {
+      var d = Math.min(i * 0.09, 0.45);
+      el.style.setProperty('--kd', d + 's');
+      requestAnimationFrame(function () { el.classList.add('k-in'); });
+      setTimeout(function () {
+        el.classList.remove('k-wipe', 'k-in');
+        el.style.removeProperty('--kd');
+      }, 1900 + d * 1000);
+    });
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; checkWipes(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ── Spec tables: rows slide in one after another ── */
+  function specRows() {
+    if (!animate || !('IntersectionObserver' in window)) return;
+    document.querySelectorAll('.spec-table').forEach(function (t) {
+      t.querySelectorAll('tr').forEach(function (tr, i) { tr.style.setProperty('--i', i); });
+      var r = t.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) return; // already on screen: leave it
+      t.classList.add('k-rows');
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          t.classList.add('k-in');
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      io.observe(t);
+    });
+  }
+
+  /* ── Videos: muted loops that only play while on screen ── */
+  var ICON_PLAY = '<svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>';
+  var ICON_PAUSE = '<svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>';
+  function videos() {
+    var vids = document.querySelectorAll('video[data-auto]');
+    if (!vids.length) return;
+    var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        v._inView = e.isIntersecting;
+        syncVideo(v);
+      });
+    }, { threshold: 0.25 }) : null;
+    vids.forEach(function (v) {
+      v.muted = true;
+      v._userPaused = reduced;
+      if (!io) v._inView = true;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vid-toggle';
+      btn.innerHTML = ICON_PAUSE + ICON_PLAY;
+      function syncBtn() {
+        var on = !v.paused;
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.setAttribute('aria-label', on ? 'Pause video' : 'Play video');
+      }
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (v.paused) { v._userPaused = false; play(v); } else { v._userPaused = true; v.pause(); }
+      });
+      v.addEventListener('play', syncBtn);
+      v.addEventListener('pause', syncBtn);
+      syncBtn();
+      (v.closest('.pf') || v.parentNode).appendChild(btn);
+      if (io) io.observe(v);
+    });
+  }
+  // Plays only while on screen, not paused by the visitor, and not held by the page (v._hold).
+  function syncVideo(v) {
+    if (v._inView && !v._userPaused && !v._hold && !reduced) play(v); else v.pause();
+  }
+  function play(v) {
+    if (v.preload === 'none') v.preload = 'auto';
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+
+  /* ── Lightbox ── */
+  var dlg, lbImg, lbCap, lbCount, list = [], idx = 0, opener = null;
+  function svg(d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="' + d + '"/></svg>'; }
+  function buildLightbox() {
+    dlg = document.createElement('dialog');
+    dlg.className = 'lb';
+    dlg.setAttribute('aria-label', 'Photo viewer');
+    dlg.innerHTML =
+      '<div class="lb-stage"><img class="lb-img" alt=""></div>' +
+      '<div class="lb-bar"><p class="lb-cap" aria-live="polite"></p><span class="lb-count"></span></div>' +
+      '<button type="button" class="lb-btn lb-close" aria-label="Close photo viewer">' + svg('M5 5l14 14M19 5L5 19') + '</button>' +
+      '<button type="button" class="lb-btn lb-prev" aria-label="Previous photo">' + svg('M15 5l-7 7 7 7') + '</button>' +
+      '<button type="button" class="lb-btn lb-next" aria-label="Next photo">' + svg('M9 5l7 7-7 7') + '</button>';
+    document.body.appendChild(dlg);
+    lbImg = dlg.querySelector('.lb-img');
+    lbCap = dlg.querySelector('.lb-cap');
+    lbCount = dlg.querySelector('.lb-count');
+    dlg.querySelector('.lb-close').addEventListener('click', close);
+    dlg.querySelector('.lb-prev').addEventListener('click', function () { go(-1); });
+    dlg.querySelector('.lb-next').addEventListener('click', function () { go(1); });
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg || e.target.classList.contains('lb-stage')) close();
+    });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    });
+    dlg.addEventListener('close', function () {
+      html.style.overflow = '';
+      if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    });
+    // Swipe
+    var sx = null, sy = 0;
+    var stage = dlg.querySelector('.lb-stage');
+    stage.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; });
+    stage.addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+    });
+    stage.addEventListener('pointercancel', function () { sx = null; });
+  }
+  function visible(el) { return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length); }
+  function collect() {
+    return Array.prototype.filter.call(document.querySelectorAll('[data-lb]'), function (el) {
+      return visible(el) && el.querySelector('img');
+    });
+  }
+  function show(i, dir) {
+    idx = (i + list.length) % list.length;
+    var el = list[idx], img = el.querySelector('img');
+    lbImg.src = el.getAttribute('data-lb') || img.currentSrc || img.src;
+    lbImg.alt = img.alt;
+    lbCap.textContent = img.alt;
+    lbCount.textContent = (idx + 1) + ' / ' + list.length;
+    lbImg.style.setProperty('--dir', dir || 0);
+    lbImg.classList.remove('lb-anim');
+    void lbImg.offsetWidth;
+    lbImg.classList.add('lb-anim');
+  }
+  function go(d) { if (list.length > 1) show(idx + d, d); }
+  function open(fig, from) {
+    if (!dlg) buildLightbox();
+    list = collect();
+    var i = list.indexOf(fig);
+    if (i < 0) { list = [fig]; i = 0; }
+    dlg.classList.toggle('lb-one', list.length < 2);
+    opener = from || document.activeElement;
+    show(i, 0);
+    html.style.overflow = 'hidden';
+    dlg.showModal();
+  }
+  function close() { if (dlg && dlg.open) dlg.close(); }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.pf-open');
+    if (!btn) return;
+    var fig = btn.closest('[data-lb]');
+    if (!fig && btn.getAttribute('data-lb-in')) {
+      var figs = document.querySelectorAll(btn.getAttribute('data-lb-in') + ' > [data-lb]');
+      fig = figs[figs.length - 1];
+    }
+    if (fig) { e.preventDefault(); open(fig, btn); }
+  });
+
+  function init() {
+    watchWipes();
+    setTimeout(checkWipes, 350);
+    specRows();
+    videos();
+  }
+  init();
+
+  return { reduced: reduced, animate: animate, watchWipes: watchWipes, open: open, play: play, syncVideo: syncVideo };
+})();
+
+/* Step through: scroll parts the two leaves of a real French-door photo and pushes into the room beyond. */
+(function () {
+  var fx = document.getElementById('fx');
+  if (!fx || Kit.reduced) return;
+  fx.classList.add('fx-on');
+  var doors = fx.querySelector('.fx-doors');
+  var left = fx.querySelector('.fx-l'), right = fx.querySelector('.fx-r');
+  var room = fx.querySelector('.fx-room img');
+  var lines = Array.prototype.slice.call(fx.querySelectorAll('.fx-line'));
+  var bar = fx.querySelector('.fx-bar');
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var ease = function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  var ticking = false;
+
+  function frame() {
+    ticking = false;
+    var r = fx.getBoundingClientRect();
+    var stageH = window.innerHeight - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72);
+    if (r.bottom < 0 || r.top > window.innerHeight) return;
+    var p = clamp(-r.top / Math.max(1, r.height - stageH), 0, 1);
+    var open = ease(clamp(p / 0.78, 0, 1));
+    var zoom = 1 + 0.55 * ease(clamp((p - 0.08) / 0.8, 0, 1));
+    doors.style.transform = 'scale(' + zoom.toFixed(4) + ')';
+    left.style.transform = 'translate3d(' + (-open * 56).toFixed(2) + '%,0,0)';
+    right.style.transform = 'translate3d(' + (open * 56).toFixed(2) + '%,0,0)';
+    var fade = 1 - clamp((p - 0.55) / 0.35, 0, 1);
+    left.style.opacity = right.style.opacity = fade.toFixed(3);
+    room.style.transform = 'scale(' + (1.28 - 0.28 * open).toFixed(4) + ')';
+    room.style.filter = 'brightness(' + (0.45 + 0.55 * open).toFixed(3) + ')';
+    lines.forEach(function (l, i) { l.classList.toggle('on', p >= 0.06 + i * 0.26); });
+    bar.style.setProperty('--p', p.toFixed(4));
+  }
+  function req() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', req, { passive: true });
+  window.addEventListener('resize', req);
+  frame();
+})();
+</script>
 </body></html>

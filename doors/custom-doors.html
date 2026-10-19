@@ -11,16 +11,127 @@
     .cat-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
     .cat-hero-text{padding-bottom:clamp(48px,7vw,80px);max-width:620px;}
     .cat-img-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;}
-    .cat-img{aspect-ratio:4/3;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
-    .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--cream-dark);border:1px solid var(--cream-dark);}
-    .ps{background:var(--cream);padding:clamp(24px,3vw,40px);}
+    .cat-img{aspect-ratio:4/5;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
     .ps-num{font-family:var(--serif);font-size:2.5rem;font-weight:700;color:var(--cream-dark);line-height:1;margin-bottom:12px;}
     .ps-title{font-family:var(--serif);font-size:1rem;margin-bottom:8px;}
     .ps-desc{font-size:0.82rem;color:var(--charcoal-lt);}
     .capability-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,24px);}
     .cap-item{padding:clamp(20px,3vw,32px);background:var(--cream-mid);border-radius:2px;}
     .cap-title{font-family:var(--serif);font-size:1.05rem;margin-bottom:8px;}
-    @media(max-width:900px){.process-steps{grid-template-columns:repeat(2,1fr);}.capability-grid{grid-template-columns:1fr;}.cat-img-row{grid-template-columns:1fr;}}
+    @media(max-width:900px){.capability-grid{grid-template-columns:1fr;}.cat-img-row{grid-template-columns:1fr;}}
+
+    /* Capabilities: a gold rule draws across the top on hover */
+    .cap-item{position:relative;overflow:hidden;transition:background .4s var(--ease-out),transform .4s var(--ease-out),box-shadow .4s var(--ease-out);}
+    .cap-item::before{content:'';position:absolute;left:0;top:0;height:2px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:0 50%;transition:transform .6s var(--ease-out);}
+    .cap-item:hover{background:var(--cream);transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,17,14,0.08);}
+    .cap-item:hover::before{transform:none;}
+    .cap-idx{display:block;font-size:0.66rem;font-weight:600;letter-spacing:0.16em;color:var(--gold);margin-bottom:14px;}
+
+    /* ── Process: steps scroll past a pinned frame of real workshop photography ── */
+    .pr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(32px,6vw,96px);align-items:start;}
+    .pr-steps{position:relative;padding-left:34px;}
+    .pr-track{position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--cream-dark);}
+    .pr-track i{position:absolute;inset:0;background:var(--gold);transform-origin:50% 0;transform:scaleY(var(--p,0));}
+    .ps{position:relative;min-height:62vh;display:flex;flex-direction:column;justify-content:center;padding:32px 0;}
+    .ps::before{content:'';position:absolute;left:-39px;top:50%;width:11px;height:11px;margin-top:-5px;border-radius:50%;background:var(--cream-mid);border:1px solid var(--cream-dark);transition:background .4s,border-color .4s,transform .4s var(--ease-out);}
+    .ps .ps-num,.ps .ps-title,.ps .ps-desc{transition:color .5s var(--ease-out),opacity .5s var(--ease-out);}
+    .pr.pr-js .ps{opacity:.38;transition:opacity .6s var(--ease-out);}
+    .pr.pr-js .ps.on{opacity:1;}
+    .ps.on::before{background:var(--gold);border-color:var(--gold);transform:scale(1.25);}
+    .ps.on .ps-num{color:var(--gold);}
+    .ps .ps-num{font-size:clamp(2.5rem,5vw,4rem);}
+    .ps .ps-title{font-size:clamp(1.3rem,2.2vw,1.8rem);}
+    .ps .ps-desc{font-size:0.98rem;max-width:40ch;color:var(--charcoal-mid);}
+    .pr-media{position:sticky;top:calc(var(--nav-h) + 32px);height:calc(100vh - var(--nav-h) - 64px);max-height:760px;}
+    .pr-frame{position:absolute;inset:0;overflow:hidden;border-radius:2px;background:#1a1714;box-shadow:0 34px 80px rgba(20,17,14,0.22);}
+    .pr-layer{position:absolute;inset:0;clip-path:inset(0 0 0 100%);transition:clip-path 1.05s cubic-bezier(.77,0,.18,1);}
+    .pr-layer:first-child,.pr-layer.on{clip-path:inset(0 0 0 0);}
+    .pr-layer img,.pr-layer video{transform:scale(1.14);transition:transform 1.6s var(--ease-out);}
+    .pr-layer.on img,.pr-layer.on video,.pr-layer:first-child img{transform:none;}
+    .pr-media .pf:hover img{transform:none;}
+    .pr-count{position:absolute;right:18px;bottom:16px;z-index:6;font-size:0.7rem;font-weight:600;letter-spacing:0.16em;color:var(--cream);text-shadow:0 1px 8px rgba(0,0,0,.6);}
+    .pr-inline{display:none;}
+    @media (prefers-reduced-motion:reduce){.pr-layer,.pr-layer img,.pr-layer video{transition:none;}}
+    @media(max-width:900px){
+      .pr{grid-template-columns:minmax(0,1fr);}
+      .pr-media{display:none;}
+      .pr-inline{display:block;aspect-ratio:4/3;margin-bottom:22px;border-radius:2px;}
+      .ps{min-height:0;padding:28px 0 36px;}
+      .pr.pr-js .ps{opacity:1;}
+    }
+    /* ── Page kit: real-photo frames, lightbox, video, spec rows ── */
+    :where(.pf){position:relative;overflow:hidden;background:#1a1714;margin:0;}
+    .pf img,.pf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease-out);}
+    .pf .pf-px{position:absolute;inset:-6% 0;will-change:transform;}
+    .pf-open{position:absolute;inset:0;z-index:4;display:block;width:100%;height:100%;background:transparent;cursor:zoom-in;}
+    .pf-open::after{content:'';position:absolute;right:14px;top:14px;width:38px;height:38px;border-radius:50%;
+      background:rgba(20,17,14,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5efe6' stroke-width='1.8'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/16px no-repeat;
+      opacity:0;transform:scale(.8);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+    .pf:hover .pf-open::after,.pf-open:focus-visible::after{opacity:1;transform:none;}
+    .pf-open:focus-visible{outline:2px solid var(--gold);outline-offset:-4px;}
+    @media (hover:none){.pf-open::after{opacity:.9;transform:none;width:32px;height:32px;right:10px;top:10px;}}
+    .pf:hover img{transform:scale(1.04);}
+    .style-card:hover .pf img{transform:scale(1.07);}
+    .pf-tag{position:absolute;left:14px;bottom:12px;z-index:3;font-size:.64rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,236,.9);text-shadow:0 1px 8px rgba(0,0,0,.5);pointer-events:none;}
+    .pf.grain::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(20,17,14,0) 40%,rgba(20,17,14,.55));}
+    @media (prefers-reduced-motion:no-preference){
+      .m-js .pf.k-wipe{clip-path:inset(100% 0 0 0);transition:clip-path 1.1s cubic-bezier(.77,0,.18,1) var(--kd,0s);}
+      .m-js .pf.k-wipe img,.m-js .pf.k-wipe video{transform:scale(1.22);transition:transform 1.7s var(--ease-out) var(--kd,0s);}
+      .m-js .pf.k-wipe.k-in{clip-path:inset(0 0 0 0);}
+      .m-js .pf.k-wipe.k-in img,.m-js .pf.k-wipe.k-in video{transform:none;}
+      .m-js .spec-table.k-rows tr{opacity:0;transform:translate3d(-14px,0,0);transition:opacity .7s var(--ease-out) calc(var(--i,0) * 60ms + .15s),transform .7s var(--ease-out) calc(var(--i,0) * 60ms + .15s);}
+      .m-js .spec-table.k-rows.k-in tr{opacity:1;transform:none;}
+    }
+    @media (prefers-reduced-motion:reduce){.pf img,.pf video{transition:none;transform:none!important;}}
+    .spec-table td{transition:background .25s,color .25s;}
+    .spec-table tr:hover td{background:rgba(180,130,60,.07);}
+    .spec-table tr:hover td:first-child{color:var(--gold-dark);}
+    .spec-table td:first-child{padding-left:8px;}
+    /* Hero row: real photos; the hovered tile widens */
+    .cat-img-row{transition:grid-template-columns .9s var(--ease-out);}
+    @media (hover:hover) and (min-width:901px){
+      .cat-img-row:has(> :nth-child(1):hover){grid-template-columns:2.25fr .9fr .9fr;}
+      .cat-img-row:has(> :nth-child(2):hover){grid-template-columns:1.7fr 1.45fr .9fr;}
+      .cat-img-row:has(> :nth-child(3):hover){grid-template-columns:1.7fr .9fr 1.45fr;}
+    }
+    @media (max-width:900px){
+      .cat-img-row{grid-template-columns:1fr 1fr!important;}
+      .cat-img-row > :first-child{grid-column:1 / -1;aspect-ratio:4/3;height:auto;min-height:0;}
+      .cat-img-row > :not(:first-child){aspect-ratio:4/5;}
+    }
+    /* Video toggle */
+    .vid-toggle{position:absolute;left:12px;top:12px;z-index:5;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+      background:rgba(20,17,14,.5);color:#f5efe6;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s;}
+    .vid-toggle:hover{background:rgba(20,17,14,.8);}
+    .vid-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+    .vid-toggle svg{width:14px;height:14px;}
+    .vid-toggle .i-play{display:none;}
+    .vid-toggle[aria-pressed="false"] .i-play{display:block;}
+    .vid-toggle[aria-pressed="false"] .i-pause{display:none;}
+    /* Lightbox */
+    .lb{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(14,12,10,.96);color:#f5efe6;overflow:hidden;}
+    .lb::backdrop{background:rgba(14,12,10,.6);}
+    .lb[open]{display:flex;flex-direction:column;}
+    .lb-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:72px clamp(12px,7vw,110px) 12px;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
+    .lb-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 30px 80px rgba(0,0,0,.5);-webkit-user-drag:none;}
+    .lb-bar{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px clamp(16px,7vw,110px) 22px;}
+    .lb-cap{font-size:.86rem;color:rgba(245,239,230,.75);margin:0;}
+    .lb-count{font-size:.7rem;font-weight:600;letter-spacing:.16em;color:var(--gold);white-space:nowrap;}
+    .lb-btn{position:absolute;z-index:2;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#f5efe6;border:1px solid rgba(255,255,255,.22);background:rgba(20,17,14,.4);transition:background .2s,border-color .2s;}
+    .lb-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--charcoal);}
+    .lb-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+    .lb-btn svg{width:18px;height:18px;}
+    .lb-close{top:14px;right:14px;}
+    .lb-prev{left:clamp(8px,2vw,28px);top:50%;margin-top:-24px;}
+    .lb-next{right:clamp(8px,2vw,28px);top:50%;margin-top:-24px;}
+    .lb-one .lb-prev,.lb-one .lb-next,.lb-one .lb-count{display:none;}
+    @media (max-width:600px){.lb-prev,.lb-next{top:auto;bottom:64px;margin:0;}}
+    @media (prefers-reduced-motion:no-preference){
+      .lb[open]{animation:lb-in .4s var(--ease-out);}
+      .lb-img.lb-anim{animation:lb-img .55s var(--ease-out);}
+    }
+    @keyframes lb-in{from{opacity:0;}to{opacity:1;}}
+    @keyframes lb-img{from{opacity:0;transform:translate3d(calc(var(--dir,0) * 40px),0,0) scale(.97);}to{opacity:1;transform:none;}}
   </style>
 </head>
 <body>
@@ -44,9 +155,18 @@
     </div>
     <div class="container" style="padding-left:0;padding-right:0;max-width:100%;">
       <div class="cat-img-row">
-        <div class="img-ph cat-img tall"><span class="img-ph-label">Custom carved mahogany grand entry door — ornate surround</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Oversized pivot door — white oak, polished brass pivot</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Custom arched interior door — cherry, matched grain</span></div>
+        <figure class="pf cat-img tall k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-exterior-grand.jpg" alt="Carved wood double entry doors beneath an ornate arched surround" style="object-position:50% 30%;" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: carved wood double entry doors beneath an ornate arched surround"></button>
+        </figure>
+        <figure class="pf cat-img k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-pivot.jpg" alt="Tall slatted white oak panels with one leaf swung open" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: tall slatted white oak panels with one leaf swung open"></button>
+        </figure>
+        <figure class="pf cat-img k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-custom.jpg" alt="Arched wood double doors set in a stone facade" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: arched wood double doors set in a stone facade"></button>
+        </figure>
       </div>
     </div>
   </section>
@@ -55,15 +175,15 @@
     <div class="container">
       <div class="section-intro"><div class="label">Custom Capabilities</div><div class="rule"></div><h2>What We Can Build for You</h2></div>
       <div class="capability-grid">
-        <div class="cap-item"><div class="cap-title">Oversized &amp; Grand Entry</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Doors up to 16' tall and any width. Engineered for stability with internal lamination and steel reinforcement where needed.</p></div>
-        <div class="cap-item"><div class="cap-title">Arched &amp; Radius Tops</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Full radius, segmental, Gothic, and elliptical tops. We bend-laminate the arch rail for precise, repeatable radius.</p></div>
-        <div class="cap-item"><div class="cap-title">Carved &amp; Routed Panels</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Raised, carved, and CNC-routed panel designs. Monograms, architectural motifs, and custom relief work.</p></div>
-        <div class="cap-item"><div class="cap-title">Matched Grain / Book-Match</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">We can flitch-match or book-match faces across single or paired doors for a seamless, continuous grain pattern.</p></div>
-        <div class="cap-item"><div class="cap-title">Pivot Doors</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Floor-to-ceiling pivot configurations on concealed pivot hardware. A modern entry statement unlike anything hung on standard hinges.</p></div>
-        <div class="cap-item"><div class="cap-title">Specialty Species</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Teak, Sapele, Wenge, Ipe, White Ash, Figured Maple, Burl, and more. We source on request from our trusted lumber partners.</p></div>
-        <div class="cap-item"><div class="cap-title">Historic Replication</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">We recreate historic door profiles from photographs, profiles, or original templates. Common in preservation and renovation projects.</p></div>
-        <div class="cap-item"><div class="cap-title">Commercial Scale</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Custom doors at volume — 10 units or 10,000. We've built custom door packages for hotels, corporate campuses, and multi-family developments.</p></div>
-        <div class="cap-item"><div class="cap-title">Multi-Panel Systems</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Folding, sliding, stacking, and pocketing multi-panel door systems. Operable walls that create or erase space.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">01</span><div class="cap-title">Oversized &amp; Grand Entry</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Doors up to 16' tall and any width. Engineered for stability with internal lamination and steel reinforcement where needed.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">02</span><div class="cap-title">Arched &amp; Radius Tops</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Full radius, segmental, Gothic, and elliptical tops. We bend-laminate the arch rail for precise, repeatable radius.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">03</span><div class="cap-title">Carved &amp; Routed Panels</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Raised, carved, and CNC-routed panel designs. Monograms, architectural motifs, and custom relief work.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">04</span><div class="cap-title">Matched Grain / Book-Match</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">We can flitch-match or book-match faces across single or paired doors for a seamless, continuous grain pattern.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">05</span><div class="cap-title">Pivot Doors</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Floor-to-ceiling pivot configurations on concealed pivot hardware. A modern entry statement unlike anything hung on standard hinges.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">06</span><div class="cap-title">Specialty Species</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Teak, Sapele, Wenge, Ipe, White Ash, Figured Maple, Burl, and more. We source on request from our trusted lumber partners.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">07</span><div class="cap-title">Historic Replication</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">We recreate historic door profiles from photographs, profiles, or original templates. Common in preservation and renovation projects.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">08</span><div class="cap-title">Commercial Scale</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Custom doors at volume — 10 units or 10,000. We've built custom door packages for hotels, corporate campuses, and multi-family developments.</p></div>
+        <div class="cap-item" data-reveal><span class="cap-idx" aria-hidden="true">09</span><div class="cap-title">Multi-Panel Systems</div><p style="font-size:0.83rem;color:var(--charcoal-lt);">Folding, sliding, stacking, and pocketing multi-panel door systems. Operable walls that create or erase space.</p></div>
       </div>
     </div>
   </section>
@@ -71,11 +191,23 @@
   <section class="section bg-cream-mid">
     <div class="container">
       <div class="section-intro-center"><div class="label">Our Process</div><div class="rule" style="margin:0 auto 20px;"></div><h2>How a Custom Door Gets Built</h2></div>
-      <div class="process-steps">
-        <div class="ps"><div class="ps-num">01</div><div class="ps-title">Discovery Call</div><div class="ps-desc">We talk through your vision — opening size, architectural style, species preference, hardware, and timeline.</div></div>
-        <div class="ps"><div class="ps-num">02</div><div class="ps-title">Shop Drawings</div><div class="ps-desc">Our design team produces detailed shop drawings and a wood species / finish specification. You approve before we cut.</div></div>
-        <div class="ps"><div class="ps-num">03</div><div class="ps-title">Production</div><div class="ps-desc">Lumber is selected, cut, assembled, and finished in our Brooklyn facility. Progress photos at key milestones.</div></div>
-        <div class="ps"><div class="ps-num">04</div><div class="ps-title">Delivery &amp; Install</div><div class="ps-desc">Custom crated and shipped nationwide. White-glove and installation coordination available in most markets.</div></div>
+      <div class="pr" id="pr">
+        <div class="pr-steps">
+          <div class="pr-track" aria-hidden="true"><i></i></div>
+          <div class="ps"><figure class="pf pr-inline k-wipe"><img src="../images/pages/doors/workshop-samples.jpg" alt="Wood samples in a range of species spread on a dark surface" loading="lazy" /></figure><div class="ps-num">01</div><div class="ps-title">Discovery Call</div><div class="ps-desc">We talk through your vision — opening size, architectural style, species preference, hardware, and timeline.</div></div>
+          <div class="ps"><figure class="pf pr-inline k-wipe"><img src="../images/pages/doors/workshop-cnc.jpg" alt="Woodworkers talking beside a CNC machine" loading="lazy" /></figure><div class="ps-num">02</div><div class="ps-title">Shop Drawings</div><div class="ps-desc">Our design team produces detailed shop drawings and a wood species / finish specification. You approve before we cut.</div></div>
+          <div class="ps"><figure class="pf pr-inline k-wipe"><video data-auto muted playsinline loop preload="none" poster="../images/story/clip-planing.jpg" aria-label="Hand plane lifting curled shavings from a board"><source src="../images/story/clip-planing.mp4" type="video/mp4" /></video></figure><div class="ps-num">03</div><div class="ps-title">Production</div><div class="ps-desc">Lumber is selected, cut, assembled, and finished in our Brooklyn facility. Progress photos at key milestones.</div></div>
+          <div class="ps"><figure class="pf pr-inline k-wipe"><img src="../images/pages/doors/door-custom.jpg" alt="Arched wood double doors set in a stone facade" loading="lazy" /></figure><div class="ps-num">04</div><div class="ps-title">Delivery &amp; Install</div><div class="ps-desc">Custom crated and shipped nationwide. White-glove and installation coordination available in most markets.</div></div>
+        </div>
+        <div class="pr-media">
+          <div class="pr-frame">
+            <figure class="pf pr-layer" data-lb><img src="../images/pages/doors/workshop-samples.jpg" alt="Wood samples in a range of species spread on a dark surface" loading="lazy" /><button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: wood samples in a range of species"></button></figure>
+            <figure class="pf pr-layer" data-lb><img src="../images/pages/doors/workshop-cnc.jpg" alt="Woodworkers talking beside a CNC machine" loading="lazy" /><button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: woodworkers beside a CNC machine"></button></figure>
+            <figure class="pf pr-layer"><video data-auto muted playsinline loop preload="none" poster="../images/story/clip-planing.jpg" aria-label="Hand plane lifting curled shavings from a board"><source src="../images/story/clip-planing.mp4" type="video/mp4" /></video></figure>
+            <figure class="pf pr-layer" data-lb><img src="../images/pages/doors/door-custom.jpg" alt="Arched wood double doors set in a stone facade" loading="lazy" /><button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: arched wood double doors in a stone facade"></button></figure>
+          </div>
+          <div class="pr-count" aria-hidden="true">01 / 04</div>
+        </div>
       </div>
     </div>
   </section>
@@ -87,4 +219,259 @@
   </div></div>
 </div>
 <script src="../shared/nav.js"></script>
+<script>
+/* Page kit: photo wipes, lightbox, in-view video, spec-row reveals. */
+var Kit = (function () {
+  var html = document.documentElement;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var animate = !reduced && html.classList.contains('m-js');
+
+  /* ── Wipe reveals (polled: a fully clipped frame never "intersects") ── */
+  var pending = [];
+  function watchWipes(root) {
+    (root || document).querySelectorAll('.pf.k-wipe').forEach(function (el) {
+      if (!animate) { el.classList.remove('k-wipe'); return; }
+      if (pending.indexOf(el) < 0) pending.push(el);
+    });
+    checkWipes();
+  }
+  function checkWipes() {
+    if (!pending.length) return;
+    var vh = window.innerHeight, batch = [];
+    pending = pending.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      if ((r.width || r.height) && r.top < vh * 0.94 && r.bottom > 0) { batch.push(el); return false; }
+      return true;
+    });
+    batch.forEach(function (el, i) {
+      var d = Math.min(i * 0.09, 0.45);
+      el.style.setProperty('--kd', d + 's');
+      requestAnimationFrame(function () { el.classList.add('k-in'); });
+      setTimeout(function () {
+        el.classList.remove('k-wipe', 'k-in');
+        el.style.removeProperty('--kd');
+      }, 1900 + d * 1000);
+    });
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; checkWipes(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ── Spec tables: rows slide in one after another ── */
+  function specRows() {
+    if (!animate || !('IntersectionObserver' in window)) return;
+    document.querySelectorAll('.spec-table').forEach(function (t) {
+      t.querySelectorAll('tr').forEach(function (tr, i) { tr.style.setProperty('--i', i); });
+      var r = t.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) return; // already on screen: leave it
+      t.classList.add('k-rows');
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          t.classList.add('k-in');
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      io.observe(t);
+    });
+  }
+
+  /* ── Videos: muted loops that only play while on screen ── */
+  var ICON_PLAY = '<svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>';
+  var ICON_PAUSE = '<svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>';
+  function videos() {
+    var vids = document.querySelectorAll('video[data-auto]');
+    if (!vids.length) return;
+    var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        v._inView = e.isIntersecting;
+        syncVideo(v);
+      });
+    }, { threshold: 0.25 }) : null;
+    vids.forEach(function (v) {
+      v.muted = true;
+      v._userPaused = reduced;
+      if (!io) v._inView = true;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vid-toggle';
+      btn.innerHTML = ICON_PAUSE + ICON_PLAY;
+      function syncBtn() {
+        var on = !v.paused;
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.setAttribute('aria-label', on ? 'Pause video' : 'Play video');
+      }
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (v.paused) { v._userPaused = false; play(v); } else { v._userPaused = true; v.pause(); }
+      });
+      v.addEventListener('play', syncBtn);
+      v.addEventListener('pause', syncBtn);
+      syncBtn();
+      (v.closest('.pf') || v.parentNode).appendChild(btn);
+      if (io) io.observe(v);
+    });
+  }
+  // Plays only while on screen, not paused by the visitor, and not held by the page (v._hold).
+  function syncVideo(v) {
+    if (v._inView && !v._userPaused && !v._hold && !reduced) play(v); else v.pause();
+  }
+  function play(v) {
+    if (v.preload === 'none') v.preload = 'auto';
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+
+  /* ── Lightbox ── */
+  var dlg, lbImg, lbCap, lbCount, list = [], idx = 0, opener = null;
+  function svg(d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="' + d + '"/></svg>'; }
+  function buildLightbox() {
+    dlg = document.createElement('dialog');
+    dlg.className = 'lb';
+    dlg.setAttribute('aria-label', 'Photo viewer');
+    dlg.innerHTML =
+      '<div class="lb-stage"><img class="lb-img" alt=""></div>' +
+      '<div class="lb-bar"><p class="lb-cap" aria-live="polite"></p><span class="lb-count"></span></div>' +
+      '<button type="button" class="lb-btn lb-close" aria-label="Close photo viewer">' + svg('M5 5l14 14M19 5L5 19') + '</button>' +
+      '<button type="button" class="lb-btn lb-prev" aria-label="Previous photo">' + svg('M15 5l-7 7 7 7') + '</button>' +
+      '<button type="button" class="lb-btn lb-next" aria-label="Next photo">' + svg('M9 5l7 7-7 7') + '</button>';
+    document.body.appendChild(dlg);
+    lbImg = dlg.querySelector('.lb-img');
+    lbCap = dlg.querySelector('.lb-cap');
+    lbCount = dlg.querySelector('.lb-count');
+    dlg.querySelector('.lb-close').addEventListener('click', close);
+    dlg.querySelector('.lb-prev').addEventListener('click', function () { go(-1); });
+    dlg.querySelector('.lb-next').addEventListener('click', function () { go(1); });
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg || e.target.classList.contains('lb-stage')) close();
+    });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    });
+    dlg.addEventListener('close', function () {
+      html.style.overflow = '';
+      if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    });
+    // Swipe
+    var sx = null, sy = 0;
+    var stage = dlg.querySelector('.lb-stage');
+    stage.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; });
+    stage.addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+    });
+    stage.addEventListener('pointercancel', function () { sx = null; });
+  }
+  function visible(el) { return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length); }
+  function collect() {
+    return Array.prototype.filter.call(document.querySelectorAll('[data-lb]'), function (el) {
+      return visible(el) && el.querySelector('img');
+    });
+  }
+  function show(i, dir) {
+    idx = (i + list.length) % list.length;
+    var el = list[idx], img = el.querySelector('img');
+    lbImg.src = el.getAttribute('data-lb') || img.currentSrc || img.src;
+    lbImg.alt = img.alt;
+    lbCap.textContent = img.alt;
+    lbCount.textContent = (idx + 1) + ' / ' + list.length;
+    lbImg.style.setProperty('--dir', dir || 0);
+    lbImg.classList.remove('lb-anim');
+    void lbImg.offsetWidth;
+    lbImg.classList.add('lb-anim');
+  }
+  function go(d) { if (list.length > 1) show(idx + d, d); }
+  function open(fig, from) {
+    if (!dlg) buildLightbox();
+    list = collect();
+    var i = list.indexOf(fig);
+    if (i < 0) { list = [fig]; i = 0; }
+    dlg.classList.toggle('lb-one', list.length < 2);
+    opener = from || document.activeElement;
+    show(i, 0);
+    html.style.overflow = 'hidden';
+    dlg.showModal();
+  }
+  function close() { if (dlg && dlg.open) dlg.close(); }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.pf-open');
+    if (!btn) return;
+    var fig = btn.closest('[data-lb]');
+    if (!fig && btn.getAttribute('data-lb-in')) {
+      var figs = document.querySelectorAll(btn.getAttribute('data-lb-in') + ' > [data-lb]');
+      fig = figs[figs.length - 1];
+    }
+    if (fig) { e.preventDefault(); open(fig, btn); }
+  });
+
+  function init() {
+    watchWipes();
+    setTimeout(checkWipes, 350);
+    specRows();
+    videos();
+  }
+  init();
+
+  return { reduced: reduced, animate: animate, watchWipes: watchWipes, open: open, play: play, syncVideo: syncVideo };
+})();
+
+/* Process: the step nearest the middle of the screen drives the pinned frame. */
+(function () {
+  var pr = document.getElementById('pr');
+  if (!pr) return;
+  pr.classList.add('pr-js');
+  var steps = Array.prototype.slice.call(pr.querySelectorAll('.ps'));
+  var layers = Array.prototype.slice.call(pr.querySelectorAll('.pr-layer'));
+  var track = pr.querySelector('.pr-track');
+  var stepsEl = pr.querySelector('.pr-steps');
+  var count = pr.querySelector('.pr-count');
+  var media = pr.querySelector('.pr-media');
+  var vid = media.querySelector('video');
+  var active = -1, ticking = false;
+  if (vid) vid._hold = true;
+
+  function setActive(i) {
+    if (i === active) return;
+    active = i;
+    steps.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+    layers.forEach(function (l, k) { l.classList.toggle('on', k <= i); });
+    // only the front layer should be reachable for the lightbox button
+    layers.forEach(function (l, k) {
+      var b = l.querySelector('.pf-open');
+      if (b) { b.tabIndex = k === i ? 0 : -1; b.style.visibility = k === i ? '' : 'hidden'; }
+    });
+    count.textContent = '0' + (i + 1) + ' / 0' + steps.length;
+    if (vid) {
+      vid._hold = layers.indexOf(vid.closest('.pr-layer')) !== i;
+      Kit.syncVideo(vid);
+    }
+  }
+  function frame() {
+    ticking = false;
+    var mid = window.innerHeight * 0.5, best = 0, bestD = Infinity;
+    steps.forEach(function (s, k) {
+      var r = s.getBoundingClientRect();
+      var d = Math.abs(r.top + r.height / 2 - mid);
+      if (d < bestD) { bestD = d; best = k; }
+    });
+    setActive(best);
+    var r = stepsEl.getBoundingClientRect();
+    var p = Math.min(1, Math.max(0, (mid - r.top) / r.height));
+    track.style.setProperty('--p', p.toFixed(4));
+  }
+  function req() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', req, { passive: true });
+  window.addEventListener('resize', req);
+  frame();
+})();
+</script>
 </body></html>

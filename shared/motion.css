@@ -59,7 +59,7 @@ html.m-leaving::after { animation-name: m-leaf-close-r; }
 .m-wi { display: inline-block; }
 .m-js .m-split .m-wi {
   transform: translate3d(0, 105%, 0);
-  transition: transform 0.9s var(--ease-out) calc(var(--m-d, 0s) + var(--m-i, 0) * 0.045s);
+  transition: transform 0.75s var(--ease-out) calc(var(--m-d, 0s) + var(--m-i, 0) * 0.035s);
 }
 .m-js .m-split.m-in .m-wi { transform: none; }
 

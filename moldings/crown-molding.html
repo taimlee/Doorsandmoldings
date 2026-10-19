@@ -30,6 +30,124 @@
     @media(max-width:1000px){.profile-grid{grid-template-columns:repeat(3,1fr);}}
     @media(max-width:768px){.profile-grid{grid-template-columns:repeat(2,1fr);}.spec-grid{grid-template-columns:1fr;}.cat-img-row{grid-template-columns:1fr;}}
     @media(max-width:480px){.profile-grid{grid-template-columns:1fr;}}
+    /* ── Molding page kit: real-photo frames, loupe, compare, push-in story, lightbox ── */
+    .cat-img-row{grid-template-columns:2fr 1fr;}
+    .cat-img-row .cat-img.tall{grid-row:span 2;aspect-ratio:16/10;height:auto;min-height:0;max-height:80vh;}
+    .cat-img-row .cat-img:not(.tall){aspect-ratio:auto;min-height:0;}
+    @media(max-width:768px){
+      .cat-img-row{grid-template-columns:1fr 1fr;}
+      .cat-img-row .cat-img.tall{grid-column:1/-1;grid-row:auto;aspect-ratio:4/3;}
+      .cat-img-row .cat-img:not(.tall){aspect-ratio:1/1;}
+    }
+    .mk-ph{position:relative;overflow:hidden;background:#1a1714;display:block;}
+    .mk-ph>img,.mk-ph>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+    @media (prefers-reduced-motion:no-preference){.m-js .mk-ph:not(.img-ph){clip-path:inset(100% 0 0 0);}}
+    .m-js .mk-zoom.img-ph>img{transform-origin:var(--ox,50%) var(--oy,50%);transition:--m-sc .9s var(--ease-out),transform-origin .7s var(--ease-out);}
+    .mk-open{display:block;width:100%;padding:0;border:0;margin:0;background:none;cursor:zoom-in;text-align:left;font:inherit;color:inherit;position:relative;}
+    .mk-open:focus-visible{outline:2px solid var(--gold);outline-offset:-4px;}
+    .mk-open::after{content:'';position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;z-index:4;
+      background:rgba(20,17,14,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6f1e8' stroke-width='1.8'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/15px no-repeat;
+      opacity:0;transform:scale(.8);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+    .mk-open:hover::after,.mk-open:focus-visible::after{opacity:1;transform:none;}
+    @media (hover:none){.mk-open::after{opacity:.9;transform:none;width:30px;height:30px;}}
+
+    /* Lightbox */
+    .mk-lb{position:fixed;inset:0;z-index:2000;display:grid;grid-template-rows:1fr auto;background:rgba(14,12,10,.94);color:var(--cream);
+      opacity:0;transition:opacity .35s var(--ease-out);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+    .mk-lb[hidden]{display:none;}
+    .mk-lb.on{opacity:1;}
+    .mk-lb-stage{position:relative;display:grid;place-items:center;overflow:hidden;touch-action:none;padding:clamp(56px,7vh,80px) clamp(16px,7vw,96px) 12px;min-height:0;}
+    .mk-lb-stage img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;border-radius:2px;
+      box-shadow:0 30px 80px rgba(0,0,0,.5);transform-origin:50% 50%;user-select:none;-webkit-user-drag:none;}
+    .mk-lb-bar{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px clamp(16px,7vw,96px) max(18px,env(safe-area-inset-bottom));}
+    .mk-lb-cap{color:var(--cream);font-family:var(--serif);font-size:clamp(1rem,1.6vw,1.2rem);margin:0;}
+    .mk-lb-cap small{display:block;font-family:var(--sans);font-size:.72rem;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-top:4px;}
+    .mk-lb-count{font-size:.75rem;letter-spacing:.16em;color:rgba(255,255,255,.55);font-variant-numeric:tabular-nums;white-space:nowrap;}
+    .mk-lb button{position:absolute;z-index:3;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(20,17,14,.5);color:var(--cream);
+      display:grid;place-items:center;cursor:pointer;transition:background .2s,border-color .2s,transform .2s var(--ease-out);}
+    .mk-lb button:hover{background:var(--gold);border-color:var(--gold);color:var(--charcoal);}
+    .mk-lb button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+    .mk-lb button svg{width:20px;height:20px;}
+    .mk-lb-close{top:14px;right:clamp(12px,3vw,28px);}
+    .mk-lb-prev,.mk-lb-next{top:50%;margin-top:-48px;}
+    .mk-lb-prev{left:clamp(8px,2vw,24px);} .mk-lb-next{right:clamp(8px,2vw,24px);}
+    @media(max-width:600px){.mk-lb-prev,.mk-lb-next{top:auto;bottom:70px;margin:0;width:42px;height:42px;}}
+
+    /* Loupe */
+    .mk-loupe{cursor:none;touch-action:pan-y;}
+    @media (hover:none){.mk-loupe{cursor:default;}}
+    .mk-loupe:focus-visible{outline:2px solid var(--gold);outline-offset:-3px;}
+    .mk-lens{position:fixed;left:0;top:0;z-index:1500;width:var(--ls,190px);height:var(--ls,190px);margin:calc(var(--ls,190px)/-2) 0 0 calc(var(--ls,190px)/-2);border-radius:50%;
+      pointer-events:none;background-color:#1a1714;background-repeat:no-repeat;opacity:0;transform:scale(.6);
+      box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 0 1.5px rgba(255,255,255,.85),0 0 0 6px rgba(20,17,14,.18);
+      transition:opacity .25s var(--ease-out),transform .35s var(--ease-out);}
+    .mk-lens.on{opacity:1;transform:none;}
+    .mk-lens.touch{pointer-events:auto;touch-action:none;cursor:grab;}
+    .mk-hint{position:absolute;left:16px;bottom:16px;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:7px 12px 7px 9px;border-radius:40px;
+      background:rgba(20,17,14,.6);color:var(--cream);font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;pointer-events:none;
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:opacity .3s;}
+    .mk-hint svg{width:14px;height:14px;}
+    .mk-loupe.inspecting .mk-hint{opacity:0;}
+
+    /* Compare */
+    .mk-cmp{position:relative;overflow:hidden;border-radius:3px;background:#1a1714;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize;--pos:50%;
+      box-shadow:0 30px 70px rgba(0,0,0,.18);}
+    .mk-cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+    .mk-cmp-a{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos)) 0 0);z-index:1;}
+    .mk-cmp-line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:var(--cream);z-index:2;box-shadow:0 0 18px rgba(0,0,0,.35);}
+    .mk-cmp-handle{position:absolute;top:50%;left:var(--pos);z-index:3;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--cream);color:var(--charcoal);
+      display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .25s var(--ease-out),background .2s;}
+    .mk-cmp-handle svg{width:22px;height:22px;}
+    .mk-cmp:hover .mk-cmp-handle,.mk-cmp.drag .mk-cmp-handle{transform:scale(1.08);}
+    .mk-cmp-handle:focus-visible{outline:2px solid var(--gold);outline-offset:4px;}
+    .mk-cmp.drag .mk-cmp-handle{background:var(--gold);}
+    .mk-cmp.ease .mk-cmp-a{transition:clip-path .9s var(--ease-out);} .mk-cmp.ease .mk-cmp-line,.mk-cmp.ease .mk-cmp-handle{transition:left .9s var(--ease-out),transform .25s;}
+    .mk-cmp-tag{position:absolute;top:16px;z-index:2;padding:6px 12px;border-radius:2px;background:rgba(20,17,14,.62);color:var(--cream);font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+      backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .3s;pointer-events:none;}
+    .mk-cmp-tag.l{left:16px;} .mk-cmp-tag.r{right:16px;}
+    .mk-cmp-wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(28px,5vw,72px);align-items:center;}
+    .mk-cmp-wrap .mk-cmp{aspect-ratio:4/5;margin:0 auto;}
+    .mk-cmp-note{font-size:.78rem;color:var(--charcoal-lt);margin-top:14px;}
+    @media(max-width:860px){.mk-cmp-wrap{grid-template-columns:1fr;}.mk-cmp-wrap .mk-cmp{aspect-ratio:4/5;max-height:78vh;}}
+
+    /* Push-in story */
+    .mk-push{position:relative;background:var(--charcoal);color:var(--cream);}
+    .mk-push.mk-live{height:300vh;height:300svh;}
+    .mk-push-stage{position:relative;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,80px);align-items:center;
+      padding:clamp(56px,8vw,96px) var(--gutter);max-width:var(--max-w);margin:0 auto;}
+    .mk-live .mk-push-stage{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));height:calc(100svh - var(--nav-h));padding-top:clamp(24px,4vh,48px);padding-bottom:clamp(24px,4vh,48px);}
+    .mk-push-frame{position:relative;height:100%;min-height:340px;border-radius:3px;overflow:hidden;background:#0d0b09;
+      box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06);}
+    .mk-push:not(.mk-live) .mk-push-frame{aspect-ratio:4/3;height:auto;}
+    .mk-push-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:var(--o,50% 50%);will-change:transform;}
+    .mk-push-frame::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 -140px 120px -70px rgba(0,0,0,.5);}
+    .mk-push-meter{position:absolute;left:18px;right:18px;bottom:16px;height:2px;background:rgba(255,255,255,.18);z-index:2;}
+    .mk-push-meter i{display:block;height:100%;background:var(--gold);transform-origin:0 50%;transform:scaleX(var(--p,0));}
+    .mk-push-caps .label{display:block;margin-bottom:22px;}
+    .mk-cap{font-family:var(--serif);font-size:clamp(1.35rem,2.4vw,2.1rem);line-height:1.3;color:var(--cream);margin:0 0 22px;}
+    .mk-cap span{display:block;font-family:var(--sans);font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+    .mk-live .mk-cap{opacity:.16;transform:translateY(14px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out),color .7s;}
+    .mk-live .mk-cap.on{opacity:1;transform:none;}
+    .mk-live .mk-cap.past{opacity:.38;transform:none;}
+    @media(max-width:860px){
+      .mk-push-stage{grid-template-columns:1fr;gap:20px;}
+      .mk-live .mk-push-stage{grid-template-rows:minmax(0,1fr) auto;padding-left:16px;padding-right:16px;}
+      .mk-push-frame{order:-1;}
+      .mk-push:not(.mk-live) .mk-push-frame{order:0;}
+      .mk-push-caps .label{margin-bottom:10px;}
+      .mk-live .mk-cap-list{position:relative;min-height:6.2em;}
+      .mk-live .mk-cap{position:absolute;left:0;right:0;top:0;opacity:0;font-size:1.2rem;margin:0;}
+      .mk-live .mk-cap.past{opacity:0;transform:translateY(-10px);}
+    }
+
+    /* Framed footage */
+    .mk-vid{border-radius:4px;}
+    .mk-vid video{transform:scale(1.02);}
+
+    /* Page */
+    .profile-preview{height:auto;aspect-ratio:4/3;padding:0;border-bottom:1px solid var(--cream-dark);}
+    .profile-card{position:relative;}
+    .install-video{height:clamp(220px,26vw,300px);border-radius:4px;}
   </style>
 </head>
 <body>
@@ -53,9 +171,15 @@
     </div>
     <div class="container" style="padding-left:0;padding-right:0;max-width:100%;">
       <div class="cat-img-row">
-        <div class="img-ph cat-img tall"><span class="img-ph-label">Grand crown molding — high ceiling library, built-in bookcase</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Crown molding close-up — dentil detail, painted white</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Modern minimal cove crown — contemporary living room</span></div>
+        <div class="mk-ph cat-img tall mk-loupe" data-zoom="2.4" tabindex="0" role="group" aria-label="Layered white crown molding where the wall meets the ceiling. Detail magnifier: hover, tap, or use the arrow keys to inspect.">
+          <img src="../images/pages/crown-hero.jpg" alt="Layered white crown molding where the wall meets the ceiling" fetchpriority="high" style="object-position:40% 45%">
+        </div>
+        <button type="button" class="mk-ph mk-open cat-img" data-lb="hero" data-cap="Close-up of stepped crown molding profiles" aria-label="View larger: Close-up of stepped crown molding profiles" data-cursor="View">
+          <img src="../images/pages/crown-detail.jpg" alt="Close-up of stepped crown molding profiles" loading="lazy" style="object-position:50% 50%">
+        </button>
+        <button type="button" class="mk-ph mk-open cat-img" data-lb="hero" data-cap="Stepped tray ceiling in a bright, minimal hallway" aria-label="View larger: Stepped tray ceiling in a bright, minimal hallway" data-cursor="View">
+          <img src="../images/pages/crown-tray.jpg" alt="Stepped tray ceiling in a bright, minimal hallway" loading="lazy" style="object-position:50% 50%">
+        </button>
       </div>
     </div>
   </section>
@@ -67,56 +191,55 @@
     <div class="feature-item"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg></div><div><div class="feature-title">Volume Pricing</div><div class="feature-desc">From single rooms to full buildings</div></div></div>
   </div></div>
 
+
+  <section class="mk-push" data-scale="2.5" data-origin="44% 64%" aria-label="Crown molding, wide to detail">
+    <div class="mk-push-stage">
+      <div class="mk-push-caps">
+        <div class="label">Wall to Ceiling</div>
+        <div class="mk-cap-list">
+          <p class="mk-cap"><span>01</span>Crown molding is the transition between wall and ceiling.</p>
+          <p class="mk-cap"><span>02</span>In a room with great bones, it&#39;s the detail that makes those bones undeniable.</p>
+          <p class="mk-cap"><span>03</span>Our solid wood crown profiles range from spare cove to full classical cornice.</p>
+        </div>
+      </div>
+      <div class="mk-push-frame"><img src="../molding-crown.jpg" alt="White crown molding photographed from below, layered profiles stepping toward the ceiling" loading="lazy" decoding="async"><div class="mk-push-meter" aria-hidden="true"><i></i></div></div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
       <div class="section-intro"><div class="label">Available Profiles</div><div class="rule"></div><h2>Crown Profiles for Every Architectural Style</h2><p>All profiles are available in any species. Prices shown are for painted poplar — a premium for hardwood species.</p></div>
       <div class="profile-grid">
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 Q40 0 100 20 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Simple Cove · 3-1/2&quot; × 3-1/2&quot;" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Simple Cove · 3-1/2&quot; × 3-1/2&quot;" data-cursor="View"><img src="../images/pages/crown-p1.jpg" alt="Curved end of a white crown molding against a flat ceiling" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Simple Cove</div><div class="profile-dim">3-1/2" × 3-1/2"</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 30 Q10 10 30 8 L100 20 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Colonial Stop · 4-1/4&quot; × 4-1/4&quot;" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Colonial Stop · 4-1/4&quot; × 4-1/4&quot;" data-cursor="View"><img src="../images/pages/crown-p2.jpg" alt="Run of white crown molding with stepped beads" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Colonial Stop</div><div class="profile-dim">4-1/4" × 4-1/4"</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 25 L10 20 Q30 5 50 8 L70 12 L80 8 L100 15 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Classical Ogee · 5-1/4&quot; × 5-1/4&quot;" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Classical Ogee · 5-1/4&quot; × 5-1/4&quot;" data-cursor="View"><img src="../images/pages/crown-p3.jpg" alt="Ends of layered crown profiles showing their curves" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Classical Ogee</div><div class="profile-dim">5-1/4" × 5-1/4"</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 20 L15 15 L20 8 L35 6 L50 4 L60 6 L65 10 L70 6 L85 4 L100 10 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Dentil Crown · 6&quot; × 6&quot;" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Dentil Crown · 6&quot; × 6&quot;" data-cursor="View"><img src="../images/pages/crown-p4.jpg" alt="Deep white crown molding casting soft shadows" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Dentil Crown</div><div class="profile-dim">6" × 6"</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 15 L20 8 Q40 0 60 5 Q80 8 100 12 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Craftsman Built-Up · 4&quot; × 8&quot; (2-piece)" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Craftsman Built-Up · 4&quot; × 8&quot; (2-piece)" data-cursor="View"><img src="../images/pages/crown-p5.jpg" alt="Built-up crown molding in two layers" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Craftsman Built-Up</div><div class="profile-dim">4" × 8" (2-piece)</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 10 L5 8 L10 5 L15 8 L20 5 L25 8 L30 5 L35 8 L40 5 L45 8 L50 5 L55 8 L60 5 L65 8 L70 5 L75 8 L80 5 L85 8 L90 5 L95 8 L100 10 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Egg &amp; Dart · 6-1/2&quot; × 6-1/2&quot;" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Egg &amp; Dart · 6-1/2&quot; × 6-1/2&quot;" data-cursor="View"><img src="../images/pages/crown-p6.jpg" alt="Close view of crown molding beads and fillets" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Egg &amp; Dart</div><div class="profile-dim">6-1/2" × 6-1/2"</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 5 L100 5 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Modern Square · 3&quot; × 3&quot; flat" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Modern Square · 3&quot; × 3&quot; flat" data-cursor="View"><img src="../images/pages/crown-p7.jpg" alt="Stepped, square-edged tray ceiling detail" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Modern Square</div><div class="profile-dim">3" × 3" flat</div></div>
         </div>
         <div class="profile-card">
-          <div class="profile-preview">
-            <svg viewBox="0 0 100 60" fill="none"><path d="M0 60 L0 18 L8 14 L16 18 L24 14 L32 18 L40 14 L48 18 L56 14 L64 18 L72 14 L80 18 L88 14 L96 18 L100 18 L100 60Z" fill="var(--cream-dark)"/></svg>
-          </div>
+          <button type="button" class="profile-preview mk-ph mk-open mk-zoom" data-lb="profiles" data-cap="Full Classical Cornice · 10&quot; × 12&quot; (3-piece)" data-note="Representative photo; the exact profile may differ." aria-label="View larger: Full Classical Cornice · 10&quot; × 12&quot; (3-piece)" data-cursor="View"><img src="../images/pages/crown-p8.jpg" alt="Wide view of a multi-layer white cornice" loading="lazy"></button>
           <div class="profile-body"><div class="profile-name">Full Classical Cornice</div><div class="profile-dim">10" × 12" (3-piece)</div></div>
         </div>
       </div>
@@ -130,10 +253,10 @@
         <div>
           <div class="label">Installation Guide</div><div class="rule"></div><h2>What to Know Before You Install</h2>
           <div class="install-steps">
-            <div class="install-step"><div class="install-step-num">01</div><div><h4>Measure the Room</h4><p>Calculate perimeter in linear feet, adding 15% for waste at corners. We supply cut lists on request.</p></div></div>
-            <div class="install-step"><div class="install-step-num">02</div><div><h4>Acclimate the Wood</h4><p>Store unfinished molding in the installation space for 3–5 days before cutting. This prevents shrinkage after installation.</p></div></div>
-            <div class="install-step"><div class="install-step-num">03</div><div><h4>Cope or Miter?</h4><p>Coped joints are more durable than miters at inside corners — they won't open as wood moves seasonally. We always recommend coping for paint-grade work.</p></div></div>
-            <div class="install-step"><div class="install-step-num">04</div><div><h4>Nail into Studs</h4><p>Crown is nailed to both wall plates and ceiling joists. Never rely on adhesive alone — it will fail as the wood moves.</p></div></div>
+            <div class="install-step" data-reveal="left"><div class="install-step-num">01</div><div><h4>Measure the Room</h4><p>Calculate perimeter in linear feet, adding 15% for waste at corners. We supply cut lists on request.</p></div></div>
+            <div class="install-step" data-reveal="left"><div class="install-step-num">02</div><div><h4>Acclimate the Wood</h4><p>Store unfinished molding in the installation space for 3–5 days before cutting. This prevents shrinkage after installation.</p></div></div>
+            <div class="install-step" data-reveal="left"><div class="install-step-num">03</div><div><h4>Cope or Miter?</h4><p>Coped joints are more durable than miters at inside corners — they won't open as wood moves seasonally. We always recommend coping for paint-grade work.</p></div></div>
+            <div class="install-step" data-reveal="left"><div class="install-step-num">04</div><div><h4>Nail into Studs</h4><p>Crown is nailed to both wall plates and ceiling joists. Never rely on adhesive alone — it will fail as the wood moves.</p></div></div>
           </div>
         </div>
         <div>
@@ -146,7 +269,7 @@
             
             <tr><td>Lead Time</td><td>contact us for current lead times</td></tr>
           </table>
-          <div class="img-ph" style="height:200px;border-radius:4px;"><span class="img-ph-label">Craftsman installing crown molding — coped inside corner</span></div>
+          <div class="mk-ph mk-vid install-video"><video src="../images/story/clip-planing.mp4" poster="../images/story/clip-planing.jpg" muted playsinline loop preload="none" data-mk-video aria-hidden="true"></video></div>
         </div>
       </div>
     </div>
@@ -159,4 +282,384 @@
   </div></div>
 </div>
 <script src="../shared/nav.js"></script>
+<script>
+/* Molding page kit: real-photo frames, detail loupe, compare slider, push-in story, lightbox, in-view footage */
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+  var ICON = {
+    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    prev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    next: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+    lens: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg>',
+    drag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg>'
+  };
+
+  /* Frames: our explicit photos join the site motion system (wipe, parallax, hover scale)
+     only after nav.js has filled its own placeholders, so it never swaps them out. */
+  function adoptFrames() {
+    $$('.mk-ph').forEach(function (el) { el.classList.add('img-ph'); });
+    if (window.Motion) window.Motion.refresh(document);
+  }
+
+  /* Hover pan inside card photos */
+  function setupZoomPan() {
+    $$('.mk-zoom').forEach(function (el) {
+      var img = el.querySelector('img');
+      if (!img) return;
+      el.addEventListener('pointermove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        var r = el.getBoundingClientRect();
+        img.style.setProperty('--ox', clamp((e.clientX - r.left) / r.width * 100, 0, 100).toFixed(1) + '%');
+        img.style.setProperty('--oy', clamp((e.clientY - r.top) / r.height * 100, 0, 100).toFixed(1) + '%');
+      });
+      el.addEventListener('pointerleave', function () { img.style.removeProperty('--ox'); img.style.removeProperty('--oy'); });
+    });
+  }
+
+  /* Lightbox */
+  function setupLightbox() {
+    var triggers = $$('[data-lb]');
+    if (!triggers.length) return;
+    var groups = {};
+    triggers.forEach(function (t) {
+      var g = t.getAttribute('data-lb');
+      (groups[g] = groups[g] || []).push(t);
+      t.addEventListener('click', function () { open(g, groups[g].indexOf(t)); });
+    });
+
+    var lb = document.createElement('div');
+    lb.className = 'mk-lb';
+    lb.hidden = true;
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Photo viewer');
+    lb.innerHTML =
+      '<div class="mk-lb-stage"><img alt="" draggable="false"></div>' +
+      '<div class="mk-lb-bar"><p class="mk-lb-cap" aria-live="polite"></p><span class="mk-lb-count"></span></div>' +
+      '<button type="button" class="mk-lb-prev" aria-label="Previous photo">' + ICON.prev + '</button>' +
+      '<button type="button" class="mk-lb-next" aria-label="Next photo">' + ICON.next + '</button>' +
+      '<button type="button" class="mk-lb-close" aria-label="Close photo viewer">' + ICON.close + '</button>';
+    document.body.appendChild(lb);
+    var stage = lb.querySelector('.mk-lb-stage'), img = stage.querySelector('img');
+    var cap = lb.querySelector('.mk-lb-cap'), count = lb.querySelector('.mk-lb-count');
+    var btnPrev = lb.querySelector('.mk-lb-prev'), btnNext = lb.querySelector('.mk-lb-next'), btnClose = lb.querySelector('.mk-lb-close');
+    var group = null, idx = 0, lastFocus = null, prevOverflow = '';
+
+    function srcOf(t) {
+      var i = t.querySelector('img');
+      return t.getAttribute('data-full') || (i && (i.currentSrc || i.src)) || '';
+    }
+    function fill(dir) {
+      var t = groups[group][idx];
+      var thumb = t.querySelector('img');
+      img.alt = (thumb && thumb.alt) || t.getAttribute('aria-label') || '';
+      cap.innerHTML = '';
+      cap.textContent = t.getAttribute('data-cap') || '';
+      if (t.getAttribute('data-note')) {
+        var s = document.createElement('small'); s.textContent = t.getAttribute('data-note'); cap.appendChild(s);
+      }
+      count.textContent = (idx + 1) + ' / ' + groups[group].length;
+      var many = groups[group].length > 1;
+      btnPrev.hidden = btnNext.hidden = !many;
+      if (dir && !reduced) {
+        img.animate([{ opacity: 0, transform: 'translateX(' + (dir * 40) + 'px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 450, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+      }
+      img.src = srcOf(t);
+    }
+    function open(g, i) {
+      group = g; idx = i; lastFocus = document.activeElement;
+      prevOverflow = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+      lb.hidden = false;
+      fill(0);
+      requestAnimationFrame(function () { lb.classList.add('on'); });
+      var thumb = groups[g][i].querySelector('img');
+      if (!reduced && thumb) {
+        var go = function () {
+          var a = thumb.getBoundingClientRect(), b = img.getBoundingClientRect();
+          if (!b.width) return;
+          var s = Math.max(a.width / b.width, a.height / b.height);
+          img.animate([
+            { transform: 'translate(' + (a.left + a.width / 2 - (b.left + b.width / 2)) + 'px,' + (a.top + a.height / 2 - (b.top + b.height / 2)) + 'px) scale(' + s + ')', opacity: 0.5 },
+            { transform: 'none', opacity: 1 }
+          ], { duration: 650, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+        };
+        if (img.complete && img.naturalWidth) requestAnimationFrame(go); else img.addEventListener('load', go, { once: true });
+      }
+      btnClose.focus({ preventScroll: true });
+    }
+    function close() {
+      lb.classList.remove('on');
+      setTimeout(function () { lb.hidden = true; img.removeAttribute('src'); }, reduced ? 0 : 300);
+      document.documentElement.style.overflow = prevOverflow;
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+      group = null;
+    }
+    function step(d) {
+      if (!group) return;
+      var n = groups[group].length;
+      idx = (idx + d + n) % n;
+      fill(d);
+    }
+    btnClose.addEventListener('click', close);
+    btnPrev.addEventListener('click', function () { step(-1); });
+    btnNext.addEventListener('click', function () { step(1); });
+    lb.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+      else if (e.key === 'Tab') {
+        var f = [btnPrev, btnNext, btnClose].filter(function (b) { return !b.hidden; });
+        var at = f.indexOf(document.activeElement);
+        e.preventDefault();
+        f[(at + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+      }
+    });
+    stage.addEventListener('click', function (e) { if (e.target === stage) close(); });
+
+    // Swipe / drag
+    var sx = null, dx = 0, sy = 0;
+    stage.addEventListener('pointerdown', function (e) {
+      if (e.target !== img) return;
+      sx = e.clientX; sy = e.clientY; dx = 0;
+      img.setPointerCapture(e.pointerId);
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (sx === null) return;
+      dx = e.clientX - sx;
+      img.style.transform = 'translateX(' + dx + 'px)';
+      img.style.opacity = String(1 - Math.min(Math.abs(dx) / 600, 0.5));
+    });
+    function end(e) {
+      if (sx === null) return;
+      var dy = e.clientY - sy;
+      sx = null;
+      img.style.transform = ''; img.style.opacity = '';
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+      else if (dy > 120 && Math.abs(dy) > Math.abs(dx) * 1.5) close();
+    }
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+  }
+
+  /* Detail loupe: a magnified circle of the same photo follows the pointer.
+     Touch: tap to place it, then drag the lens. Keyboard: focus + arrow keys. */
+  function setupLoupes() {
+    $$('.mk-loupe').forEach(function (frame) {
+      var img = frame.querySelector('img');
+      if (!img) return;
+      var zoom = parseFloat(frame.getAttribute('data-zoom')) || 2.6;
+      var lens = document.createElement('div');
+      lens.className = 'mk-lens';
+      lens.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(lens);
+      var hint = document.createElement('span');
+      hint.className = 'mk-hint';
+      hint.setAttribute('aria-hidden', 'true');
+      hint.innerHTML = ICON.lens + '<span>' + (window.matchMedia('(hover: none)').matches ? 'Tap to inspect' : 'Hover to inspect') + '</span>';
+      frame.appendChild(hint);
+      var u = 0.5, v = 0.5, active = false, ready = false;
+
+      function render() {
+        var r = img.getBoundingClientRect();
+        var nw = img.naturalWidth, nh = img.naturalHeight;
+        if (!nw || !r.width) return;
+        var s = Math.max(r.width / nw, r.height / nh);
+        var ox = r.left + (r.width - nw * s) / 2, oy = r.top + (r.height - nh * s) / 2;
+        var fr = frame.getBoundingClientRect();
+        var cx = fr.left + u * fr.width, cy = fr.top + v * fr.height;
+        var size = lens.offsetWidth || 190;
+        var bw = nw * s * zoom, bh = nh * s * zoom;
+        var px = (cx - ox) * zoom, py = (cy - oy) * zoom;
+        if (!ready) { lens.style.backgroundImage = 'url("' + (img.currentSrc || img.src) + '")'; ready = true; }
+        lens.style.backgroundSize = bw.toFixed(0) + 'px ' + bh.toFixed(0) + 'px';
+        lens.style.backgroundPosition = (size / 2 - px).toFixed(1) + 'px ' + (size / 2 - py).toFixed(1) + 'px';
+        lens.style.transform = '';
+        lens.style.left = cx + 'px'; lens.style.top = cy + 'px';
+      }
+      function show(on) {
+        active = on;
+        lens.classList.toggle('on', on);
+        frame.classList.toggle('inspecting', on);
+        if (!on) lens.classList.remove('touch');
+      }
+      function fromEvent(e) {
+        var fr = frame.getBoundingClientRect();
+        u = clamp((e.clientX - fr.left) / fr.width, 0, 1);
+        v = clamp((e.clientY - fr.top) / fr.height, 0, 1);
+      }
+      frame.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') { fromEvent(e); show(true); render(); } });
+      frame.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse') { fromEvent(e); if (!active) show(true); render(); } });
+      frame.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') show(false); });
+      // Touch: a tap (not a scroll) places the lens
+      var tStart = null;
+      frame.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') tStart = { x: e.clientX, y: e.clientY, t: Date.now() }; });
+      frame.addEventListener('pointerup', function (e) {
+        if (e.pointerType === 'mouse' || !tStart) return;
+        var moved = Math.abs(e.clientX - tStart.x) + Math.abs(e.clientY - tStart.y);
+        tStart = null;
+        if (moved > 10) return;
+        fromEvent(e);
+        if (active && lens.classList.contains('touch')) { show(false); return; }
+        show(true); lens.classList.add('touch'); render();
+      });
+      lens.addEventListener('pointerdown', function (e) { e.preventDefault(); lens.setPointerCapture(e.pointerId); lens.dataset.drag = '1'; });
+      lens.addEventListener('pointermove', function (e) { if (lens.dataset.drag) { fromEvent(e); render(); } });
+      lens.addEventListener('pointerup', function () { delete lens.dataset.drag; });
+      document.addEventListener('pointerdown', function (e) {
+        if (active && lens.classList.contains('touch') && !frame.contains(e.target) && e.target !== lens) show(false);
+      });
+      window.addEventListener('scroll', function () { if (active && !lens.dataset.drag) { if (lens.classList.contains('touch') || document.activeElement === frame) render(); else show(false); } }, { passive: true });
+      // Keyboard
+      frame.addEventListener('focus', function () { if (!frame.matches(':focus-visible')) return; show(true); render(); });
+      frame.addEventListener('blur', function () { show(false); });
+      frame.addEventListener('keydown', function (e) {
+        var k = e.key, d = e.shiftKey ? 0.12 : 0.04;
+        if (k === 'Escape') { show(false); return; }
+        if (k === 'Enter' || k === ' ') { e.preventDefault(); show(!active); if (active) render(); return; }
+        if (k === 'ArrowLeft') u -= d; else if (k === 'ArrowRight') u += d;
+        else if (k === 'ArrowUp') v -= d; else if (k === 'ArrowDown') v += d; else return;
+        e.preventDefault();
+        u = clamp(u, 0, 1); v = clamp(v, 0, 1);
+        if (!active) show(true);
+        render();
+      });
+    });
+  }
+
+  /* Compare slider */
+  function setupCompare() {
+    $$('.mk-cmp').forEach(function (box) {
+      var handle = box.querySelector('.mk-cmp-handle');
+      var la = box.getAttribute('data-a') || 'Left', lbl = box.getAttribute('data-b') || 'Right';
+      handle.innerHTML = ICON.drag;
+      var pos = 50, dragging = false;
+      function set(p, ease) {
+        pos = clamp(p, 0, 100);
+        box.classList.toggle('ease', !!ease);
+        box.style.setProperty('--pos', pos.toFixed(2) + '%');
+        var n = Math.round(pos);
+        handle.setAttribute('aria-valuenow', String(n));
+        handle.setAttribute('aria-valuetext', n + '% ' + la + ', ' + (100 - n) + '% ' + lbl);
+        var tl = box.querySelector('.mk-cmp-tag.l'), tr = box.querySelector('.mk-cmp-tag.r');
+        if (tl) tl.style.opacity = pos < 18 ? 0 : 1;
+        if (tr) tr.style.opacity = pos > 82 ? 0 : 1;
+      }
+      function fromX(x) { var r = box.getBoundingClientRect(); return (x - r.left) / r.width * 100; }
+      var start = null;
+      box.addEventListener('pointerdown', function (e) {
+        if (e.button && e.button !== 0) return;
+        start = { x: e.clientX, y: e.clientY, id: e.pointerId };
+        if (e.pointerType === 'mouse' || e.target === handle || handle.contains(e.target)) {
+          dragging = true; box.classList.add('drag'); box.setPointerCapture(e.pointerId); set(fromX(e.clientX), e.pointerType === 'mouse' && e.target !== handle && !handle.contains(e.target));
+          if (e.pointerType === 'mouse') e.preventDefault();
+        }
+      });
+      box.addEventListener('pointermove', function (e) {
+        if (!dragging && start && e.pointerType !== 'mouse') {
+          var dx = Math.abs(e.clientX - start.x), dy = Math.abs(e.clientY - start.y);
+          if (dx > 8 && dx > dy) { dragging = true; box.classList.add('drag'); try { box.setPointerCapture(e.pointerId); } catch (err) {} }
+        }
+        if (dragging) set(fromX(e.clientX));
+      });
+      function end(e) {
+        if (start && !dragging && e && e.type === 'pointerup' && e.pointerType !== 'mouse') {
+          if (Math.abs(e.clientX - start.x) + Math.abs(e.clientY - start.y) < 8) set(fromX(e.clientX), true);
+        }
+        dragging = false; start = null; box.classList.remove('drag');
+      }
+      box.addEventListener('pointerup', end);
+      box.addEventListener('pointercancel', end);
+      box.addEventListener('touchmove', function (e) { if (dragging) e.preventDefault(); }, { passive: false });
+      handle.addEventListener('keydown', function (e) {
+        var k = e.key, d = e.shiftKey ? 10 : 2;
+        if (k === 'ArrowLeft' || k === 'ArrowDown') set(pos - d);
+        else if (k === 'ArrowRight' || k === 'ArrowUp') set(pos + d);
+        else if (k === 'Home') set(0, true);
+        else if (k === 'End') set(100, true);
+        else if (k === 'PageDown') set(pos - 25, true);
+        else if (k === 'PageUp') set(pos + 25, true);
+        else return;
+        e.preventDefault();
+      });
+      set(50);
+      // A single gentle sweep the first time it comes into view, to show it moves.
+      if (!reduced && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (en) {
+          if (!en[0].isIntersecting) return;
+          io.disconnect();
+          setTimeout(function () { if (!dragging) set(32, true); }, 350);
+          setTimeout(function () { if (!dragging) set(64, true); }, 1250);
+          setTimeout(function () { if (!dragging) set(50, true); }, 2150);
+        }, { threshold: 0.6 });
+        io.observe(box);
+      }
+    });
+  }
+
+  /* Push-in story: scroll drives a slow push from the wide photo into the detail */
+  function setupPush() {
+    $$('.mk-push').forEach(function (sec) {
+      var img = sec.querySelector('.mk-push-frame img');
+      var caps = $$('.mk-cap', sec);
+      var meter = sec.querySelector('.mk-push-meter');
+      if (reduced || !img) return;
+      sec.classList.add('mk-live');
+      var scale = parseFloat(sec.getAttribute('data-scale')) || 2.2;
+      img.style.setProperty('--o', sec.getAttribute('data-origin') || '50% 50%');
+      var ticking = false;
+      function frame() {
+        ticking = false;
+        var r = sec.getBoundingClientRect(), vh = window.innerHeight;
+        var total = r.height - vh;
+        if (r.bottom < 0 || r.top > vh) return;
+        var p = clamp(-r.top / Math.max(total, 1), 0, 1);
+        var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        img.style.transform = 'scale(' + (1 + (scale - 1) * e).toFixed(4) + ')';
+        if (meter) meter.style.setProperty('--p', p.toFixed(3));
+        var n = caps.length, at = Math.min(n - 1, Math.floor(p * n * 0.999));
+        caps.forEach(function (c, i) {
+          c.classList.toggle('on', i === at);
+          c.classList.toggle('past', i < at);
+        });
+      }
+      function req() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+      window.addEventListener('scroll', req, { passive: true });
+      window.addEventListener('resize', req);
+      frame();
+    });
+  }
+
+  /* Footage plays only while on screen */
+  function setupVideos() {
+    var vids = $$('video[data-mk-video]');
+    if (!vids.length) return;
+    if (reduced || !('IntersectionObserver' in window)) { vids.forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); }); return; }
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) {
+        var v = x.target;
+        if (x.isIntersecting) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        else v.pause();
+      });
+    }, { threshold: 0.25 });
+    vids.forEach(function (v) { io.observe(v); });
+  }
+
+  function init() {
+    adoptFrames();
+    setupZoomPan();
+    setupLightbox();
+    setupLoupes();
+    setupCompare();
+    setupPush();
+    setupVideos();
+  }
+  // nav.js fills its placeholders on DOMContentLoaded (its listener was registered first).
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 200);
+})();
+</script>
 </body></html>

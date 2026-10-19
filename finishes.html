@@ -4,43 +4,150 @@
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Materials &amp; Finishes Guide | Solid Doors &amp; Moldings</title>
   <meta name="description" content="Explore wood species, stain colors, paint finishes, and hardware patinas from Solid Doors & Moldings. Order a sample pack for $35, credited to your first order." />
-  <link rel="stylesheet" href="../shared/styles.css" />
+  <link rel="stylesheet" href="shared/styles.css" />
   <link rel="stylesheet" href="shared/motion.css" />
   <script src="shared/motion.js"></script>
   <style>
-    .finishes-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px);}
-    .species-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,20px);}
-    .species-card{border-radius:2px;overflow:hidden;border:1.5px solid var(--cream-dark);transition:all 0.2s;}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+    /* ─── Hero: real walnut grain drifting behind the copy ─── */
+    .finishes-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px);position:relative;overflow:hidden;isolation:isolate;}
+    .fh-bg{position:absolute;inset:-6%;z-index:-1;pointer-events:none;}
+    .fh-bg img{width:100%;height:100%;object-fit:cover;opacity:0.42;animation:fh-drift 28s ease-in-out infinite alternate;}
+    .finishes-hero::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(20,17,14,0.96) 0%,rgba(20,17,14,0.82) 45%,rgba(20,17,14,0.35) 100%);}
+    @keyframes fh-drift{from{transform:translate3d(-2%,-1%,0) scale(1.04);}to{transform:translate3d(2%,1.5%,0) scale(1.1);}}
+
+    /* ─── Species: sticky viewer beside the cards ─── */
+    .sp-wrap{display:grid;grid-template-columns:5fr 7fr;gap:clamp(28px,4vw,56px);align-items:start;}
+    .sp-viewer{position:sticky;top:calc(var(--nav-h) + 28px);scroll-margin-top:calc(var(--nav-h) + 16px);}
+    .sp-stage{position:relative;aspect-ratio:4/5;max-height:calc(100vh - var(--nav-h) - 240px);min-height:320px;width:100%;overflow:hidden;border-radius:3px;background:#2a2118;box-shadow:0 30px 70px rgba(0,0,0,0.18);}
+    .sp-layer{position:absolute;inset:0;overflow:hidden;clip-path:inset(0 0 0 100%);transition:clip-path 1.05s cubic-bezier(0.77,0,0.18,1);}
+    .sp-layer.is-on{clip-path:inset(0 0 0 0);z-index:2;}
+    .sp-layer.is-under{clip-path:inset(0 0 0 0);z-index:1;}
+    .sp-layer img{position:absolute;inset:-10%;width:120%;height:120%;max-width:none;object-fit:cover;animation:sp-pan 22s ease-in-out infinite alternate;}
+    .sp-layer::after{content:'';position:absolute;top:0;bottom:0;left:0;width:2px;background:var(--gold);opacity:0;transition:opacity .3s;}
+    .sp-layer.moving::after{opacity:0.9;}
+    @keyframes sp-pan{from{transform:translate3d(-3%,-4%,0) scale(1);}to{transform:translate3d(3%,4%,0) scale(1.06);}}
+    .sp-tag{position:absolute;left:16px;top:16px;z-index:3;font-size:0.62rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.9);background:rgba(20,17,14,0.45);backdrop-filter:blur(6px);padding:5px 10px;border-radius:2px;}
+    .sp-meta{padding-top:20px;}
+    .sp-name{font-family:var(--serif);font-size:clamp(1.6rem,2.6vw,2.2rem);font-weight:600;line-height:1.1;margin:6px 0 8px;}
+    .sp-desc{font-size:0.9rem;margin-bottom:12px;min-height:3.2em;}
+    .sp-meta .sp-anim{display:block;transition:opacity .35s,transform .5s var(--ease-out);}
+    .sp-meta.swap .sp-anim{opacity:0;transform:translateY(8px);}
+
+    .species-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(12px,2vw,20px);}
+    .species-card{border-radius:2px;overflow:hidden;border:1.5px solid var(--cream-dark);transition:border-color .25s,box-shadow .35s var(--ease-out);position:relative;background:var(--cream);}
     .species-card:hover{border-color:var(--charcoal);box-shadow:0 8px 32px rgba(0,0,0,0.08);}
-    .species-img{aspect-ratio:4/3;}
+    .species-card.is-on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 12px 36px rgba(0,0,0,0.10);}
+    .species-img{aspect-ratio:4/3;position:relative;overflow:hidden;background:#d9cbb6;}
+    .species-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out);}
+    .species-card:hover .species-img img{transform:scale(1.07);}
     .species-body{padding:16px;}
     .species-name{font-family:var(--serif);font-size:1rem;font-weight:600;margin-bottom:4px;}
     .species-desc{font-size:0.78rem;color:var(--charcoal-lt);margin-bottom:8px;}
     .species-tags{display:flex;gap:4px;flex-wrap:wrap;}
     .species-tag{font-size:0.65rem;font-weight:600;letter-spacing:0.06em;padding:3px 8px;background:var(--cream-mid);border-radius:100px;color:var(--charcoal-lt);}
-    .stain-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
-    .stain-card{border-radius:2px;overflow:hidden;cursor:pointer;}
-    .stain-swatch{height:80px;border-radius:2px 2px 0 0;}
-    .stain-name{font-size:0.70rem;font-weight:600;padding:6px 8px;background:white;color:var(--charcoal);}
-    .stain-code{font-size:0.62rem;color:var(--charcoal-lt);padding:0 8px 8px;}
-    .paint-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;}
-    .paint-chip{aspect-ratio:1;border-radius:2px;border:1px solid rgba(0,0,0,0.08);cursor:pointer;position:relative;}
-    .paint-chip-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--charcoal);color:var(--cream);font-size:0.68rem;padding:4px 8px;border-radius:2px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:10;}
-    .paint-chip:hover .paint-chip-tooltip{opacity:1;}
+    .sp-pick{position:absolute;inset:0;width:100%;height:100%;z-index:4;border-radius:2px;}
+    .sp-pick:focus-visible{outline:2px solid var(--gold);outline-offset:-3px;}
+    .sp-pick-hint{position:absolute;right:10px;top:10px;z-index:3;font-size:0.6rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;background:var(--charcoal);color:var(--cream);padding:4px 8px;border-radius:2px;opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .4s var(--ease-out);pointer-events:none;}
+    .species-card:hover .sp-pick-hint,.sp-pick:focus-visible ~ .species-img .sp-pick-hint{opacity:1;transform:none;}
+    .species-card.is-on .sp-pick-hint{opacity:1;transform:none;background:var(--gold);color:var(--charcoal);}
+
+    /* ─── Compare ─── */
+    .cmp{margin-top:clamp(56px,8vw,96px);}
+    .cmp-controls{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px;}
+    .cmp-controls label{display:flex;flex-direction:column;gap:6px;font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--charcoal-lt);}
+    .cmp-controls select{font-family:var(--sans);font-size:0.9rem;padding:10px 36px 10px 14px;border:1.5px solid var(--cream-dark);border-radius:2px;background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23333' stroke-width='1.6'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center;appearance:none;color:var(--charcoal);min-width:180px;}
+    .cmp-controls select:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+    .cmp-stage{position:relative;aspect-ratio:16/7;min-height:260px;overflow:hidden;border-radius:3px;cursor:ew-resize;touch-action:pan-y;user-select:none;-webkit-user-select:none;background:#2a2118;}
+    .cmp-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:opacity .5s;}
+    .cmp-right{clip-path:inset(0 0 0 var(--pos,50%));}
+    .cmp-line{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;margin-left:-1px;background:var(--cream);box-shadow:0 0 18px rgba(0,0,0,0.35);pointer-events:none;}
+    .cmp-handle{position:absolute;top:50%;left:var(--pos,50%);width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:var(--cream);color:var(--charcoal);display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,0.35);transition:transform .3s var(--ease-out);cursor:grab;}
+    .cmp-handle svg{width:22px;height:22px;}
+    .cmp-handle:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+    .cmp-stage.dragging .cmp-handle{transform:scale(0.9);cursor:grabbing;}
+    .cmp-name{position:absolute;bottom:14px;z-index:2;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream);background:rgba(20,17,14,0.55);backdrop-filter:blur(6px);padding:5px 10px;border-radius:2px;pointer-events:none;}
+    .cmp-name.l{left:14px;} .cmp-name.r{right:14px;}
+
+    /* ─── Stains: tint a real wood photo ─── */
+    .tint-wrap{display:grid;grid-template-columns:5fr 7fr;gap:clamp(28px,4vw,56px);align-items:start;}
+    .tint-preview{position:sticky;top:calc(var(--nav-h) + 28px);}
+    .tint-stage{position:relative;aspect-ratio:4/5;max-height:calc(100vh - var(--nav-h) - 160px);min-height:300px;overflow:hidden;border-radius:3px;background:#d9c7ab;box-shadow:0 30px 70px rgba(0,0,0,0.16);}
+    .tint-stage img{position:absolute;inset:-6%;width:112%;height:112%;max-width:none;object-fit:cover;animation:sp-pan 26s ease-in-out infinite alternate;}
+    .tint-layer{position:absolute;inset:0;mix-blend-mode:multiply;background:var(--tint,#e8d5b4);opacity:var(--tint-o,0.9);transition:background-color .8s var(--ease-out),opacity .8s var(--ease-out);}
+    .tint-wash{position:absolute;inset:0;background:var(--wash,#f2ece3);mix-blend-mode:screen;opacity:var(--wash-o,0);transition:opacity .8s var(--ease-out),background-color .8s;}
+    .tint-sheen{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,0.18) 50%,rgba(255,255,255,0) 70%);background-size:250% 100%;background-position:120% 0;pointer-events:none;}
+    .tint-stage.sweep .tint-sheen{animation:sheen 1.4s var(--ease-out);}
+    @keyframes sheen{from{background-position:120% 0;}to{background-position:-60% 0;}}
+    .tint-cap{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-top:16px;}
+    .tint-cap-name{font-family:var(--serif);font-size:clamp(1.3rem,2.2vw,1.8rem);font-weight:600;}
+    .tint-cap-code{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;color:var(--charcoal-lt);}
+
+    .stain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+    .stain-card{border-radius:2px;overflow:hidden;cursor:pointer;display:block;width:100%;padding:0;text-align:left;background:white;position:relative;transition:transform .45s var(--ease-out),box-shadow .45s var(--ease-out);}
+    .stain-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,0.10);}
+    .stain-card:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+    .stain-card::after{content:'';position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:0 50%;transition:transform .55s var(--ease-out);}
+    .stain-card[aria-pressed="true"]::after{transform:scaleX(1);}
+    .stain-card[aria-pressed="true"]{box-shadow:0 12px 28px rgba(0,0,0,0.12);}
+    .stain-swatch{height:80px;border-radius:2px 2px 0 0;display:block;position:relative;}
+    .stain-swatch::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,0.18),rgba(255,255,255,0) 50%,rgba(0,0,0,0.08));}
+    .stain-name{font-size:0.70rem;font-weight:600;padding:6px 8px;background:white;color:var(--charcoal);display:block;}
+    .stain-code{font-size:0.62rem;color:var(--charcoal-lt);padding:0 8px 8px;display:block;background:white;}
+
+    /* ─── Paint: tint a real white panel-molding photo ─── */
+    .paint-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+    .paint-chip{aspect-ratio:1;border-radius:2px;border:1px solid rgba(0,0,0,0.08);cursor:pointer;position:relative;padding:0;display:block;width:100%;transition:transform .45s var(--ease-out),box-shadow .45s var(--ease-out);}
+    .paint-chip::after{content:'';position:absolute;inset:-5px;border:1.5px solid var(--charcoal);border-radius:4px;opacity:0;transform:scale(0.9);transition:opacity .3s,transform .45s var(--ease-out);}
+    .paint-chip:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,0.12);}
+    .paint-chip[aria-pressed="true"]::after{opacity:1;transform:scale(1);}
+    .paint-chip[aria-pressed="true"]{transform:translateY(-3px);}
+    .paint-chip:focus-visible{outline:2px solid var(--gold);outline-offset:6px;}
+    .paint-chip-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(calc(-50% + var(--tip-dx,0px)));background:var(--charcoal);color:var(--cream);font-size:0.68rem;padding:4px 8px;border-radius:2px;white-space:nowrap;display:none;pointer-events:none;z-index:10;}
+    @keyframes tip-in{from{opacity:0;}to{opacity:1;}}
+    .paint-chip:hover .paint-chip-tooltip,.paint-chip:focus-visible .paint-chip-tooltip{display:block;animation:tip-in .15s ease both;}
+    .paint-stage{background:#f2efe9;}
+    .paint-stage img{animation:none;inset:0;width:100%;height:100%;transform:scale(1.04);transition:transform 6s var(--ease-out);}
+    .paint-stage:hover img{transform:scale(1.1);}
+    .paint-stage .tint-layer{opacity:1;}
+
     .sample-banner{background:var(--gold-pale);border:2px solid var(--gold);border-radius:4px;padding:32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+    .sample-banner-img{width:120px;height:120px;border-radius:2px;overflow:hidden;flex-shrink:0;}
+    .sample-banner-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out);}
+    .sample-banner:hover .sample-banner-img img{transform:scale(1.1) rotate(-2deg);}
+    .sample-banner-text{flex:1;min-width:240px;}
+
     .hardware-finish-row{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;}
     .hf-card{text-align:center;}
-    .hf-circle{width:60px;height:60px;border-radius:50%;margin:0 auto 10px;border:2px solid rgba(0,0,0,0.08);}
+    .hf-circle{width:60px;height:60px;border-radius:50%;margin:0 auto 10px;border:2px solid rgba(0,0,0,0.08);position:relative;overflow:hidden;transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out);}
+    .hf-circle::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,0.55),rgba(255,255,255,0) 45%),linear-gradient(160deg,rgba(255,255,255,0) 50%,rgba(0,0,0,0.25));}
+    .hf-card:hover .hf-circle{transform:translateY(-4px) rotate(-12deg);box-shadow:0 12px 24px rgba(0,0,0,0.18);}
     .hf-name{font-size:0.78rem;font-weight:600;margin-bottom:2px;}
     .hf-code{font-size:0.68rem;color:var(--charcoal-lt);}
-    @media(max-width:1024px){.species-grid{grid-template-columns:repeat(3,1fr);}.stain-grid{grid-template-columns:repeat(4,1fr);}.paint-grid{grid-template-columns:repeat(4,1fr);}.hardware-finish-row{grid-template-columns:repeat(3,1fr);}}
-    @media(max-width:768px){.species-grid{grid-template-columns:repeat(2,1fr);}.stain-grid{grid-template-columns:repeat(3,1fr);}.hardware-finish-row{grid-template-columns:repeat(2,1fr);}}
-    @media(max-width:480px){.species-grid{grid-template-columns:1fr;}.stain-grid{grid-template-columns:repeat(2,1fr);}.paint-grid{grid-template-columns:repeat(3,1fr);}}
+
+    @media(max-width:1024px){.stain-grid{grid-template-columns:repeat(3,1fr);}.hardware-finish-row{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:900px){
+      .sp-wrap,.tint-wrap{grid-template-columns:1fr;}
+      .sp-viewer,.tint-preview{position:relative;top:0;}
+      .sp-stage,.tint-stage{aspect-ratio:16/10;max-height:none;min-height:0;}
+      .cmp-stage{aspect-ratio:4/3;min-height:0;}
+      .paint-grid{grid-template-columns:repeat(8,1fr);}
+      .stain-grid{grid-template-columns:repeat(4,1fr);}
+    }
+    @media(max-width:768px){.stain-grid{grid-template-columns:repeat(3,1fr);}.hardware-finish-row{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:480px){.species-grid{grid-template-columns:1fr;}.stain-grid{grid-template-columns:repeat(2,1fr);}.paint-grid{grid-template-columns:repeat(4,1fr);gap:8px;}.cmp-controls select{min-width:0;width:100%;}.cmp-controls label{flex:1;}.sample-banner-img{display:none;}}
+    @media (prefers-reduced-motion: reduce){
+      .fh-bg img,.sp-layer img,.tint-stage img{animation:none !important;}
+      .sp-layer,.tint-layer,.tint-wash,.species-img img,.paint-stage img{transition:none !important;}
+      .tint-stage.sweep .tint-sheen{animation:none;}
+    }
   </style>
 </head>
 <body>
 <div class="page-content">
   <section class="finishes-hero">
+    <div class="fh-bg" aria-hidden="true"><img src="images/pages/pg-wood-walnut.jpg" alt="" /></div>
     <div class="container">
       <nav class="breadcrumb" style="color:rgba(255,255,255,0.35);margin-bottom:32px;">
         <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a><span class="breadcrumb-sep">/</span>
@@ -56,15 +163,47 @@
   <section class="section">
     <div class="container">
       <div class="section-intro"><div class="label">Wood Species</div><div class="rule"></div><h2>20+ Species. We'll Help You Choose the Right One.</h2></div>
-      <div class="species-grid">
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">White Oak grain — close-up, natural</span></div><div class="species-body"><div class="species-name">White Oak</div><p class="species-desc">Open grain, warm tone, pronounced ray flecks. Our most popular species. Takes stain beautifully.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span><span class="species-tag">Exterior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Walnut grain — dark, rich tone</span></div><div class="species-body"><div class="species-name">Black Walnut</div><p class="species-desc">Rich chocolate brown with purple undertones. America's luxury hardwood. No stain needed.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Cherry wood — warm reddish-brown</span></div><div class="species-body"><div class="species-name">Cherry</div><p class="species-desc">Light pink when fresh-cut, deepens to a warm reddish-brown over time. Fine, smooth grain.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Mahogany grain — straight, reddish-brown</span></div><div class="species-body"><div class="species-name">Mahogany</div><p class="species-desc">Straight grain, excellent dimensional stability, outstanding weather resistance. Premier exterior species.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Interior</span><span class="species-tag">Exterior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Maple grain — tight, light, clean</span></div><div class="species-body"><div class="species-name">Hard Maple</div><p class="species-desc">Dense, tight grain. Light color that accepts paint perfectly or can be used natural for a clean, contemporary look.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Poplar grain — light, painted</span></div><div class="species-body"><div class="species-name">Poplar</div><p class="species-desc">Our paint-grade standard. Mills cleanly, accepts primer and paint without bleeding, holds shape reliably.</p><div class="species-tags"><span class="species-tag">Moldings</span><span class="species-tag">Paint-Grade</span><span class="species-tag">Interior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Alder grain — light reddish-brown</span></div><div class="species-body"><div class="species-name">Alder</div><p class="species-desc">Light, uniform grain. Often used as a paintable stain-grade species — accepts dark stains evenly.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
-        <div class="species-card"><div class="img-ph species-img"><span class="img-ph-label">Douglas Fir grain — warm, knotty</span></div><div class="species-body"><div class="species-name">Douglas Fir</div><p class="species-desc">Strong, dimensional, with warm golden grain. Classic exterior species used in traditional and craftsman homes.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Exterior</span></div></div></div>
+      <div class="sp-wrap">
+        <div class="sp-viewer" data-no-motion>
+          <div class="sp-stage" aria-hidden="true">
+            <div class="sp-layer is-on"><img src="images/pages/pg-wood-walnut.jpg" alt="" /></div>
+            <div class="sp-layer"><img alt="" /></div>
+            <span class="sp-tag">Grain close-up</span>
+          </div>
+          <div class="sp-meta" aria-live="polite">
+            <div class="label">Selected species</div>
+            <div class="sp-name sp-anim">Black Walnut</div>
+            <p class="sp-desc sp-anim"></p>
+            <div class="species-tags sp-anim sp-tags"></div>
+          </div>
+        </div>
+        <div class="species-grid">
+          <div class="species-card" data-img="pg-wood-white-oak"><div class="species-img"><img src="images/pages/pg-wood-white-oak-s.jpg" alt="White Oak grain — close-up, natural" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">White Oak</div><p class="species-desc">Open grain, warm tone, pronounced ray flecks. Our most popular species. Takes stain beautifully.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span><span class="species-tag">Exterior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-walnut"><div class="species-img"><img src="images/pages/pg-wood-walnut-s.jpg" alt="Walnut grain — dark, rich tone" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Black Walnut</div><p class="species-desc">Rich chocolate brown with purple undertones. America's luxury hardwood. No stain needed.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-cherry"><div class="species-img"><img src="images/pages/pg-wood-cherry-s.jpg" alt="Cherry wood — warm reddish-brown" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Cherry</div><p class="species-desc">Light pink when fresh-cut, deepens to a warm reddish-brown over time. Fine, smooth grain.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-mahogany"><div class="species-img"><img src="images/pages/pg-wood-mahogany-s.jpg" alt="Mahogany grain — straight, reddish-brown" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Mahogany</div><p class="species-desc">Straight grain, excellent dimensional stability, outstanding weather resistance. Premier exterior species.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Interior</span><span class="species-tag">Exterior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-maple"><div class="species-img"><img src="images/pages/pg-wood-maple-s.jpg" alt="Maple grain — tight, light, clean" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Hard Maple</div><p class="species-desc">Dense, tight grain. Light color that accepts paint perfectly or can be used natural for a clean, contemporary look.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-poplar"><div class="species-img"><img src="images/pages/pg-wood-poplar-s.jpg" alt="Poplar grain — light, painted" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Poplar</div><p class="species-desc">Our paint-grade standard. Mills cleanly, accepts primer and paint without bleeding, holds shape reliably.</p><div class="species-tags"><span class="species-tag">Moldings</span><span class="species-tag">Paint-Grade</span><span class="species-tag">Interior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-alder"><div class="species-img"><img src="images/pages/pg-wood-alder-s.jpg" alt="Alder grain — light reddish-brown" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Alder</div><p class="species-desc">Light, uniform grain. Often used as a paintable stain-grade species — accepts dark stains evenly.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Moldings</span><span class="species-tag">Interior</span></div></div></div>
+          <div class="species-card" data-img="pg-wood-fir"><div class="species-img"><img src="images/pages/pg-wood-fir-s.jpg" alt="Douglas Fir grain — warm, knotty" loading="lazy" /><span class="sp-pick-hint" aria-hidden="true">View grain</span></div><div class="species-body"><div class="species-name">Douglas Fir</div><p class="species-desc">Strong, dimensional, with warm golden grain. Classic exterior species used in traditional and craftsman homes.</p><div class="species-tags"><span class="species-tag">Doors</span><span class="species-tag">Exterior</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="cmp" data-reveal>
+        <div class="cmp-controls">
+          <div style="flex-basis:100%;"><div class="label">Compare Species</div></div>
+          <label>Left <select class="cmp-sel" data-side="l"></select></label>
+          <label>Right <select class="cmp-sel" data-side="r"></select></label>
+        </div>
+        <div class="cmp-stage" style="--pos:50%;" data-cursor="Drag" data-no-motion>
+          <img class="cmp-left" src="images/pages/pg-wood-walnut.jpg" alt="" loading="lazy" />
+          <img class="cmp-right" src="images/pages/pg-wood-maple.jpg" alt="" loading="lazy" />
+          <span class="cmp-name l"></span><span class="cmp-name r"></span>
+          <div class="cmp-line"></div>
+          <div class="cmp-handle" role="slider" tabindex="0" aria-label="Comparison divider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -72,46 +211,68 @@
   <section class="section bg-cream-mid">
     <div class="container">
       <div class="section-intro"><div class="label">Stain Colors</div><div class="rule"></div><h2>Standard Stain Palette</h2><p>Shown on White Oak. Appearance varies by species — order samples to see on your chosen wood.</p></div>
-      <div class="stain-grid">
-        <div class="stain-card"><div class="stain-swatch" style="background:#e8d5b4;"></div><div class="stain-name">Natural</div><div class="stain-code">ST-01</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#c8a87a;"></div><div class="stain-name">Golden Honey</div><div class="stain-code">ST-02</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#a07848;"></div><div class="stain-name">Amber</div><div class="stain-code">ST-03</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#7a5030;"></div><div class="stain-name">Warm Walnut</div><div class="stain-code">ST-04</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#5a3820;"></div><div class="stain-name">Dark Walnut</div><div class="stain-code">ST-05</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#3a2010;"></div><div class="stain-name">Espresso</div><div class="stain-code">ST-06</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#8a6848;"></div><div class="stain-name">Jacobean</div><div class="stain-code">ST-07</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#d0b090;"></div><div class="stain-name">Whitewash</div><div class="stain-code">ST-08</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#b08860;"></div><div class="stain-name">Provincial</div><div class="stain-code">ST-09</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#605040;"></div><div class="stain-name">Early American</div><div class="stain-code">ST-10</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#9a8878;"></div><div class="stain-name">Driftwood</div><div class="stain-code">ST-11</div></div>
-        <div class="stain-card"><div class="stain-swatch" style="background:#e0d4c4;"></div><div class="stain-name">Ceruse / Limed</div><div class="stain-code">ST-12</div></div>
+      <div class="tint-wrap">
+        <div class="tint-preview" data-no-motion>
+          <div class="tint-stage stain-stage">
+            <img src="images/story/sp-alder.jpg" alt="Light wood grain photo with the selected stain color laid over it" loading="lazy" />
+            <div class="tint-layer"></div><div class="tint-wash"></div><div class="tint-sheen"></div>
+          </div>
+          <div class="tint-cap" aria-live="polite"><span class="tint-cap-name">Natural</span><span class="tint-cap-code">ST-01</span></div>
+        </div>
+        <div>
+          <div class="stain-grid" role="group" aria-label="Stain colors">
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#e8d5b4;"></span><span class="stain-name">Natural</span><span class="stain-code">ST-01</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#c8a87a;"></span><span class="stain-name">Golden Honey</span><span class="stain-code">ST-02</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#a07848;"></span><span class="stain-name">Amber</span><span class="stain-code">ST-03</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#7a5030;"></span><span class="stain-name">Warm Walnut</span><span class="stain-code">ST-04</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#5a3820;"></span><span class="stain-name">Dark Walnut</span><span class="stain-code">ST-05</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#3a2010;"></span><span class="stain-name">Espresso</span><span class="stain-code">ST-06</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#8a6848;"></span><span class="stain-name">Jacobean</span><span class="stain-code">ST-07</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#d0b090;"></span><span class="stain-name">Whitewash</span><span class="stain-code">ST-08</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#b08860;"></span><span class="stain-name">Provincial</span><span class="stain-code">ST-09</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#605040;"></span><span class="stain-name">Early American</span><span class="stain-code">ST-10</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#9a8878;"></span><span class="stain-name">Driftwood</span><span class="stain-code">ST-11</span></button>
+            <button type="button" class="stain-card"><span class="stain-swatch" style="background:#e0d4c4;"></span><span class="stain-name">Ceruse / Limed</span><span class="stain-code">ST-12</span></button>
+          </div>
+          <p style="margin-top:20px;font-size:0.80rem;color:var(--charcoal-lt);">Custom stain matching available. Send us a finish chip or reference and we'll produce a matched sample within 5 business days.</p>
+        </div>
       </div>
-      <p style="margin-top:20px;font-size:0.80rem;color:var(--charcoal-lt);">Custom stain matching available. Send us a finish chip or reference and we'll produce a matched sample within 5 business days.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <div class="section-intro"><div class="label">Paint Colors</div><div class="rule"></div><h2>Popular Painted Finishes</h2><p>We paint to any Benjamin Moore or Sherwin-Williams color. These are our most frequently specified.</p></div>
-      <div class="paint-grid">
-        <div class="paint-chip" style="background:#f5f0e8;"><div class="paint-chip-tooltip">BM White Dove OC-17</div></div>
-        <div class="paint-chip" style="background:#ede8dc;"><div class="paint-chip-tooltip">BM Chantilly Lace OC-65</div></div>
-        <div class="paint-chip" style="background:#e8e0d0;"><div class="paint-chip-tooltip">SW Alabaster SW 7008</div></div>
-        <div class="paint-chip" style="background:#d8d0c0;"><div class="paint-chip-tooltip">BM Revere Pewter HC-172</div></div>
-        <div class="paint-chip" style="background:#c8c0b0;"><div class="paint-chip-tooltip">SW Accessible Beige SW 7036</div></div>
-        <div class="paint-chip" style="background:#b0a898;"><div class="paint-chip-tooltip">BM Pale Oak OC-20</div></div>
-        <div class="paint-chip" style="background:#787068;"><div class="paint-chip-tooltip">BM Kendall Charcoal HC-166</div></div>
-        <div class="paint-chip" style="background:#404038;"><div class="paint-chip-tooltip">SW Iron Ore SW 7069</div></div>
-        <div class="paint-chip" style="background:#201810;"><div class="paint-chip-tooltip">BM Black Beauty 2128-10</div></div>
-        <div class="paint-chip" style="background:#2a3040;"><div class="paint-chip-tooltip">BM Hale Navy HC-154</div></div>
-        <div class="paint-chip" style="background:#384840;"><div class="paint-chip-tooltip">SW Cascades SW 6483</div></div>
-        <div class="paint-chip" style="background:#506050;"><div class="paint-chip-tooltip">BM Backwoods 2142-30</div></div>
-        <div class="paint-chip" style="background:#685840;"><div class="paint-chip-tooltip">BM Middlebury Brown HC-68</div></div>
-        <div class="paint-chip" style="background:#806858;"><div class="paint-chip-tooltip">SW Cavern Clay SW 7701</div></div>
-        <div class="paint-chip" style="background:#988070;"><div class="paint-chip-tooltip">BM Mink 2112-40</div></div>
-        <div class="paint-chip" style="background:#b09880;"><div class="paint-chip-tooltip">SW Rookwood Clay SW 2813</div></div>
+      <div class="tint-wrap">
+        <div class="tint-preview" data-no-motion>
+          <div class="tint-stage paint-stage">
+            <img src="images/story/md-panel.jpg" alt="White panel molding photo with the selected paint color laid over it" loading="lazy" />
+            <div class="tint-layer"></div><div class="tint-sheen"></div>
+          </div>
+          <div class="tint-cap" aria-live="polite"><span class="tint-cap-name paint-cap-name">BM White Dove OC-17</span></div>
+        </div>
+        <div>
+          <div class="paint-grid" role="group" aria-label="Paint colors">
+            <button type="button" class="paint-chip" style="background:#f5f0e8;"><span class="paint-chip-tooltip">BM White Dove OC-17</span></button>
+            <button type="button" class="paint-chip" style="background:#ede8dc;"><span class="paint-chip-tooltip">BM Chantilly Lace OC-65</span></button>
+            <button type="button" class="paint-chip" style="background:#e8e0d0;"><span class="paint-chip-tooltip">SW Alabaster SW 7008</span></button>
+            <button type="button" class="paint-chip" style="background:#d8d0c0;"><span class="paint-chip-tooltip">BM Revere Pewter HC-172</span></button>
+            <button type="button" class="paint-chip" style="background:#c8c0b0;"><span class="paint-chip-tooltip">SW Accessible Beige SW 7036</span></button>
+            <button type="button" class="paint-chip" style="background:#b0a898;"><span class="paint-chip-tooltip">BM Pale Oak OC-20</span></button>
+            <button type="button" class="paint-chip" style="background:#787068;"><span class="paint-chip-tooltip">BM Kendall Charcoal HC-166</span></button>
+            <button type="button" class="paint-chip" style="background:#404038;"><span class="paint-chip-tooltip">SW Iron Ore SW 7069</span></button>
+            <button type="button" class="paint-chip" style="background:#201810;"><span class="paint-chip-tooltip">BM Black Beauty 2128-10</span></button>
+            <button type="button" class="paint-chip" style="background:#2a3040;"><span class="paint-chip-tooltip">BM Hale Navy HC-154</span></button>
+            <button type="button" class="paint-chip" style="background:#384840;"><span class="paint-chip-tooltip">SW Cascades SW 6483</span></button>
+            <button type="button" class="paint-chip" style="background:#506050;"><span class="paint-chip-tooltip">BM Backwoods 2142-30</span></button>
+            <button type="button" class="paint-chip" style="background:#685840;"><span class="paint-chip-tooltip">BM Middlebury Brown HC-68</span></button>
+            <button type="button" class="paint-chip" style="background:#806858;"><span class="paint-chip-tooltip">SW Cavern Clay SW 7701</span></button>
+            <button type="button" class="paint-chip" style="background:#988070;"><span class="paint-chip-tooltip">BM Mink 2112-40</span></button>
+            <button type="button" class="paint-chip" style="background:#b09880;"><span class="paint-chip-tooltip">SW Rookwood Clay SW 2813</span></button>
+          </div>
+          <p style="margin-top:16px;font-size:0.80rem;color:var(--charcoal-lt);">Any BM or SW color available. Custom colors and Farrow &amp; Ball matching available for design clients.</p>
+        </div>
       </div>
-      <p style="margin-top:16px;font-size:0.80rem;color:var(--charcoal-lt);">Any BM or SW color available. Custom colors and Farrow &amp; Ball matching available for design clients.</p>
     </div>
   </section>
 
@@ -119,20 +280,21 @@
     <div class="container">
       <div class="section-intro"><div class="label">Hardware Finishes</div><div class="rule"></div><h2>8 Hardware Finishes</h2></div>
       <div class="hardware-finish-row">
-        <div class="hf-card"><div class="hf-circle" style="background:#c8a951;"></div><div class="hf-name">Polished Brass</div><div class="hf-code">PB</div></div>
-        <div class="hf-card"><div class="hf-circle" style="background:#b8945a;"></div><div class="hf-name">Satin Brass</div><div class="hf-code">SB</div></div>
-        <div class="hf-card"><div class="hf-circle" style="background:#6b4226;"></div><div class="hf-name">Oil-Rubbed Bronze</div><div class="hf-code">ORB</div></div>
-        <div class="hf-card"><div class="hf-circle" style="background:#9fa3a8;"></div><div class="hf-name">Satin Nickel</div><div class="hf-code">SN</div></div>
-        <div class="hf-card"><div class="hf-circle" style="background:#d4d8dc;border:1px solid #ccc;"></div><div class="hf-name">Polished Chrome</div><div class="hf-code">PC</div></div>
-        <div class="hf-card"><div class="hf-circle" style="background:#2a2a2a;"></div><div class="hf-name">Matte Black</div><div class="hf-code">MB</div></div>
+        <div class="hf-card" data-reveal><div class="hf-circle" style="background:#c8a951;"></div><div class="hf-name">Polished Brass</div><div class="hf-code">PB</div></div>
+        <div class="hf-card" data-reveal><div class="hf-circle" style="background:#b8945a;"></div><div class="hf-name">Satin Brass</div><div class="hf-code">SB</div></div>
+        <div class="hf-card" data-reveal><div class="hf-circle" style="background:#6b4226;"></div><div class="hf-name">Oil-Rubbed Bronze</div><div class="hf-code">ORB</div></div>
+        <div class="hf-card" data-reveal><div class="hf-circle" style="background:#9fa3a8;"></div><div class="hf-name">Satin Nickel</div><div class="hf-code">SN</div></div>
+        <div class="hf-card" data-reveal><div class="hf-circle" style="background:#d4d8dc;border:1px solid #ccc;"></div><div class="hf-name">Polished Chrome</div><div class="hf-code">PC</div></div>
+        <div class="hf-card" data-reveal><div class="hf-circle" style="background:#2a2a2a;"></div><div class="hf-name">Matte Black</div><div class="hf-code">MB</div></div>
       </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <div class="sample-banner">
-        <div>
+      <div class="sample-banner" data-reveal="scale">
+        <div class="sample-banner-img"><img src="images/pages/pg-workshop-samples-s.jpg" alt="Assorted wood pieces in different species" loading="lazy" /></div>
+        <div class="sample-banner-text">
           <div class="label" style="margin-bottom:8px;">Order a Sample Pack</div>
           <h3 style="margin-bottom:8px;">Feel the Difference Before You Commit</h3>
           <p style="max-width:480px;">$35 sample pack includes wood species chips in all standard stains, paint finish chips in our most popular colors, and hardware finish samples. Credited toward your first order.</p>
@@ -149,4 +311,181 @@
   </div></div>
 </div>
 <script src="shared/nav.js"></script>
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* ─── Species viewer ─── */
+  var cards = $$('.species-card');
+  var layers = $$('.sp-layer');
+  var meta = document.querySelector('.sp-meta');
+  var viewer = document.querySelector('.sp-viewer');
+  var top = 0, active = -1, swapT;
+  var species = cards.map(function (c) {
+    return {
+      name: c.querySelector('.species-name').textContent,
+      desc: c.querySelector('.species-desc').textContent,
+      tags: c.querySelector('.species-tags').innerHTML,
+      large: 'images/pages/' + c.dataset.img + '.jpg'
+    };
+  });
+  // Warm the cache for the large grain photos once the viewer is near.
+  var warmed = false;
+  function warm() { if (warmed) return; warmed = true; species.forEach(function (s) { var i = new Image(); i.src = s.large; }); }
+  new IntersectionObserver(function (e, o) { if (e[0].isIntersecting) { warm(); o.disconnect(); } }, { rootMargin: '400px' }).observe(viewer);
+
+  function pick(i, fromUser) {
+    if (i === active) return;
+    var s = species[i];
+    cards.forEach(function (c, k) {
+      c.classList.toggle('is-on', k === i);
+      c.querySelector('.sp-pick').setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    });
+    if (active > -1) {
+      var cur = layers[top], next = layers[1 - top];
+      next.querySelector('img').src = s.large;
+      layers.forEach(function (l) { l.classList.remove('is-under'); });
+      cur.classList.remove('is-on'); cur.classList.add('is-under');
+      void next.offsetWidth;
+      next.classList.add('is-on', 'moving');
+      setTimeout(function () { next.classList.remove('moving'); }, 1050);
+      top = 1 - top;
+    }
+    active = i;
+    clearTimeout(swapT);
+    var fill = function () {
+      meta.querySelector('.sp-name').textContent = s.name;
+      meta.querySelector('.sp-desc').textContent = s.desc;
+      meta.querySelector('.sp-tags').innerHTML = s.tags;
+      meta.classList.remove('swap');
+    };
+    if (reduced || !fromUser) fill(); else { meta.classList.add('swap'); swapT = setTimeout(fill, 260); }
+    if (fromUser && window.innerWidth <= 900) {
+      var r = viewer.getBoundingClientRect();
+      if (r.bottom < 120 || r.top > window.innerHeight * 0.5) viewer.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
+  cards.forEach(function (c, i) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'sp-pick';
+    b.setAttribute('aria-label', 'Show ' + species[i].name + ' grain in the viewer');
+    b.setAttribute('aria-pressed', 'false');
+    b.dataset.cursor = 'Grain';
+    b.addEventListener('click', function () { pick(i, true); });
+    c.insertBefore(b, c.firstChild);
+  });
+  pick(1, false); // open on Black Walnut
+
+  /* ─── Compare slider ─── */
+  var stage = document.querySelector('.cmp-stage');
+  var handle = stage.querySelector('.cmp-handle');
+  var sels = $$('.cmp-sel');
+  var imgL = stage.querySelector('.cmp-left'), imgR = stage.querySelector('.cmp-right');
+  var nameL = stage.querySelector('.cmp-name.l'), nameR = stage.querySelector('.cmp-name.r');
+  species.forEach(function (s, i) {
+    sels.forEach(function (sel) { var o = document.createElement('option'); o.value = i; o.textContent = s.name; sel.appendChild(o); });
+  });
+  sels[0].value = 1; sels[1].value = 4; // Black Walnut vs Hard Maple
+  function syncCompare() {
+    var l = species[+sels[0].value], r = species[+sels[1].value];
+    imgL.src = l.large; imgR.src = r.large;
+    imgL.alt = l.name + ' grain'; imgR.alt = r.name + ' grain';
+    nameL.textContent = l.name; nameR.textContent = r.name;
+    setPos(pos);
+  }
+  var pos = 50;
+  function setPos(p) {
+    pos = Math.max(0, Math.min(100, p));
+    stage.style.setProperty('--pos', pos + '%');
+    handle.setAttribute('aria-valuenow', Math.round(pos));
+    handle.setAttribute('aria-valuetext', Math.round(pos) + '% ' + nameL.textContent + ', ' + Math.round(100 - pos) + '% ' + nameR.textContent);
+  }
+  sels.forEach(function (s) { s.addEventListener('change', syncCompare); });
+  var dragging = false;
+  function fromEvent(e) { var r = stage.getBoundingClientRect(); setPos((e.clientX - r.left) / r.width * 100); }
+  stage.addEventListener('pointerdown', function (e) {
+    dragging = true; stage.classList.add('dragging');
+    stage.setPointerCapture(e.pointerId); fromEvent(e);
+  });
+  stage.addEventListener('pointermove', function (e) { if (dragging) fromEvent(e); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (t) {
+    stage.addEventListener(t, function () { dragging = false; stage.classList.remove('dragging'); });
+  });
+  handle.addEventListener('keydown', function (e) {
+    var k = e.key, step = e.shiftKey ? 10 : 2;
+    if (k === 'ArrowLeft' || k === 'ArrowDown') setPos(pos - step);
+    else if (k === 'ArrowRight' || k === 'ArrowUp') setPos(pos + step);
+    else if (k === 'PageDown') setPos(pos - 10);
+    else if (k === 'PageUp') setPos(pos + 10);
+    else if (k === 'Home') setPos(0);
+    else if (k === 'End') setPos(100);
+    else return;
+    e.preventDefault();
+  });
+  syncCompare();
+  // A gentle hint the first time the slider comes into view.
+  if (!reduced) {
+    new IntersectionObserver(function (e, o) {
+      if (!e[0].isIntersecting) return; o.disconnect();
+      var t0 = performance.now();
+      (function tick(now) {
+        if (dragging) return;
+        var t = Math.min(1, (now - t0) / 1600);
+        setPos(50 + Math.sin(t * Math.PI * 2) * 14 * (1 - t));
+        if (t < 1) requestAnimationFrame(tick); else setPos(50);
+      })(t0);
+    }, { threshold: 0.6 }).observe(stage);
+  }
+
+  /* ─── Stain + paint tints ─── */
+  function setupTint(btnSel, stageSel, onPick) {
+    var btns = $$(btnSel), st = document.querySelector(stageSel);
+    btns.forEach(function (b, i) {
+      b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        btns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        onPick(b, st);
+        if (!reduced) { st.classList.remove('sweep'); void st.offsetWidth; st.classList.add('sweep'); }
+      });
+    });
+    onPick(btns[0], st);
+  }
+  setupTint('.stain-card', '.stain-stage', function (b, st) {
+    var color = b.querySelector('.stain-swatch').style.backgroundColor;
+    var name = b.querySelector('.stain-name').textContent;
+    var limed = /whitewash|ceruse|limed/i.test(name);
+    st.style.setProperty('--tint', color);
+    // White-pigment stains lift the grain instead of darkening it.
+    st.style.setProperty('--tint-o', limed ? '0.35' : '0.92');
+    st.style.setProperty('--wash-o', limed ? '0.55' : '0');
+    var cap = st.parentNode.querySelector('.tint-cap');
+    cap.querySelector('.tint-cap-name').textContent = name;
+    cap.querySelector('.tint-cap-code').textContent = b.querySelector('.stain-code').textContent;
+  });
+  setupTint('.paint-chip', '.paint-stage', function (b, st) {
+    var label = b.querySelector('.paint-chip-tooltip').textContent;
+    b.setAttribute('aria-label', label);
+    st.style.setProperty('--tint', b.style.backgroundColor);
+    st.parentNode.querySelector('.paint-cap-name').textContent = label;
+  });
+  $$('.paint-chip').forEach(function (b) {
+    var tip = b.querySelector('.paint-chip-tooltip');
+    b.setAttribute('aria-label', tip.textContent);
+    // Keep the tooltip on screen for chips at the edges.
+    function clampTip() {
+      tip.style.setProperty('--tip-dx', '0px');
+      requestAnimationFrame(function () {
+        var r = tip.getBoundingClientRect(), vw = document.documentElement.clientWidth, dx = 0;
+        if (!r.width) return;
+        if (r.right > vw - 8) dx = vw - 8 - r.right;
+        if (r.left + dx < 8) dx = 8 - r.left;
+        tip.style.setProperty('--tip-dx', dx + 'px');
+      });
+    }
+    b.addEventListener('pointerenter', clampTip);
+    b.addEventListener('focus', clampTip);
+  });
+})();
+</script>
 </body></html>

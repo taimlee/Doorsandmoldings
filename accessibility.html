@@ -17,6 +17,71 @@
     .legal-body ul { padding-left: 20px; margin-bottom: 16px; }
     .legal-body li { margin-bottom: 6px; }
     .legal-updated { font-size: 0.80rem; color: var(--charcoal-lt); margin-bottom: 32px; }
+    /* ── Table of contents with scrollspy + reading progress ── */
+    .legal-layout { display: grid; grid-template-columns: 230px minmax(0, 760px); gap: clamp(40px, 6vw, 96px); align-items: start; }
+    .legal-layout > * { min-width: 0; }
+    .legal-body h2 { scroll-margin-top: calc(var(--nav-h) + 28px); }
+    .legal-body h2:focus { outline: none; }
+    .legal-body h2.lg-flash { animation: lg-flash 1.4s var(--ease-out); }
+    @keyframes lg-flash { 0%, 30% { color: var(--gold-dark); } 100% { color: inherit; } }
+    .lg-toc { position: sticky; top: calc(var(--nav-h) + 32px); transition: top 0.35s var(--ease-out); }
+    html.m-nav-hidden .lg-toc { top: 32px; }
+    .lg-toc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .lg-toc-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+    .lg-toc-meta { font-size: 0.72rem; color: var(--charcoal-lt); font-variant-numeric: tabular-nums; }
+    .lg-toc-toggle { display: none; }
+    .lg-track { position: relative; }
+    .lg-toc-list { list-style: none; padding-left: 0; }
+    .lg-track::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--cream-dark); }
+    .lg-rail { position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: rgba(180,130,50,0.35); transform-origin: 50% 0; transform: scaleY(var(--read, 0)); }
+    .lg-marker { position: absolute; left: 0; top: 0; width: 2px; height: 0; background: var(--gold); transition: transform 0.5s var(--ease-out), height 0.5s var(--ease-out); }
+    .lg-toc-list li { margin: 0; }
+    .lg-toc-list a {
+      display: block; padding: 7px 0 7px 16px; font-size: 0.82rem; line-height: 1.45;
+      color: var(--charcoal-lt); transition: color 0.25s, transform 0.35s var(--ease-out);
+    }
+    .lg-toc-list a:hover { color: var(--charcoal); }
+    .lg-toc-list a.active { color: var(--charcoal); font-weight: 600; transform: translateX(4px); }
+    .lg-toc-list a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 1px; }
+    .lg-bar { display: none; }
+
+    @media (max-width: 900px) {
+      .legal-layout { grid-template-columns: 1fr; gap: 28px; }
+      .lg-toc {
+        top: var(--nav-h); z-index: 20; margin: 0 calc(var(--gutter) * -1);
+        background: rgba(250,247,242,0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--cream-dark);
+      }
+      html.m-nav-hidden .lg-toc { top: 0; }
+      .lg-toc-head { display: none; }
+      .lg-toc-toggle {
+        display: flex; width: 100%; align-items: center; gap: 12px; padding: 14px var(--gutter);
+        text-align: left; color: var(--charcoal);
+      }
+      .lg-toc-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+      .lg-toc-toggle .k { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dark); flex-shrink: 0; }
+      .lg-toc-toggle .cur { flex: 1; min-width: 0; font-size: 0.86rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .lg-toc-toggle svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.35s var(--ease-out); }
+      .lg-toc-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+      .lg-bar { display: block; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; }
+      .lg-bar span { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--read, 0)); }
+      .lg-toc-nav {
+        position: absolute; left: 0; right: 0; top: 100%;
+        background: rgba(250,247,242,0.98); border-bottom: 1px solid var(--cream-dark);
+        box-shadow: 0 18px 30px rgba(20,17,14,0.08);
+        display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s var(--ease-out);
+      }
+      .lg-toc:not(.open) .lg-toc-nav { border-bottom-color: transparent; box-shadow: none; }
+      .lg-toc.open .lg-toc-nav { grid-template-rows: 1fr; }
+      .lg-toc-nav > div { overflow: hidden; }
+      .lg-track { margin: 4px var(--gutter) 16px; }
+      .lg-toc-list { max-height: 55vh; overflow-y: auto; }
+      .lg-toc:not(.open) .lg-toc-list { visibility: hidden; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lg-marker, .lg-toc-list a, .lg-toc-nav, .lg-toc-toggle svg, .lg-toc { transition: none !important; }
+      .legal-body h2.lg-flash { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -34,6 +99,15 @@
 
   <section class="section">
     <div class="container">
+      <div class="legal-layout">
+        <aside class="lg-toc" data-no-motion>
+          <button type="button" class="lg-toc-toggle" aria-expanded="false" aria-controls="lg-toc-nav"><span class="k">On this page</span><span class="cur"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="lg-toc-head"><span class="lg-toc-title">On this page</span><span class="lg-toc-meta"></span></div>
+          <nav class="lg-toc-nav" id="lg-toc-nav" aria-label="On this page"><div>
+            <div class="lg-track"><span class="lg-rail" aria-hidden="true"></span><span class="lg-marker" aria-hidden="true"></span><ol class="lg-toc-list"></ol></div>
+          </div></nav>
+          <div class="lg-bar" aria-hidden="true"><span></span></div>
+        </aside>
       <div class="legal-body">
         <p class="legal-updated">Last updated: April 2026</p>
 
@@ -76,10 +150,104 @@
         <h2>Feedback</h2>
         <p>We welcome feedback on the accessibility of our site. If you encounter a barrier, please let us know so we can address it. Your input helps us serve all customers better.</p>
       </div>
+      </div>
     </div>
   </section>
 
 </div>
 <script src="shared/nav.js"></script>
+<script>
+(function () {
+  var body = document.querySelector('.legal-body');
+  var toc = document.querySelector('.lg-toc');
+  if (!body || !toc) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var list = toc.querySelector('.lg-toc-list');
+  var marker = toc.querySelector('.lg-marker');
+  var toggle = toc.querySelector('.lg-toc-toggle');
+  var cur = toc.querySelector('.cur');
+  var meta = toc.querySelector('.lg-toc-meta');
+  var heads = Array.prototype.slice.call(body.querySelectorAll('h2'));
+  var links = [];
+  var used = {};
+
+  // Build the contents list from the page's own headings.
+  heads.forEach(function (h) {
+    var text = h.textContent.replace(/\s+/g, ' ').trim();
+    var id = h.id || text.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    while (used[id]) id += '-2';
+    used[id] = true;
+    h.id = id;
+    h.setAttribute('tabindex', '-1');
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.textContent = text;
+    li.appendChild(a);
+    list.appendChild(li);
+    links.push(a);
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      setOpen(false);
+      h.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      h.focus({ preventScroll: true });
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+      h.classList.remove('lg-flash'); void h.offsetWidth; h.classList.add('lg-flash');
+    });
+  });
+
+  var words = body.textContent.trim().split(/\s+/).length;
+  var minutes = Math.max(1, Math.round(words / 230));
+
+  function setOpen(open) {
+    toc.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  toggle.addEventListener('click', function () { setOpen(!toc.classList.contains('open')); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && toc.classList.contains('open')) { setOpen(false); toggle.focus(); }
+  });
+  document.addEventListener('click', function (e) { if (!toc.contains(e.target)) setOpen(false); });
+
+  var active = -1;
+  function setActive(i) {
+    if (i === active) return;
+    active = i;
+    links.forEach(function (a, k) {
+      a.classList.toggle('active', k === i);
+      if (k === i) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+    });
+    var a = links[i];
+    if (a) {
+      marker.style.height = a.offsetHeight + 'px';
+      marker.style.transform = 'translateY(' + a.offsetTop + 'px)';
+      cur.textContent = a.textContent;
+    } else {
+      marker.style.height = '0px';
+      cur.textContent = '';
+    }
+  }
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    var r = body.getBoundingClientRect();
+    var read = Math.min(1, Math.max(0, (vh * 0.6 - r.top) / Math.max(1, r.height)));
+    if (r.bottom <= vh) read = 1;
+    toc.style.setProperty('--read', read.toFixed(4));
+    var pct = Math.round(read * 100);
+    meta.textContent = pct > 0 ? pct + '% read' : minutes + ' min read';
+    var i = -1;
+    heads.forEach(function (h, k) { if (h.getBoundingClientRect().top < Math.min(vh * 0.3, 150)) i = k; });
+    if (r.bottom <= vh + 2 && heads.length) i = Math.max(i, heads.length - 1);
+    setActive(i < 0 && read > 0 ? 0 : i);
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener('resize', function () { var a = active; active = -1; setActive(a); update(); });
+  update();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { var a = active; active = -1; setActive(a); });
+})();
+</script>
 </body>
 </html>

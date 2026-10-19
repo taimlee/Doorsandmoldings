@@ -32,25 +32,124 @@
   }
   </script>
   <style>
-    .faq-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); }
+    .vis-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .faq-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); position: relative; overflow: hidden; isolation: isolate; }
+    .ph-hero-bg { position: absolute; inset: -12% 0; z-index: -1; overflow: hidden; }
+    .ph-hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); animation: ph-push 16s var(--ease-out) forwards; }
+    .ph-hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,17,14,0.95) 0%, rgba(20,17,14,0.84) 45%, rgba(20,17,14,0.6) 100%); }
+    @keyframes ph-push { to { transform: scale(1); } }
+
     .faq-layout { display: grid; grid-template-columns: 260px 1fr; gap: clamp(40px,6vw,80px); align-items: start; }
-    .faq-sidebar { position: sticky; top: calc(var(--nav-h) + 24px); }
+    .faq-layout > * { min-width: 0; }
+    .faq-sidebar { position: sticky; top: calc(var(--nav-h) + 24px); transition: top 0.35s var(--ease-out); }
+    html.m-nav-hidden .faq-sidebar { top: 24px; }
     .faq-nav-item {
-      display: block; font-size: 0.82rem; font-weight: 500; padding: 9px 14px;
+      position: relative; display: block; font-size: 0.82rem; font-weight: 500; padding: 9px 14px;
       color: var(--charcoal-lt); border-left: 2px solid var(--cream-dark);
-      transition: all 0.15s; margin-bottom: 2px;
+      transition: color 0.25s, border-color 0.25s, padding-left 0.3s var(--ease-out); margin-bottom: 2px;
     }
     .faq-nav-item:hover, .faq-nav-item.active { color: var(--charcoal); border-left-color: var(--gold); }
-    .faq-section-title { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 8px; margin-top: 48px; padding-top: 48px; border-top: 1px solid var(--cream-dark); }
-    .faq-section-title:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+    .faq-nav-item.active { padding-left: 20px; font-weight: 600; }
+    .faq-nav-item:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .faq-nav-item.is-empty { opacity: 0.35; }
+    .faq-section-title { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 8px; }
+    .fq-section { margin-top: 48px; padding-top: 48px; border-top: 1px solid var(--cream-dark); scroll-margin-top: calc(var(--nav-h) + 24px); }
+    .fq-section.is-first { margin-top: 0; padding-top: 0; border-top: none; }
+    .fq-section[hidden] { display: none; }
     .faq-section-desc { font-size: 0.88rem; color: var(--charcoal-lt); margin-bottom: 24px; }
-    @media(max-width:900px){ .faq-layout { grid-template-columns: 1fr; } .faq-sidebar { position: static; } }
+
+    /* Search + topic chips */
+    .fq-tools { margin-bottom: 40px; }
+    .fq-search { position: relative; }
+    .fq-search svg.fq-glass { position: absolute; left: 18px; top: 50%; width: 18px; height: 18px; margin-top: -9px; color: var(--charcoal-lt); pointer-events: none; transition: color 0.25s; }
+    .fq-search:focus-within svg.fq-glass { color: var(--gold-dark); }
+    .fq-input {
+      width: 100%; padding: 17px 92px 17px 50px; font-family: var(--sans); font-size: 1rem; color: var(--charcoal);
+      background: white; border: 1.5px solid var(--cream-dark); border-radius: 3px; outline: none;
+      transition: border-color 0.25s, box-shadow 0.3s;
+      -webkit-appearance: none; appearance: none;
+    }
+    .fq-input::-webkit-search-cancel-button { display: none; }
+    .fq-input:hover { border-color: var(--charcoal-lt); }
+    .fq-input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.14), 0 14px 34px rgba(20,17,14,0.07); }
+    .fq-clear {
+      position: absolute; right: 52px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--charcoal-lt); transition: background 0.2s, color 0.2s;
+    }
+    .fq-clear[hidden] { display: none; }
+    .fq-clear:hover { background: var(--cream-mid); color: var(--charcoal); }
+    .fq-clear:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .fq-clear svg { width: 14px; height: 14px; }
+    .fq-kbd { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: var(--sans); font-size: 0.72rem; font-weight: 600; color: var(--charcoal-lt); border: 1px solid var(--cream-dark); border-radius: 3px; padding: 2px 7px; pointer-events: none; }
+    .fq-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .fq-chip {
+      font-size: 0.76rem; font-weight: 600; letter-spacing: 0.02em; padding: 8px 14px; border-radius: 999px;
+      border: 1px solid var(--cream-dark); background: white; color: var(--charcoal-mid);
+      transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s var(--ease-out), opacity 0.25s;
+      white-space: nowrap;
+    }
+    .fq-chip:hover { border-color: var(--charcoal-lt); transform: translateY(-1px); }
+    .fq-chip[aria-pressed="true"] { background: var(--charcoal); border-color: var(--charcoal); color: var(--cream); }
+    .fq-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .fq-chip.is-empty { opacity: 0.45; }
+    .fq-chip .n { font-weight: 500; opacity: 0.6; margin-left: 4px; }
+    .fq-status { font-size: 0.8rem; color: var(--charcoal-lt); margin-top: 14px; min-height: 1.3em; }
+    .fq-empty { text-align: center; padding: 56px 20px; border: 1px dashed var(--cream-dark); border-radius: 4px; }
+    .fq-empty[hidden] { display: none; }
+    .fq-empty h3 { font-size: 1.3rem; margin-bottom: 8px; }
+    .fq-empty p { font-size: 0.9rem; margin-bottom: 0; }
+    .fq-empty.on { animation: fq-in 0.5s var(--ease-out) both; }
+    .fq-empty a, .fq-reset { font-weight: 600; color: var(--gold-dark); text-decoration: underline; text-underline-offset: 3px; font-size: inherit; }
+    @keyframes fq-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+    /* Accordion */
+    .faq-item[hidden] { display: none; }
+    .faq-item.fq-show { animation: fq-in 0.45s var(--ease-out) both; }
+    .fq-h { font-size: inherit; font-weight: inherit; margin: 0; }
+    .fq-btn {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 0; font-family: var(--serif); font-size: 1.05rem;
+      font-weight: 500; color: var(--charcoal); text-align: left; gap: 24px; line-height: 1.4;
+      transition: color 0.2s;
+    }
+    .fq-btn:hover, .fq-btn[aria-expanded="true"] { color: var(--gold-dark); }
+    .fq-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 1px; }
+    .fq-icon {
+      width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--cream-dark);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background 0.35s, border-color 0.35s, color 0.35s, transform 0.45s var(--ease-out);
+    }
+    .fq-btn:hover .fq-icon { border-color: var(--gold); }
+    .fq-btn[aria-expanded="true"] .fq-icon { background: var(--gold); border-color: var(--gold); color: white; transform: rotate(135deg); }
+    .fq-panel { overflow: hidden; }
+    .fq-panel.is-animating { transition: height 0.45s var(--ease-out); }
+    .fq-inner { padding-bottom: 22px; max-width: 680px; transition: opacity 0.4s var(--ease-out), transform 0.45s var(--ease-out); }
+    .fq-inner p { font-size: 0.92rem; }
+    .fq-panel.is-collapsed .fq-inner { opacity: 0; transform: translateY(-8px); }
+    mark.fq-mark { background: var(--gold-pale); color: inherit; padding: 0 2px; border-radius: 2px; box-shadow: inset 0 -2px 0 var(--gold); }
+
+    @media(max-width:900px){
+      .faq-layout { grid-template-columns: 1fr; }
+      .faq-sidebar { position: static; order: 2; }
+      .fq-js .fq-jump { display: none; }
+      .fq-chips { flex-wrap: nowrap; overflow-x: auto; margin-left: calc(var(--gutter) * -1); margin-right: calc(var(--gutter) * -1); padding: 2px var(--gutter) 6px; scrollbar-width: none; }
+      .fq-chips::-webkit-scrollbar { display: none; }
+      .fq-kbd { display: none; }
+      .fq-clear { right: 10px; }
+      .fq-input { padding-right: 48px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ph-hero-bg img { animation: none; transform: none; }
+      .fq-panel.is-animating, .fq-inner, .fq-icon, .fq-chip, .faq-nav-item { transition: none !important; }
+      .faq-item.fq-show, .fq-empty.on { animation: none; }
+    }
   </style>
 </head>
 <body>
 <div class="page-content">
 
   <section class="faq-hero">
+    <div class="ph-hero-bg" aria-hidden="true" data-parallax="0.12"><img src="images/pages/core/bg-room-hallway.jpg" alt="" /></div>
     <div class="container">
       <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
         <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
@@ -68,6 +167,7 @@
       <div class="faq-layout">
         <!-- Sidebar Nav -->
         <div class="faq-sidebar">
+          <nav class="fq-jump" aria-label="FAQ sections">
           <div class="label" style="margin-bottom:16px;">Jump to Section</div>
           <a class="faq-nav-item" href="#wood-species">Wood Species</a>
           <a class="faq-nav-item" href="#ordering">Ordering &amp; Lead Times</a>
@@ -80,6 +180,7 @@
           <a class="faq-nav-item" href="#installation">Installation</a>
           <a class="faq-nav-item" href="#moldings">Moldings Pricing</a>
           <a class="faq-nav-item" href="#sustainability">Sustainability</a>
+          </nav>
           <div style="margin-top:32px; padding:20px; background:var(--cream-mid); border-radius:4px;">
             <div style="font-size:0.80rem; font-weight:600; margin-bottom:8px;">Still have questions?</div>
             <p style="font-size:0.80rem; color:var(--charcoal-lt); margin-bottom:14px;">Our team is available Mon–Fri, 8am–5pm CT.</p>
@@ -89,131 +190,148 @@
 
         <!-- FAQ Content -->
         <div>
+          <div class="fq-tools" data-no-motion>
+            <div class="fq-search" role="search">
+              <label for="fq-q" class="vis-hidden">Search questions</label>
+              <svg class="fq-glass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+              <input type="search" id="fq-q" class="fq-input" placeholder="Search questions" autocomplete="off" spellcheck="false" aria-describedby="fq-status" aria-controls="fq-list" />
+              <button type="button" class="fq-clear" aria-label="Clear search" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+              <kbd class="fq-kbd" aria-hidden="true">/</kbd>
+            </div>
+            <div class="fq-chips" role="group" aria-label="Filter by topic"></div>
+            <p class="fq-status" id="fq-status" aria-live="polite"></p>
+          </div>
+          <div class="fq-empty" hidden>
+            <h3>No questions match <span class="fq-empty-q"></span></h3>
+            <p>Try a different word, <button type="button" class="fq-reset">show all questions</button>, or <a href="contact.html">contact us</a>.</p>
+          </div>
+          <div id="fq-list">
           <!-- Wood Species -->
-          <div id="wood-species">
-            <div class="faq-section-title">Wood Species</div>
+          <div id="wood-species" class="fq-section is-first">
+            <h2 class="faq-section-title">Wood Species</h2>
             <div class="faq-section-desc">Questions about materials, sourcing, and selection.</div>
             <div class="faq-item">
-              <button class="faq-question">What wood species do you offer for solid wood doors?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>We offer over 20 domestic and imported species including White Oak, Red Oak, Walnut, Cherry, Mahogany, Maple, Alder, Poplar, Douglas Fir, and more. We can source specialty species on request. All wood is kiln-dried to 6–8% moisture content before milling.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-1" aria-expanded="false" aria-controls="fq-p-1"><span class="fq-text">What wood species do you offer for solid wood doors?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-1" role="region" aria-labelledby="fq-b-1" hidden="until-found"><div class="fq-inner"><p>We offer over 20 domestic and imported species including White Oak, Red Oak, Walnut, Cherry, Mahogany, Maple, Alder, Poplar, Douglas Fir, and more. We can source specialty species on request. All wood is kiln-dried to 6–8% moisture content before milling.</p></div></div>
             </div>
             <div class="faq-item">
-              <button class="faq-question">What is the difference between solid wood and solid core doors?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>A solid wood door is constructed entirely from real wood — either a single thick piece or multiple pieces laminated for stability. A solid core door has a wood or composite core (MDF or particleboard) wrapped in a wood veneer. We make only solid wood doors. Solid core doors are a budget alternative but will not hold the same character, weight, or lifespan.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-2" aria-expanded="false" aria-controls="fq-p-2"><span class="fq-text">What is the difference between solid wood and solid core doors?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-2" role="region" aria-labelledby="fq-b-2" hidden="until-found"><div class="fq-inner"><p>A solid wood door is constructed entirely from real wood — either a single thick piece or multiple pieces laminated for stability. A solid core door has a wood or composite core (MDF or particleboard) wrapped in a wood veneer. We make only solid wood doors. Solid core doors are a budget alternative but will not hold the same character, weight, or lifespan.</p></div></div>
             </div>
             <div class="faq-item">
-              <button class="faq-question">Are your products FSC-certified?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Yes. We hold FSC Chain-of-Custody certification. All hardwoods we purchase are sourced from FSC-certified forests. We can provide FSC project documentation for LEED certification submissions.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-3" aria-expanded="false" aria-controls="fq-p-3"><span class="fq-text">Are your products FSC-certified?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-3" role="region" aria-labelledby="fq-b-3" hidden="until-found"><div class="fq-inner"><p>Yes. We hold FSC Chain-of-Custody certification. All hardwoods we purchase are sourced from FSC-certified forests. We can provide FSC project documentation for LEED certification submissions.</p></div></div>
             </div>
           </div>
 
           <!-- Ordering -->
-          <div id="ordering">
-            <div class="faq-section-title">Ordering &amp; Lead Times</div>
+          <div id="ordering" class="fq-section">
+            <h2 class="faq-section-title">Ordering &amp; Lead Times</h2>
             <div class="faq-section-desc">What to expect from the order process.</div>
             <div class="faq-item">
-              <button class="faq-question">What are your standard lead times?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Lead times vary by product and order size. Contact us for current turnaround on your specific project.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-4" aria-expanded="false" aria-controls="fq-p-4"><span class="fq-text">What are your standard lead times?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-4" role="region" aria-labelledby="fq-b-4" hidden="until-found"><div class="fq-inner"><p>Lead times vary by product and order size. Contact us for current turnaround on your specific project.</p></div></div>
             </div>
             <div class="faq-item">
-              <button class="faq-question">Can I order a sample of the wood species and finishes?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Absolutely. We offer a sample pack with chips of our most popular species in our standard stain finishes. Sample packs are $35 and credited toward your first order. Request yours on our <a href="finishes.html" style="color:var(--gold-dark);">Finishes page</a> or contact us.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-5" aria-expanded="false" aria-controls="fq-p-5"><span class="fq-text">Can I order a sample of the wood species and finishes?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-5" role="region" aria-labelledby="fq-b-5" hidden="until-found"><div class="fq-inner"><p>Absolutely. We offer a sample pack with chips of our most popular species in our standard stain finishes. Sample packs are $35 and credited toward your first order. Request yours on our <a href="finishes.html" style="color:var(--gold-dark);">Finishes page</a> or contact us.</p></div></div>
             </div>
           </div>
 
           <!-- Custom Sizing -->
-          <div id="custom">
-            <div class="faq-section-title">Custom Sizing</div>
+          <div id="custom" class="fq-section">
+            <h2 class="faq-section-title">Custom Sizing</h2>
             <div class="faq-section-desc">Non-standard dimensions, historic renovation, and special configurations.</div>
             <div class="faq-item">
-              <button class="faq-question">Can you make doors to non-standard sizes?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Yes — all our doors can be made to any custom size. We commonly produce oversized entry doors (8'×4', 10'×5', and larger), low-clearance interior doors, and any width/height combination needed for historic renovation or custom architecture.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-6" aria-expanded="false" aria-controls="fq-p-6"><span class="fq-text">Can you make doors to non-standard sizes?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-6" role="region" aria-labelledby="fq-b-6" hidden="until-found"><div class="fq-inner"><p>Yes — all our doors can be made to any custom size. We commonly produce oversized entry doors (8'×4', 10'×5', and larger), low-clearance interior doors, and any width/height combination needed for historic renovation or custom architecture.</p></div></div>
             </div>
             <div class="faq-item">
-              <button class="faq-question">How do I measure for a replacement door?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>For a replacement, measure the existing door's height, width, and thickness — not the opening. Standard US interior doors are 80" tall and 24"–36" wide in 2" increments, 1-3/8" thick. Exterior doors are typically 1-3/4" thick. If you're unsure, contact us and we'll walk you through it.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-7" aria-expanded="false" aria-controls="fq-p-7"><span class="fq-text">How do I measure for a replacement door?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-7" role="region" aria-labelledby="fq-b-7" hidden="until-found"><div class="fq-inner"><p>For a replacement, measure the existing door's height, width, and thickness — not the opening. Standard US interior doors are 80" tall and 24"–36" wide in 2" increments, 1-3/8" thick. Exterior doors are typically 1-3/4" thick. If you're unsure, contact us and we'll walk you through it.</p></div></div>
             </div>
           </div>
 
           <!-- Finishes -->
-          <div id="finishes">
-            <div class="faq-section-title">Finishes</div>
+          <div id="finishes" class="fq-section">
+            <h2 class="faq-section-title">Finishes</h2>
             <div class="faq-section-desc">Paint, stain, and coating options.</div>
             <div class="faq-item">
-              <button class="faq-question">What finishes are available?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>We offer raw/unfinished, shop-primed, painted (any Benjamin Moore or Sherwin-Williams color), and stained/topcoated in dozens of standard stain colors. Custom finish matching is available. All our applied finishes are low-VOC and CARB Phase 2 compliant.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-8" aria-expanded="false" aria-controls="fq-p-8"><span class="fq-text">What finishes are available?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-8" role="region" aria-labelledby="fq-b-8" hidden="until-found"><div class="fq-inner"><p>We offer raw/unfinished, shop-primed, painted (any Benjamin Moore or Sherwin-Williams color), and stained/topcoated in dozens of standard stain colors. Custom finish matching is available. All our applied finishes are low-VOC and CARB Phase 2 compliant.</p></div></div>
             </div>
           </div>
 
           <!-- Fire-Rated -->
-          <div id="fire-rated">
-            <div class="faq-section-title">Fire-Rated Doors</div>
+          <div id="fire-rated" class="fq-section">
+            <h2 class="faq-section-title">Fire-Rated Doors</h2>
             <div class="faq-section-desc">UL listings, ratings, and code compliance.</div>
             <div class="faq-item">
-              <button class="faq-question">Do you offer fire-rated solid wood doors?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Yes. We manufacture UL-listed fire-rated solid wood doors in 20, 45, 60, and 90-minute ratings. These are code-compliant for commercial and residential applications and available in our standard species and finishes.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-9" aria-expanded="false" aria-controls="fq-p-9"><span class="fq-text">Do you offer fire-rated solid wood doors?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-9" role="region" aria-labelledby="fq-b-9" hidden="until-found"><div class="fq-inner"><p>Yes. We manufacture UL-listed fire-rated solid wood doors in 20, 45, 60, and 90-minute ratings. These are code-compliant for commercial and residential applications and available in our standard species and finishes.</p></div></div>
             </div>
           </div>
 
           <!-- Shipping -->
-          <div id="shipping">
-            <div class="faq-section-title">Shipping &amp; Delivery</div>
+          <div id="shipping" class="fq-section">
+            <h2 class="faq-section-title">Shipping &amp; Delivery</h2>
             <div class="faq-section-desc">Where we ship and how we protect your order.</div>
             <div class="faq-item">
-              <button class="faq-question">Do you ship nationally?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Yes. We ship to all 48 contiguous states via our freight partners. Doors are custom-crated and wrapped for safe transit. White-glove delivery with threshold placement is available in most major metro areas.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-10" aria-expanded="false" aria-controls="fq-p-10"><span class="fq-text">Do you ship nationally?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-10" role="region" aria-labelledby="fq-b-10" hidden="until-found"><div class="fq-inner"><p>Yes. We ship to all 48 contiguous states via our freight partners. Doors are custom-crated and wrapped for safe transit. White-glove delivery with threshold placement is available in most major metro areas.</p></div></div>
             </div>
           </div>
 
           <!-- Trade -->
-          <div id="trade">
-            <div class="faq-section-title">Trade Program</div>
+          <div id="trade" class="fq-section">
+            <h2 class="faq-section-title">Trade Program</h2>
             <div class="faq-section-desc">Pricing and terms for architects, designers, and contractors.</div>
             <div class="faq-item">
-              <button class="faq-question">Do you offer trade pricing for architects and contractors?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Yes. We have a dedicated trade program with discounted pricing, dedicated account management, discounted pricing, and access to our full spec library. Apply online or contact us directly.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-11" aria-expanded="false" aria-controls="fq-p-11"><span class="fq-text">Do you offer trade pricing for architects and contractors?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-11" role="region" aria-labelledby="fq-b-11" hidden="until-found"><div class="fq-inner"><p>Yes. We have a dedicated trade program with discounted pricing, dedicated account management, discounted pricing, and access to our full spec library. Apply online or contact us directly.</p></div></div>
             </div>
           </div>
 
           <!-- Warranty -->
-          <div id="warranty">
-            <div class="faq-section-title">Warranty</div>
+          <div id="warranty" class="fq-section">
+            <h2 class="faq-section-title">Warranty</h2>
             <div class="faq-section-desc">What we cover and for how long.</div>
             <div class="faq-item">
-              <button class="faq-question">What is your warranty?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>We offer a workmanship warranty on all doors and moldings — covering joinery, panel movement, and structural integrity. Finish and hardware warranties are 5 years. Warranty claims are handled directly by our team; no third-party runaround.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-12" aria-expanded="false" aria-controls="fq-p-12"><span class="fq-text">What is your warranty?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-12" role="region" aria-labelledby="fq-b-12" hidden="until-found"><div class="fq-inner"><p>We offer a workmanship warranty on all doors and moldings — covering joinery, panel movement, and structural integrity. Finish and hardware warranties are 5 years. Warranty claims are handled directly by our team; no third-party runaround.</p></div></div>
             </div>
           </div>
 
           <!-- Installation -->
-          <div id="installation">
-            <div class="faq-section-title">Installation</div>
+          <div id="installation" class="fq-section">
+            <h2 class="faq-section-title">Installation</h2>
             <div class="faq-section-desc">Professional installation options and guidance.</div>
             <div class="faq-item">
-              <button class="faq-question">Do you offer installation services?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>We do not directly employ installers, but we can refer you to trusted local installers in the New York area. Contact us and we'll point you in the right direction.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-13" aria-expanded="false" aria-controls="fq-p-13"><span class="fq-text">Do you offer installation services?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-13" role="region" aria-labelledby="fq-b-13" hidden="until-found"><div class="fq-inner"><p>We do not directly employ installers, but we can refer you to trusted local installers in the New York area. Contact us and we'll point you in the right direction.</p></div></div>
             </div>
           </div>
 
           <!-- Moldings Pricing -->
-          <div id="moldings">
-            <div class="faq-section-title">Moldings Pricing</div>
+          <div id="moldings" class="fq-section">
+            <h2 class="faq-section-title">Moldings Pricing</h2>
             <div class="faq-section-desc">How moldings are priced and what affects the cost.</div>
             <div class="faq-item">
-              <button class="faq-question">How are your moldings priced?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Moldings are priced per linear foot, with species and profile as the key variables. Pricing varies by species, profile complexity, and order volume — contact us for a quote</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-14" aria-expanded="false" aria-controls="fq-p-14"><span class="fq-text">How are your moldings priced?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-14" role="region" aria-labelledby="fq-b-14" hidden="until-found"><div class="fq-inner"><p>Moldings are priced per linear foot, with species and profile as the key variables. Pricing varies by species, profile complexity, and order volume — contact us for a quote</p></div></div>
             </div>
           </div>
 
           <!-- Sustainability -->
-          <div id="sustainability">
-            <div class="faq-section-title">Sustainability</div>
+          <div id="sustainability" class="fq-section">
+            <h2 class="faq-section-title">Sustainability</h2>
             <div class="faq-section-desc">Our environmental commitments.</div>
             <div class="faq-item">
-              <button class="faq-question">Are your products FSC-certified and sustainably sourced?<span class="faq-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button>
-              <div class="faq-answer"><p>Yes. We hold FSC Chain-of-Custody certification and source all hardwoods from FSC-certified forests. We run a zero-landfill shop — all sawdust and wood offcuts are repurposed or composted. Our finishing systems are low-VOC and CARB Phase 2 compliant.</p></div>
+              <h3 class="fq-h"><button type="button" class="fq-btn" id="fq-b-15" aria-expanded="false" aria-controls="fq-p-15"><span class="fq-text">Are your products FSC-certified and sustainably sourced?</span><span class="fq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></span></button></h3>
+              <div class="fq-panel" id="fq-p-15" role="region" aria-labelledby="fq-b-15" hidden="until-found"><div class="fq-inner"><p>Yes. We hold FSC Chain-of-Custody certification and source all hardwoods from FSC-certified forests. We run a zero-landfill shop — all sawdust and wood offcuts are repurposed or composted. Our finishing systems are low-VOC and CARB Phase 2 compliant.</p></div></div>
             </div>
           </div>
+          </div><!-- /fq-list -->
         </div>
       </div>
     </div>
@@ -232,5 +350,235 @@
 
 </div>
 <script src="shared/nav.js"></script>
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var html = document.documentElement;
+  html.classList.add('fq-js');
+
+  var items = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.fq-section'));
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.faq-nav-item'));
+  var input = document.getElementById('fq-q');
+  var clearBtn = document.querySelector('.fq-clear');
+  var chipBox = document.querySelector('.fq-chips');
+  var status = document.getElementById('fq-status');
+  var empty = document.querySelector('.fq-empty');
+  var tools = document.querySelector('.fq-tools');
+  var topic = 'all';
+
+  items.forEach(function (it) {
+    it._btn = it.querySelector('.fq-btn');
+    it._panel = it.querySelector('.fq-panel');
+    it._inner = it.querySelector('.fq-inner');
+    it._q = it.querySelector('.fq-text');
+    it._qText = it._q.textContent;
+    it._aHTML = it._inner.innerHTML;
+    it._aText = it._inner.textContent.toLowerCase();
+    it._hay = (it._qText + ' ' + it._inner.textContent).toLowerCase();
+    it._section = it.closest('.fq-section');
+  });
+
+  /* ─── Accordion with height animation ─── */
+  function isOpen(it) { return it._btn.getAttribute('aria-expanded') === 'true'; }
+  function setOpen(it, open, animate) {
+    var panel = it._panel;
+    if (isOpen(it) === open) return;
+    it._btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    clearTimeout(panel._t);
+    if (!animate || reduced) {
+      panel.classList.remove('is-animating', 'is-collapsed');
+      panel.style.height = '';
+      if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', 'until-found');
+      return;
+    }
+    if (open) {
+      panel.removeAttribute('hidden');
+      panel.classList.remove('is-animating');
+      panel.classList.add('is-collapsed');
+      panel.style.height = '0px';
+      void panel.offsetHeight;
+      panel.classList.add('is-animating');
+      panel.classList.remove('is-collapsed');
+      panel.style.height = panel.scrollHeight + 'px';
+      panel._t = setTimeout(function () { panel.classList.remove('is-animating'); panel.style.height = ''; }, 480);
+    } else {
+      panel.style.height = panel.scrollHeight + 'px';
+      void panel.offsetHeight;
+      panel.classList.add('is-animating', 'is-collapsed');
+      panel.style.height = '0px';
+      panel._t = setTimeout(function () {
+        panel.classList.remove('is-animating', 'is-collapsed');
+        panel.style.height = '';
+        panel.setAttribute('hidden', 'until-found');
+      }, 480);
+    }
+  }
+  items.forEach(function (it) {
+    it._btn.addEventListener('click', function () { it._auto = false; setOpen(it, !isOpen(it), true); });
+    // Browser find-in-page reveals hidden="until-found" content; keep the button state in sync.
+    it._panel.addEventListener('beforematch', function () { it._btn.setAttribute('aria-expanded', 'true'); });
+  });
+
+  /* ─── Topic chips (built from the existing section list) ─── */
+  var topics = [{ id: 'all', label: 'All' }].concat(navLinks.map(function (a) {
+    return { id: a.getAttribute('href').slice(1), label: a.textContent };
+  }));
+  var chips = topics.map(function (t) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'fq-chip';
+    b.dataset.topic = t.id;
+    b.setAttribute('aria-pressed', t.id === 'all' ? 'true' : 'false');
+    b.innerHTML = '<span class="t"></span><span class="n"></span>';
+    b.querySelector('.t').textContent = t.label;
+    b.addEventListener('click', function () {
+      topic = t.id;
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
+      render(true);
+      if (b.scrollIntoView && chipBox.scrollWidth > chipBox.clientWidth) b.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduced ? 'auto' : 'smooth' });
+      var top = tools.getBoundingClientRect().top;
+      if (top < 0) window.scrollTo({ top: window.scrollY + top - 100, behavior: reduced ? 'auto' : 'smooth' });
+    });
+    chipBox.appendChild(b);
+    return b;
+  });
+
+  /* ─── Search ─── */
+  function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function highlight(root, re) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    var nodes = [], n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(function (node) {
+      var text = node.nodeValue;
+      re.lastIndex = 0;
+      if (!re.test(text)) return;
+      re.lastIndex = 0;
+      var frag = document.createDocumentFragment(), last = 0, m;
+      while ((m = re.exec(text))) {
+        if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+        var mark = document.createElement('mark');
+        mark.className = 'fq-mark';
+        mark.textContent = m[0];
+        frag.appendChild(mark);
+        last = m.index + m[0].length;
+        if (!m[0].length) re.lastIndex++;
+      }
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+  function plural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+
+  function render(fromChip) {
+    var raw = input.value.trim();
+    var toks = raw.toLowerCase().split(/\s+/).filter(Boolean);
+    var re = toks.length ? new RegExp('(' + toks.map(escapeRe).join('|') + ')', 'gi') : null;
+    var shown = 0, perTopic = {};
+    clearBtn.hidden = !raw;
+
+    items.forEach(function (it) {
+      var match = toks.every(function (t) { return it._hay.indexOf(t) > -1; });
+      var sid = it._section.id;
+      if (match) perTopic[sid] = (perTopic[sid] || 0) + 1;
+      var vis = match && (topic === 'all' || sid === topic);
+
+      it._q.textContent = it._qText;
+      it._inner.innerHTML = it._aHTML;
+      if (re && match) { highlight(it._q, re); highlight(it._inner, re); }
+
+      if (vis && it.hidden && !reduced) {
+        it.classList.remove('fq-show'); void it.offsetWidth; it.classList.add('fq-show');
+      }
+      it.hidden = !vis;
+      if (vis) shown++;
+
+      // While searching, open answers that contain the words; close them again afterwards.
+      var answerHit = toks.length && toks.some(function (t) { return it._aText.indexOf(t) > -1; });
+      if (vis && answerHit && !isOpen(it)) { setOpen(it, true, false); it._auto = true; }
+      else if ((!answerHit || !vis) && it._auto) { setOpen(it, false, false); it._auto = false; }
+    });
+
+    var first = true;
+    sections.forEach(function (s) {
+      var any = !!s.querySelector('.faq-item:not([hidden])');
+      s.hidden = !any;
+      s.classList.toggle('is-first', any && first);
+      if (any) first = false;
+    });
+
+    chips.forEach(function (c) {
+      var id = c.dataset.topic;
+      var count = id === 'all' ? Object.keys(perTopic).reduce(function (a, k) { return a + perTopic[k]; }, 0) : (perTopic[id] || 0);
+      c.querySelector('.n').textContent = toks.length ? count : '';
+      c.classList.toggle('is-empty', toks.length > 0 && count === 0);
+    });
+    navLinks.forEach(function (a) {
+      a.classList.toggle('is-empty', toks.length > 0 && !perTopic[a.getAttribute('href').slice(1)]);
+    });
+
+    var topicLabel = topics.filter(function (t) { return t.id === topic; })[0].label;
+    if (toks.length) status.textContent = plural(shown, 'question') + ' match “' + raw + '”' + (topic !== 'all' ? ' in ' + topicLabel : '');
+    else if (topic !== 'all') status.textContent = 'Showing ' + plural(shown, 'question') + ' in ' + topicLabel;
+    else status.textContent = '';
+
+    var wasHidden = empty.hidden;
+    empty.hidden = shown > 0;
+    if (!shown) {
+      empty.querySelector('.fq-empty-q').textContent = toks.length ? '“' + raw + '”' : 'this topic';
+      if (wasHidden && !reduced) { empty.classList.remove('on'); void empty.offsetWidth; empty.classList.add('on'); }
+    }
+    if (window.Motion && window.Motion.refresh) window.Motion.refresh();
+  }
+
+  var deb;
+  input.addEventListener('input', function () { clearTimeout(deb); deb = setTimeout(render, 90); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && input.value) { e.preventDefault(); input.value = ''; render(); }
+  });
+  clearBtn.addEventListener('click', function () { input.value = ''; render(); input.focus(); });
+  document.querySelector('.fq-reset').addEventListener('click', function () {
+    input.value = ''; topic = 'all';
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.topic === 'all' ? 'true' : 'false'); });
+    render(); input.focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target;
+    if (t.closest && t.closest('input, textarea, select, [contenteditable="true"]')) return;
+    e.preventDefault();
+    input.focus();
+  });
+
+  // Jump links reset any filter so the target section is visible.
+  navLinks.forEach(function (a) {
+    a.addEventListener('click', function () {
+      if (topic === 'all' && !input.value) return;
+      topic = 'all'; input.value = '';
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.topic === 'all' ? 'true' : 'false'); });
+      render();
+    });
+  });
+
+  /* ─── Scrollspy for the sidebar ─── */
+  var ticking = false;
+  function spy() {
+    ticking = false;
+    var line = window.innerHeight * 0.35, current = null;
+    sections.forEach(function (s) { if (!s.hidden && s.getBoundingClientRect().top < line) current = s.id; });
+    if (!current) { var v = sections.filter(function (s) { return !s.hidden; })[0]; current = v && v.id; }
+    navLinks.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + current;
+      a.classList.toggle('active', on);
+      if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+
+  render();
+  spy();
+})();
+</script>
 </body>
 </html>

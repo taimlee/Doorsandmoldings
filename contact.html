@@ -13,25 +13,110 @@
   {"@context":"https://schema.org","@type":"LocalBusiness","name":"Solid Doors & Moldings","address":{"@type":"PostalAddress","streetAddress":"829 E New York Ave","addressLocality":"Brooklyn","addressRegion":"NY","postalCode":"11203","addressCountry":"US"},"openingHours":"Mo-Fr 08:00-17:00","url":"https://soliddoorsandmoldings.com/contact.html"}
   </script>
   <style>
-    .contact-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); }
+    /* Hero on a real photograph, slow push-in */
+    .contact-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); position: relative; overflow: hidden; isolation: isolate; }
+    .ph-hero-bg { position: absolute; inset: -12% 0; z-index: -1; overflow: hidden; }
+    .ph-hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transform: scale(1.14); animation: ph-push 16s var(--ease-out) forwards; }
+    .ph-hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,17,14,0.95) 0%, rgba(20,17,14,0.82) 45%, rgba(20,17,14,0.5) 100%); }
+    @keyframes ph-push { to { transform: scale(1); } }
+
     .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(48px,8vw,100px); align-items: start; }
     .contact-info-item { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
-    .contact-info-icon { width: 44px; height: 44px; border-radius: 2px; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; color: var(--gold-dark); flex-shrink: 0; }
+    .contact-info-icon { width: 44px; height: 44px; border-radius: 2px; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; color: var(--gold-dark); flex-shrink: 0; transition: background 0.35s, color 0.35s, transform 0.35s var(--ease-out); }
+    .contact-info-item:hover .contact-info-icon { background: var(--gold); color: var(--charcoal); transform: translateY(-2px); }
     .contact-info-icon svg { width: 20px; height: 20px; }
     .contact-info-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 4px; }
     .contact-info-val { font-size: 0.95rem; color: var(--charcoal); font-weight: 500; }
     .contact-info-sub { font-size: 0.82rem; color: var(--charcoal-lt); margin-top: 2px; }
-    .form-card { background: white; border-radius: 4px; padding: clamp(28px,4vw,48px); box-shadow: 0 4px 40px rgba(0,0,0,0.08); }
+
+    /* Map: opens like a pair of doors when it scrolls into view, colour returns on hover */
+    .map-frame { position: relative; height: 260px; border-radius: 4px; overflow: hidden; background: var(--cream-mid); box-shadow: 0 20px 50px rgba(20,17,14,0.10); }
+    .map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(0.85) sepia(0.12) contrast(1.02); transition: filter 0.8s var(--ease-out), transform 1.6s var(--ease-out); }
+    .map-frame:hover iframe, .map-frame:focus-within iframe { filter: none; }
+    .map-frame::before, .map-frame::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 50%; z-index: 2; pointer-events: none;
+      background: var(--charcoal);
+      transition: transform 1.2s cubic-bezier(0.77, 0, 0.18, 1);
+    }
+    .map-frame::before { left: 0; box-shadow: inset -2px 0 0 var(--gold); }
+    .map-frame::after { right: 0; }
+    .map-js .map-frame.is-open::before { transform: translateX(-101%); }
+    .map-js .map-frame.is-open::after { transform: translateX(101%); }
+    .map-frame:not(.is-open) iframe { transform: scale(1.08); }
+    .map-frame.is-open iframe { transform: none; }
+    html:not(.map-js) .map-frame::before, html:not(.map-js) .map-frame::after { display: none; }
+
+    /* Form card */
+    .form-card { background: white; border-radius: 4px; padding: clamp(24px,4vw,48px); box-shadow: 0 4px 40px rgba(0,0,0,0.08); position: relative; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .success-msg { display: none; background: var(--gold-pale); border: 1.5px solid var(--gold); border-radius: 4px; padding: 20px; text-align: center; }
+
+    /* Floating labels */
+    .fl { position: relative; margin-bottom: 20px; }
+    .fl .form-input, .fl .form-select, .fl .form-textarea {
+      padding: 24px 16px 9px; font-size: 0.95rem;
+      transition: border-color 0.25s, box-shadow 0.3s, background 0.25s;
+    }
+    .fl .form-select { padding-right: 36px; }
+    .fl .form-textarea { padding-top: 28px; min-height: 150px; }
+    .fl .form-label {
+      position: absolute; left: 17px; top: 18px; margin: 0; pointer-events: none;
+      font-size: 0.8rem; color: var(--charcoal-lt);
+      transform-origin: 0 0;
+      transition: transform 0.35s var(--ease-out), color 0.25s, letter-spacing 0.35s var(--ease-out);
+    }
+    .fl .form-input:focus ~ .form-label,
+    .fl .form-input:not(:placeholder-shown) ~ .form-label,
+    .fl .form-textarea:focus ~ .form-label,
+    .fl .form-textarea:not(:placeholder-shown) ~ .form-label,
+    .fl.is-filled .form-label,
+    .fl:focus-within .form-label,
+    .fl-select .form-label { transform: translateY(-10px) scale(0.78); letter-spacing: 0.1em; }
+    .fl:focus-within .form-label { color: var(--gold-dark); }
+    .fl .form-textarea::placeholder { color: transparent; transition: color 0.3s; }
+    .fl .form-textarea:focus::placeholder { color: var(--charcoal-lt); }
+    .fl .form-input:hover, .fl .form-select:hover, .fl .form-textarea:hover { border-color: var(--charcoal-lt); }
+    .fl .form-input:focus, .fl .form-select:focus, .fl .form-textarea:focus { border-color: var(--cream-dark); box-shadow: 0 10px 28px rgba(20,17,14,0.06); }
+    .fl-bar {
+      position: absolute; left: 0; right: 0; height: 2px; background: var(--gold);
+      transform: scaleX(0); transition: transform 0.45s var(--ease-out);
+      pointer-events: none; border-radius: 0 0 2px 2px;
+    }
+    .fl:focus-within .fl-bar { transform: scaleX(1); }
+    .fl.is-invalid .form-input, .fl.is-invalid .form-textarea { border-color: #b4402a; background: #fff8f6; }
+    .fl.is-invalid .fl-bar { background: #b4402a; }
+    .fl.is-valid .form-input, .fl.is-valid .form-textarea { border-color: oklch(62% 0.09 140); }
+    .c-err { font-size: 0.76rem; color: #a03722; margin-top: 6px; display: none; }
+    .fl.is-invalid .c-err { display: block; animation: c-shake 0.4s ease; }
+    @keyframes c-shake { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
+    .c-alert { display: none; font-size: 0.84rem; color: #a03722; background: #fff3f0; border-left: 3px solid #b4402a; padding: 10px 14px; margin-bottom: 18px; border-radius: 2px; }
+    .c-alert.on { display: block; }
+    .c-submit { position: relative; overflow: hidden; }
+    .c-submit:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .c-submit[disabled] { opacity: 0.8; cursor: progress; }
+    .c-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: c-spin 0.7s linear infinite; display: inline-block; }
+    @keyframes c-spin { to { transform: rotate(360deg); } }
+
+    .success-msg { display: none; background: var(--gold-pale); border: 1.5px solid var(--gold); border-radius: 4px; padding: 28px 20px; text-align: center; }
+    .success-msg.on { animation: c-in 0.6s var(--ease-out) both; }
     .success-msg h4 { color: var(--gold-dark); margin-bottom: 4px; }
-    @media(max-width:900px){ .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+    .success-msg h4:focus { outline: none; }
+    @keyframes c-in { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+    @media(max-width:900px){ .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; gap: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .ph-hero-bg img { animation: none; transform: none; }
+      .map-frame::before, .map-frame::after { display: none; }
+      .map-frame iframe { transform: none !important; transition: none; }
+      .fl .form-label, .fl-bar, .contact-info-icon { transition: none; }
+      .fl.is-invalid .c-err, .success-msg.on { animation: none; }
+    }
   </style>
 </head>
 <body>
 <div class="page-content">
 
   <section class="contact-hero">
+    <div class="ph-hero-bg" aria-hidden="true" data-parallax="0.12"><img src="images/pages/core/bg-workshop-facility.jpg" alt="" /></div>
     <div class="container">
       <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
         <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
@@ -52,53 +137,61 @@
           <div class="label" style="margin-bottom:20px;">Contact Information</div>
           <div class="rule"></div>
           <div style="margin-top:32px;">
-            <div class="contact-info-item">
-              <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="contact-info-item" data-reveal="left">
+              <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
               <div><div class="contact-info-label">Email</div><div class="contact-info-val">Use the form →</div><div class="contact-info-sub">We reply within 1 business day</div></div>
             </div>
-            <div class="contact-info-item">
-              <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="contact-info-item" data-reveal="left">
+              <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
               <div><div class="contact-info-label">By Appointment Only</div><div class="contact-info-val">829 E New York Ave</div><div class="contact-info-sub">Brooklyn, NY 11203<br/>Tours by appointment</div></div>
             </div>
           </div>
 
           <div class="rule-full" style="margin: 32px 0;"></div>
-          <iframe title="Map to 829 E New York Ave, Brooklyn, NY 11203" src="https://www.google.com/maps?q=829+E+New+York+Ave,+Brooklyn,+NY+11203&output=embed" style="width:100%; height:200px; border:0; border-radius:4px;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div class="map-frame">
+            <iframe title="Map to 829 E New York Ave, Brooklyn, NY 11203" src="https://www.google.com/maps?q=829+E+New+York+Ave,+Brooklyn,+NY+11203&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
         </div>
 
         <!-- Form Side -->
-        <div class="form-card">
+        <div class="form-card" data-no-motion>
           <h3 style="margin-bottom:6px;">Send Us a Message</h3>
           <p style="margin-bottom:28px; font-size:0.88rem;">Tell us about your project and we'll connect you with the right person.</p>
 
           <div class="success-msg" id="success-msg">
-            <h4>Message Sent!</h4>
+            <h4 tabindex="-1">Message Sent!</h4>
             <p>Thanks for reaching out. We'll be in touch within one business day.</p>
           </div>
 
           <form id="contact-form" novalidate>
             <div class="form-row">
-              <div class="form-group">
+              <div class="form-group fl">
+                <input class="form-input" type="text" id="fname" name="fname" required placeholder=" " autocomplete="given-name" aria-describedby="fname-err" />
                 <label class="form-label" for="fname">First Name *</label>
-                <input class="form-input" type="text" id="fname" name="fname" required />
+                <span class="fl-bar" aria-hidden="true"></span>
+                <p class="c-err" id="fname-err">Please enter your first name.</p>
               </div>
-              <div class="form-group">
+              <div class="form-group fl">
+                <input class="form-input" type="text" id="lname" name="lname" required placeholder=" " autocomplete="family-name" aria-describedby="lname-err" />
                 <label class="form-label" for="lname">Last Name *</label>
-                <input class="form-input" type="text" id="lname" name="lname" required />
+                <span class="fl-bar" aria-hidden="true"></span>
+                <p class="c-err" id="lname-err">Please enter your last name.</p>
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group">
+              <div class="form-group fl">
+                <input class="form-input" type="email" id="email" name="email" required placeholder=" " autocomplete="email" aria-describedby="email-err" />
                 <label class="form-label" for="email">Email *</label>
-                <input class="form-input" type="email" id="email" name="email" required />
+                <span class="fl-bar" aria-hidden="true"></span>
+                <p class="c-err" id="email-err">Please enter a valid email address.</p>
               </div>
-              <div class="form-group">
+              <div class="form-group fl">
+                <input class="form-input" type="tel" id="phone" name="phone" placeholder=" " autocomplete="tel" />
                 <label class="form-label" for="phone">Phone</label>
-                <input class="form-input" type="tel" id="phone" name="phone" />
+                <span class="fl-bar" aria-hidden="true"></span>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="role">I Am A</label>
+            <div class="form-group fl fl-select">
               <select class="form-select" id="role" name="role">
                 <option value="">Select your role</option>
                 <option>Homeowner</option>
@@ -108,9 +201,10 @@
                 <option>Commercial Developer</option>
                 <option>Other</option>
               </select>
+              <label class="form-label" for="role">I Am A</label>
+              <span class="fl-bar" aria-hidden="true"></span>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="interest">Interested In</label>
+            <div class="form-group fl fl-select">
               <select class="form-select" id="interest" name="interest">
                 <option value="">Select a product category</option>
                 <option>Interior Doors</option>
@@ -125,12 +219,17 @@
                 <option>Hardware</option>
                 <option>Full Project Package</option>
               </select>
+              <label class="form-label" for="interest">Interested In</label>
+              <span class="fl-bar" aria-hidden="true"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group fl">
+              <textarea class="form-textarea" id="message" name="message" placeholder="Tell us about your project — size, timeline, and any special requirements." required aria-describedby="message-err"></textarea>
               <label class="form-label" for="message">Message *</label>
-              <textarea class="form-textarea" id="message" name="message" placeholder="Tell us about your project — size, timeline, and any special requirements." required></textarea>
+              <span class="fl-bar" aria-hidden="true"></span>
+              <p class="c-err" id="message-err">Please enter a message.</p>
             </div>
-            <button type="submit" class="btn btn-primary w-full" style="justify-content:center;">Send Message →</button>
+            <div class="c-alert" id="c-alert" role="alert"></div>
+            <button type="submit" class="btn btn-primary w-full c-submit" style="justify-content:center;">Send Message →</button>
           </form>
         </div>
       </div>
@@ -140,19 +239,90 @@
 </div>
 <script src="shared/nav.js"></script>
 <script>
+  (function () {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* Floating labels: position the focus bar under each control and track filled state (covers autofill too) */
+    document.querySelectorAll('.fl').forEach(function (group) {
+      var control = group.querySelector('input, select, textarea');
+      var bar = group.querySelector('.fl-bar');
+      function sync() {
+        group.classList.toggle('is-filled', !!control.value);
+        if (bar) bar.style.top = (control.offsetTop + control.offsetHeight - 2) + 'px';
+      }
+      control.addEventListener('input', sync);
+      control.addEventListener('change', sync);
+      control.addEventListener('focus', sync);
+      sync();
+      setTimeout(sync, 600);
+      window.addEventListener('resize', sync);
+    });
+
+    /* Map reveal */
+    var map = document.querySelector('.map-frame');
+    if (map && !reduced && 'IntersectionObserver' in window) {
+      document.documentElement.classList.add('map-js');
+      var mio = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        mio.disconnect();
+        setTimeout(function () { map.classList.add('is-open'); }, 150);
+      }, { rootMargin: '0px 0px -15% 0px' });
+      mio.observe(map);
+    } else if (map) {
+      map.classList.add('is-open');
+    }
+
+    /* Inline validation */
+    var RULES = {
+      fname: function (v) { return !!v; },
+      lname: function (v) { return !!v; },
+      email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+      message: function (v) { return !!v; }
+    };
+    function checkField(id, show) {
+      var el = document.getElementById(id);
+      var ok = RULES[id](el.value.trim());
+      var group = el.closest('.fl');
+      if (show || group.classList.contains('is-invalid')) {
+        group.classList.toggle('is-invalid', !ok);
+        group.classList.toggle('is-valid', ok);
+        el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      }
+      return ok;
+    }
+    Object.keys(RULES).forEach(function (id) {
+      var el = document.getElementById(id);
+      el.addEventListener('blur', function () { if (el.value.trim() || el.dataset.touched) checkField(id, true); el.dataset.touched = '1'; });
+      el.addEventListener('input', function () { checkField(id, false); });
+    });
+    window.validateContact = function () {
+      var firstBad = null;
+      Object.keys(RULES).forEach(function (id) { if (!checkField(id, true) && !firstBad) firstBad = id; });
+      var box = document.getElementById('c-alert');
+      if (firstBad) {
+        box.textContent = 'Please fill in all required fields.';
+        box.classList.add('on');
+        document.getElementById(firstBad).focus();
+        return false;
+      }
+      box.classList.remove('on');
+      box.textContent = '';
+      return true;
+    };
+  })();
+
   document.getElementById('contact-form').addEventListener('submit', function(e) {
     e.preventDefault();
     var fname = document.getElementById('fname').value.trim();
     var lname = document.getElementById('lname').value.trim();
     var email = document.getElementById('email').value.trim();
     var msg   = document.getElementById('message').value.trim();
-    if (!fname || !email || !msg) {
-      alert('Please fill in all required fields.');
+    if (!validateContact() || !fname || !email || !msg) {
       return;
     }
     var btn = this.querySelector('[type=submit]');
     btn.disabled = true;
-    btn.textContent = 'Sending…';
+    btn.innerHTML = '<span class="c-spin" aria-hidden="true"></span> Sending…';
 
     fetch('https://formsubmit.co/ajax/ari@doorsandmoldings.com', {
       method: 'POST',
@@ -171,12 +341,17 @@
     .then(function(r) { return r.json(); })
     .then(function() {
       document.getElementById('contact-form').style.display = 'none';
-      document.getElementById('success-msg').style.display = 'block';
+      var ok = document.getElementById('success-msg');
+      ok.style.display = 'block';
+      ok.classList.add('on');
+      ok.querySelector('h4').focus();
     })
     .catch(function() {
       btn.disabled = false;
       btn.textContent = 'Send Message →';
-      alert('Something went wrong. Please try again or use our contact form.');
+      var box = document.getElementById('c-alert');
+      box.textContent = 'Something went wrong. Please try again or use our contact form.';
+      box.classList.add('on');
     });
   });
 </script>

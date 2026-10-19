@@ -24,15 +24,30 @@
       display: grid; grid-template-columns: 2fr 1fr 1fr;
       gap: 4px; margin-top: 0;
     }
-    .about-hero-img { aspect-ratio: 4/3; }
+    .about-hero-img { aspect-ratio: 4/3; position: relative; overflow: hidden; background: #1a1714; }
     .about-hero-img:first-child { aspect-ratio: 16/9; }
+    .about-hero-img img, .about-hero-img video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    /* Slow push-in on arrival, then a drift with scroll (set by script) */
+    .about-hero-img .push { position: absolute; inset: 0; animation: ab-push 2.6s cubic-bezier(0.22,1,0.36,1) both; animation-delay: calc(var(--i, 0) * 0.15s + 0.2s); }
+    .about-hero-img .push > * { transform: translate3d(0, var(--drift, 0px), 0) scale(1.08); }
+    @keyframes ab-push { from { clip-path: inset(100% 0 0 0); transform: scale(1.18); } to { clip-path: inset(0 0 0 0); transform: scale(1); } }
 
-    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--cream-dark); border: 1px solid var(--cream-dark); }
-    .value-item { background: var(--cream); padding: clamp(28px, 4vw, 48px); }
-    .value-num { font-family: var(--serif); font-size: 2.5rem; font-weight: 700; color: var(--cream-dark); line-height:1; margin-bottom: 16px; }
+    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--cream-dark); border: 1px solid var(--cream-dark); position: relative; }
+    .value-item { background: var(--cream); padding: clamp(28px, 4vw, 48px); position: relative; overflow: hidden; isolation: isolate; }
+    .value-item::before {
+      content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background: radial-gradient(circle 260px at var(--mx, 50%) var(--my, 50%), rgba(180,130,50,0.12), rgba(180,130,50,0) 70%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .value-item:hover::before { opacity: 1; }
+    .value-num { font-family: var(--serif); font-size: 2.5rem; font-weight: 700; color: var(--cream-dark); line-height:1; margin-bottom: 16px; transition: color .5s var(--ease-out), transform .6s var(--ease-out); display: inline-block; position: relative; }
+    .value-num::after { content:''; position:absolute; left:0; bottom:-6px; height:2px; width:100%; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; transition: transform .6s var(--ease-out); }
+    .value-item:hover .value-num { color: var(--gold); transform: translateY(-2px); }
+    .value-item:hover .value-num::after { transform: scaleX(1); }
     .value-title { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 10px; }
 
-    .approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 100px); align-items: center; }
+    /* ─── How we work: copy scrolls past a pinned frame of real footage ─── */
+    .approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(48px, 8vw, 100px); align-items: start; }
     .approach-list { display: flex; flex-direction: column; gap: 0; }
     .approach-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--cream-dark); }
     .approach-item:last-child { border-bottom: none; }
@@ -41,7 +56,55 @@
     .approach-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
     .approach-desc { font-size: 0.83rem; color: var(--charcoal-lt); }
 
-    @media(max-width:900px){ .values-grid { grid-template-columns: 1fr; } .about-hero-img-row { grid-template-columns: 1fr; } .approach-grid { grid-template-columns: 1fr; } }
+    .st-js .approach-item { min-height: 34vh; align-items: center; border-bottom: none; position: relative; padding: 28px 0 28px 22px; }
+    .st-js .approach-item::before { content:''; position:absolute; left:0; top:28px; bottom:28px; width:2px; background: var(--cream-dark); }
+    .st-js .approach-item::after { content:''; position:absolute; left:0; top:28px; bottom:28px; width:2px; background: var(--gold); transform: scaleY(0); transform-origin: 50% 0; transition: transform .8s var(--ease-out); }
+    .st-js .approach-item.is-on::after { transform: scaleY(1); }
+    .st-js .approach-item > div:last-child { opacity: 0.38; transition: opacity .6s var(--ease-out), transform .7s var(--ease-out); transform: translateX(-4px); }
+    .st-js .approach-item.is-on > div:last-child { opacity: 1; transform: none; }
+    .st-js .approach-title { font-family: var(--serif); font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 600; margin-bottom: 8px; }
+    .st-js .approach-desc { font-size: 0.92rem; line-height: 1.7; }
+    .st-js .approach-check { background: transparent; border: 1.5px solid var(--cream-dark); color: var(--gold); transition: background .5s, border-color .5s, color .5s; margin-top: 0; }
+    .st-js .approach-check polyline { stroke-dasharray: 14; stroke-dashoffset: 14; transition: stroke-dashoffset .6s var(--ease-out) .15s; }
+    .st-js .approach-item.is-on .approach-check { background: var(--gold); border-color: var(--gold); color: white; }
+    .st-js .approach-item.is-on .approach-check polyline, .st-js .approach-item.was-on .approach-check polyline { stroke-dashoffset: 0; }
+    .st-js .approach-item.was-on .approach-check { border-color: var(--gold); }
+
+    .ab-media { position: sticky; top: calc(var(--nav-h) + 6vh); }
+    .ab-frame { position: relative; height: min(76vh, 700px); border-radius: 3px; overflow: hidden; background: #14110e; box-shadow: 0 40px 90px rgba(0,0,0,0.22); }
+    .ab-slide { position: absolute; inset: 0; clip-path: inset(0 0 0 100%); transition: clip-path 1.1s cubic-bezier(0.77,0,0.18,1); }
+    .ab-slide.is-on { clip-path: inset(0 0 0 0); z-index: 2; }
+    .ab-slide.is-under { clip-path: inset(0 0 0 0); z-index: 1; }
+    .ab-slide img, .ab-slide video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); transition: transform 7s cubic-bezier(0.22,1,0.36,1); }
+    .ab-slide.is-on img, .ab-slide.is-on video { transform: scale(1); }
+    .ab-slide::after { content:''; position:absolute; inset:0; background: linear-gradient(to top, rgba(14,12,10,0.6), rgba(14,12,10,0) 35%); }
+    .ab-count { position: absolute; left: 22px; bottom: 20px; z-index: 5; color: var(--cream); font-family: var(--serif); font-size: 1.05rem; display: flex; align-items: baseline; gap: 8px; }
+    .ab-count b { font-size: 1.8rem; font-weight: 600; display: inline-block; min-width: 1.6em; }
+    .ab-count span { color: rgba(255,255,255,0.5); }
+    .ab-bar { position: absolute; left: 22px; right: 22px; bottom: 14px; height: 2px; background: rgba(255,255,255,0.18); z-index: 5; }
+    .ab-bar i { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); transition: transform .3s linear; }
+    .ab-frame-static { display: flex; flex-direction: column; gap: 4px; }
+
+    @media(max-width:900px){
+      .values-grid { grid-template-columns: 1fr; }
+      .about-hero-img-row { grid-template-columns: 1fr; }
+      .about-hero-img:not(:first-child) { display: none; }
+      .approach-grid { grid-template-columns: 1fr; gap: 28px; }
+      .st-js .approach-grid { display: flex; flex-direction: column; }
+      .st-js .ab-media { order: -1; position: sticky; top: var(--nav-h); z-index: 3; margin: 0 calc(var(--gutter) * -1); align-self: stretch; }
+      html.m-nav-hidden .st-js .ab-media { top: 0; }
+      .st-js .ab-media { transition: top .35s var(--ease-out); }
+      .st-js .ab-frame { height: 36vh; max-height: 300px; border-radius: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+      .st-js .approach-item { min-height: 44vh; }
+      .st-js .ab-story-text { display: contents; }
+      .st-js .ab-story-head { order: -2; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .about-hero-img .push { animation: none; }
+      .about-hero-img .push > * { transform: none !important; }
+      .ab-slide, .ab-slide img, .ab-slide video, .st-js .approach-item > div:last-child, .st-js .approach-item::after { transition: none !important; }
+      .ab-slide img, .ab-slide video { transform: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -56,46 +119,52 @@
       </div>
     </div>
     <div class="container" style="padding-left:0; padding-right:0; max-width:100%;">
-      <div class="about-hero-img-row">
-        <div class="img-ph about-hero-img"><span class="img-ph-label">Wide-angle of Brooklyn millwork facility floor</span></div>
-        <div class="img-ph about-hero-img"><span class="img-ph-label">Master craftsman at bench planing</span></div>
-        <div class="img-ph about-hero-img"><span class="img-ph-label">Stack of cured hardwood lumber</span></div>
+      <div class="about-hero-img-row" data-no-motion>
+        <div class="about-hero-img" style="--i:0"><div class="push">
+          <video class="io-video" muted playsinline loop preload="metadata" poster="images/story/clip-shop.jpg" aria-label="Woodworker feeding a board through a planer">
+            <source src="images/story/clip-shop.mp4" type="video/mp4" />
+          </video>
+        </div></div>
+        <div class="about-hero-img" style="--i:1"><div class="push"><img src="images/pages/pg-workshop-craftsman-s.jpg" alt="Woodworker smoothing a board with a hand plane" /></div></div>
+        <div class="about-hero-img" style="--i:2"><div class="push"><img src="images/pages/pg-workshop-lumber-s.jpg" alt="Stacked rough-sawn hardwood boards" /></div></div>
       </div>
     </div>
   </section>
 
   <!-- APPROACH -->
-  <section class="section">
+  <section class="section ab-story">
     <div class="container">
       <div class="approach-grid">
-        <div>
-          <div class="label">How We Work</div>
-          <div class="rule"></div>
-          <h2>Direct to the maker. Accountable on every piece.</h2>
-          <p class="lead" style="margin: 20px 0 16px;">Most millwork suppliers route your project through salespeople, project managers, and sub-contractors before it ever reaches the shop floor. We don't work that way.</p>
+        <div class="ab-story-text">
+          <div class="ab-story-head">
+            <div class="label">How We Work</div>
+            <div class="rule"></div>
+            <h2>Direct to the maker. Accountable on every piece.</h2>
+            <p class="lead" style="margin: 20px 0 16px;">Most millwork suppliers route your project through salespeople, project managers, and sub-contractors before it ever reaches the shop floor. We don't work that way.</p>
+          </div>
           <div class="approach-list">
-            <div class="approach-item">
+            <div class="approach-item" data-step="0">
               <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
               <div>
                 <div class="approach-title">One person, start to finish</div>
                 <div class="approach-desc">You deal with the same person from your first conversation through delivery — someone who knows your project, not a call center rep reading from notes.</div>
               </div>
             </div>
-            <div class="approach-item">
+            <div class="approach-item" data-step="1">
               <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
               <div>
                 <div class="approach-title">Nothing goes into production without your sign-off</div>
                 <div class="approach-desc">We produce shop drawings and submit finish samples before a single board is cut. Every specification is confirmed before work begins.</div>
               </div>
             </div>
-            <div class="approach-item">
+            <div class="approach-item" data-step="2">
               <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
               <div>
                 <div class="approach-title">We stand behind every piece we ship</div>
                 <div class="approach-desc">Structural workmanship is warranted for the life of the product. If something fails due to how it was made, we fix it — no expiration dates.</div>
               </div>
             </div>
-            <div class="approach-item">
+            <div class="approach-item" data-step="3">
               <div class="approach-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div>
               <div>
                 <div class="approach-title">Based in Brooklyn, NY</div>
@@ -104,9 +173,15 @@
             </div>
           </div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          <div class="img-ph" style="aspect-ratio:4/3; border-radius:4px; margin-bottom:4px;"><span class="img-ph-label">Craftsman assembling a solid walnut door panel, Brooklyn workshop</span></div>
-          <div class="img-ph" style="aspect-ratio:16/9; border-radius:4px;"><span class="img-ph-label">Finished solid oak doors ready for delivery, Brooklyn facility</span></div>
+        <div class="ab-media" data-no-motion>
+          <div class="ab-frame">
+            <figure class="ab-slide is-on" style="margin:0"><img src="images/pages/pg-workshop-facility.jpg" alt="Woodworker measuring a door frame in a workshop" /></figure>
+            <figure class="ab-slide" style="margin:0"><img src="images/pages/pg-workshop-samples.jpg" alt="Wood samples in several species and tones" loading="lazy" /></figure>
+            <figure class="ab-slide" style="margin:0"><video muted playsinline loop preload="none" poster="images/story/clip-planing.jpg" aria-label="Hand plane lifting curled shavings from a board"><source src="images/story/clip-planing.mp4" type="video/mp4" /></video></figure>
+            <figure class="ab-slide" style="margin:0"><img src="images/pages/pg-workshop-cnc.jpg" alt="Workshop floor with a CNC router cutting wood parts" loading="lazy" /></figure>
+            <div class="ab-count" aria-hidden="true"><b>01</b><span>/ 04</span></div>
+            <div class="ab-bar" aria-hidden="true"><i></i></div>
+          </div>
         </div>
       </div>
     </div>
@@ -121,32 +196,32 @@
         <h2>Our Values</h2>
       </div>
       <div class="values-grid">
-        <div class="value-item">
+        <div class="value-item" data-reveal>
           <div class="value-num">01</div>
           <div class="value-title">Solid, Always</div>
           <p>We use solid hardwood in every product we make. No veneers, no MDF cores, no shortcuts. The material is half the product — it deserves to be honest.</p>
         </div>
-        <div class="value-item">
+        <div class="value-item" data-reveal>
           <div class="value-num">02</div>
           <div class="value-title">Craft Over Speed</div>
           <p>We don't rush. Every door goes through quality checkpoints. Every molding profile is checked for accuracy and consistency before it leaves the facility.</p>
         </div>
-        <div class="value-item">
+        <div class="value-item" data-reveal>
           <div class="value-num">03</div>
           <div class="value-title">Lifetime Accountability</div>
           <p>We warranty our structural work for life. If something fails due to our workmanship, we fix it — no questions, no expiration dates.</p>
         </div>
-        <div class="value-item">
+        <div class="value-item" data-reveal>
           <div class="value-num">04</div>
           <div class="value-title">Transparent Process</div>
           <p>No surprises on pricing, lead times, or specifications. You get shop drawings, progress updates, and a direct line to the person making your order.</p>
         </div>
-        <div class="value-item">
+        <div class="value-item" data-reveal>
           <div class="value-num">05</div>
           <div class="value-title">Sustainability</div>
           <p>We source FSC-certified hardwoods wherever available. Our finishing systems are low-VOC. We run a low-waste shop — offcuts are repurposed, not landfilled.</p>
         </div>
-        <div class="value-item">
+        <div class="value-item" data-reveal>
           <div class="value-num">06</div>
           <div class="value-title">American Made</div>
           <p>Every door, every molding, every piece of hardware we sell is made or sourced in the United States. We believe in the craftspeople who work here.</p>
@@ -168,5 +243,83 @@
 
 </div>
 <script src="shared/nav.js"></script>
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Hero video: play only while on screen. */
+  var vio = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting && !reduced && !e.target.dataset.hold) e.target.play().catch(function () {}); else e.target.pause(); });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('video.io-video').forEach(function (v) { vio.observe(v); });
+
+  /* Hero photos drift slightly as the page scrolls away. */
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('.about-hero-img'));
+  if (!reduced) {
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        var y = window.scrollY;
+        if (y > window.innerHeight * 1.5) return;
+        tiles.forEach(function (t, i) { t.style.setProperty('--drift', (y * (0.06 + i * 0.03)).toFixed(1) + 'px'); });
+      });
+    }, { passive: true });
+  }
+
+  /* Values: soft light follows the pointer. */
+  document.querySelectorAll('.value-item').forEach(function (v) {
+    v.addEventListener('pointermove', function (e) {
+      var r = v.getBoundingClientRect();
+      v.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      v.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* ─── Scroll story ─── */
+  var section = document.querySelector('.ab-story');
+  section.classList.add('st-js');
+  var items = Array.prototype.slice.call(section.querySelectorAll('.approach-item'));
+  var slides = Array.prototype.slice.call(section.querySelectorAll('.ab-slide'));
+  var countEl = section.querySelector('.ab-count b');
+  var bar = section.querySelector('.ab-bar');
+  var current = -1;
+
+  function setStep(i) {
+    if (i === current) return;
+    var prev = current;
+    current = i;
+    items.forEach(function (it, k) { it.classList.toggle('is-on', k === i); it.classList.toggle('was-on', k < i); });
+    slides.forEach(function (s, k) {
+      s.classList.remove('is-under');
+      if (k === prev) s.classList.add('is-under');
+      s.classList.toggle('is-on', k === i);
+      var v = s.querySelector('video');
+      if (v) { if (k === i && !reduced) v.play().catch(function () {}); else v.pause(); }
+    });
+    if (prev > -1) setTimeout(function () { if (slides[prev] && current !== prev) slides[prev].classList.remove('is-under'); }, 1150);
+    countEl.textContent = ('0' + (i + 1)).slice(-2);
+  }
+
+  var frameTick = false;
+  function update() {
+    frameTick = false;
+    var vh = window.innerHeight;
+    var mobile = window.innerWidth <= 900;
+    var line = mobile ? vh * 0.68 : vh * 0.55;
+    var best = 0;
+    items.forEach(function (it, k) { if (it.getBoundingClientRect().top < line) best = k; });
+    setStep(best);
+    var first = items[0].getBoundingClientRect(), last = items[items.length - 1].getBoundingClientRect();
+    var p = (line - first.top) / Math.max(1, last.bottom - first.top);
+    bar.style.setProperty('--p', Math.max(0, Math.min(1, p)).toFixed(3));
+  }
+  function req() { if (!frameTick) { frameTick = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', req, { passive: true });
+  window.addEventListener('resize', req);
+  update();
+})();
+</script>
 </body>
 </html>

@@ -13,19 +13,136 @@
     .cat-hero { background:var(--charcoal); padding: clamp(100px,12vw,150px) 0 0; overflow:hidden; }
     .cat-hero-text { padding-bottom: clamp(48px,7vw,80px); max-width: 620px; }
     .cat-img-row { display:grid; grid-template-columns:2fr 1fr 1fr; gap:4px; }
-    .cat-img { aspect-ratio:4/3; }
+    .cat-img { aspect-ratio:4/5; }
     .cat-img.tall { aspect-ratio:auto; height:100%; min-height:260px; }
-    .styles-grid { display:grid; grid-template-columns: repeat(3,1fr); gap: clamp(16px,2.5vw,28px); }
-    .style-card { border:1.5px solid var(--cream-dark); border-radius:2px; overflow:hidden; transition: all 0.2s var(--ease-out); }
-    .style-card:hover { border-color:var(--charcoal); box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
-    .style-img { aspect-ratio:3/4; }
-    .style-body { padding:20px; }
     .style-name { font-family:var(--serif); font-size:1.1rem; margin-bottom:4px; }
     .style-desc { font-size:0.82rem; color:var(--charcoal-lt); margin-bottom:12px; }
     .style-price { font-size:0.88rem; font-weight:600; color:var(--charcoal); }
     .spec-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,64px); align-items:start; }
-    @media(max-width:900px){ .styles-grid{grid-template-columns:repeat(2,1fr);} .spec-grid{grid-template-columns:1fr;} .cat-img-row{grid-template-columns:1fr;} }
-    @media(max-width:600px){ .styles-grid{grid-template-columns:1fr;} }
+    @media(max-width:900px){ .spec-grid{grid-template-columns:1fr;} .cat-img-row{grid-template-columns:1fr;} }
+
+    /* ── Style explorer ── */
+    .ex { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:clamp(28px,5vw,80px); align-items:start; }
+    .ex-media { position:sticky; top:calc(var(--nav-h) + 24px); aspect-ratio:4/5; max-height:calc(100vh - var(--nav-h) - 48px); width:100%;
+      overflow:hidden; border-radius:2px; background:#1a1714; box-shadow:0 34px 80px rgba(20,17,14,0.20), 0 0 0 1px rgba(20,17,14,0.06); }
+    .ex-frame { position:absolute; inset:0; }
+    .ex-frame > .ex-layer { position:absolute; inset:0; }
+    .ex-layer img { transition:none; }
+    .ex-media:hover .ex-layer img { transform:none; }
+    .ex-edge { position:absolute; top:0; bottom:0; left:0; width:2px; margin-left:-1px; background:var(--gold); opacity:0; z-index:3; pointer-events:none; box-shadow:0 0 18px rgba(200,150,60,0.6); }
+    .ex-meta { position:absolute; left:0; right:0; bottom:0; z-index:3; padding:56px 22px 20px; pointer-events:none;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
+      background:linear-gradient(180deg, rgba(20,17,14,0), rgba(20,17,14,0.62)); color:var(--cream); }
+    .ex-cap { font-family:var(--serif); font-size:clamp(1.3rem,2.4vw,1.9rem); line-height:1.1; }
+    .ex-count { font-size:0.7rem; font-weight:600; letter-spacing:0.16em; color:var(--gold); white-space:nowrap; }
+    .ex-open[hidden] { display:none; }
+    .ex-tabs { display:flex; flex-direction:column; border-top:1px solid var(--cream-dark); }
+    .ex-tab { position:relative; display:flex; align-items:baseline; gap:18px; width:100%; text-align:left; padding:16px 4px 16px 18px;
+      border-bottom:1px solid var(--cream-dark); color:var(--charcoal-lt); transition:color .3s, padding .4s var(--ease-out); }
+    .ex-tab::before { content:''; position:absolute; left:0; top:14px; bottom:14px; width:2px; background:var(--gold); transform:scaleY(0); transform-origin:50% 0; transition:transform .5s var(--ease-out); }
+    .ex-tab:hover { color:var(--charcoal); padding-left:24px; }
+    .ex-tab[aria-selected="true"] { color:var(--charcoal); padding-left:24px; }
+    .ex-tab[aria-selected="true"]::before { transform:none; }
+    .ex-tab:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
+    .ex-num { font-size:0.68rem; font-weight:600; letter-spacing:0.14em; color:var(--gold); }
+    .ex-tab .style-name { font-size:clamp(1.1rem,1.6vw,1.35rem); margin:0; }
+    .ex-panels { padding:26px 0 8px; min-height:150px; }
+    .ex-panel .style-desc { font-size:0.95rem; margin-bottom:14px; max-width:46ch; }
+    .ex-panel:focus-visible { outline:2px solid var(--gold); outline-offset:6px; }
+    .ex-species { display:flex; gap:18px; align-items:center; margin-top:22px; padding-top:22px; border-top:1px solid var(--cream-dark); }
+    .ex-swatch { width:92px; height:92px; flex:none; border-radius:50%; box-shadow:0 10px 28px rgba(20,17,14,0.22), inset 0 0 0 1px rgba(255,255,255,0.2); }
+    .ex-swatch img { border-radius:50%; }
+    .ex-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .ex-chip { font-size:0.8rem; font-weight:500; padding:8px 14px; border-radius:40px; border:1px solid var(--cream-dark); color:var(--charcoal-mid); transition:all .25s var(--ease-out); }
+    .ex-chip:hover { border-color:var(--charcoal); color:var(--charcoal); }
+    .ex-chip[aria-pressed="true"] { background:var(--charcoal); border-color:var(--charcoal); color:var(--cream); }
+    .ex-chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    @media (max-width:900px){
+      .ex { grid-template-columns:minmax(0,1fr); }
+      .ex-media { position:relative; top:0; max-height:72vh; }
+      .ex-tabs { flex-direction:row; overflow-x:auto; gap:8px; border:0; padding:2px 2px 8px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+      .ex-tabs::-webkit-scrollbar { display:none; }
+      .ex-tab { flex:none; width:auto; padding:10px 16px; border:1px solid var(--cream-dark); border-radius:40px; gap:8px; }
+      .ex-tab:hover, .ex-tab[aria-selected="true"] { padding-left:16px; }
+      .ex-tab[aria-selected="true"] { background:var(--charcoal); border-color:var(--charcoal); color:var(--cream); }
+      .ex-tab[aria-selected="true"] .ex-num { color:var(--gold); }
+      .ex-tab::before { display:none; }
+      .ex-tab .style-name { font-family:var(--sans); font-size:0.85rem; font-weight:600; }
+      .ex-swatch { width:72px; height:72px; }
+    }
+    /* ── Page kit: real-photo frames, lightbox, video, spec rows ── */
+    :where(.pf){position:relative;overflow:hidden;background:#1a1714;margin:0;}
+    .pf img,.pf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease-out);}
+    .pf .pf-px{position:absolute;inset:-6% 0;will-change:transform;}
+    .pf-open{position:absolute;inset:0;z-index:4;display:block;width:100%;height:100%;background:transparent;cursor:zoom-in;}
+    .pf-open::after{content:'';position:absolute;right:14px;top:14px;width:38px;height:38px;border-radius:50%;
+      background:rgba(20,17,14,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f5efe6' stroke-width='1.8'%3E%3Cpath d='M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7'/%3E%3C/svg%3E") center/16px no-repeat;
+      opacity:0;transform:scale(.8);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+    .pf:hover .pf-open::after,.pf-open:focus-visible::after{opacity:1;transform:none;}
+    .pf-open:focus-visible{outline:2px solid var(--gold);outline-offset:-4px;}
+    @media (hover:none){.pf-open::after{opacity:.9;transform:none;width:32px;height:32px;right:10px;top:10px;}}
+    .pf:hover img{transform:scale(1.04);}
+    .style-card:hover .pf img{transform:scale(1.07);}
+    .pf-tag{position:absolute;left:14px;bottom:12px;z-index:3;font-size:.64rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,248,236,.9);text-shadow:0 1px 8px rgba(0,0,0,.5);pointer-events:none;}
+    .pf.grain::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(20,17,14,0) 40%,rgba(20,17,14,.55));}
+    @media (prefers-reduced-motion:no-preference){
+      .m-js .pf.k-wipe{clip-path:inset(100% 0 0 0);transition:clip-path 1.1s cubic-bezier(.77,0,.18,1) var(--kd,0s);}
+      .m-js .pf.k-wipe img,.m-js .pf.k-wipe video{transform:scale(1.22);transition:transform 1.7s var(--ease-out) var(--kd,0s);}
+      .m-js .pf.k-wipe.k-in{clip-path:inset(0 0 0 0);}
+      .m-js .pf.k-wipe.k-in img,.m-js .pf.k-wipe.k-in video{transform:none;}
+      .m-js .spec-table.k-rows tr{opacity:0;transform:translate3d(-14px,0,0);transition:opacity .7s var(--ease-out) calc(var(--i,0) * 60ms + .15s),transform .7s var(--ease-out) calc(var(--i,0) * 60ms + .15s);}
+      .m-js .spec-table.k-rows.k-in tr{opacity:1;transform:none;}
+    }
+    @media (prefers-reduced-motion:reduce){.pf img,.pf video{transition:none;transform:none!important;}}
+    .spec-table td{transition:background .25s,color .25s;}
+    .spec-table tr:hover td{background:rgba(180,130,60,.07);}
+    .spec-table tr:hover td:first-child{color:var(--gold-dark);}
+    .spec-table td:first-child{padding-left:8px;}
+    /* Hero row: real photos; the hovered tile widens */
+    .cat-img-row{transition:grid-template-columns .9s var(--ease-out);}
+    @media (hover:hover) and (min-width:901px){
+      .cat-img-row:has(> :nth-child(1):hover){grid-template-columns:2.25fr .9fr .9fr;}
+      .cat-img-row:has(> :nth-child(2):hover){grid-template-columns:1.7fr 1.45fr .9fr;}
+      .cat-img-row:has(> :nth-child(3):hover){grid-template-columns:1.7fr .9fr 1.45fr;}
+    }
+    @media (max-width:900px){
+      .cat-img-row{grid-template-columns:1fr 1fr!important;}
+      .cat-img-row > :first-child{grid-column:1 / -1;aspect-ratio:4/3;height:auto;min-height:0;}
+      .cat-img-row > :not(:first-child){aspect-ratio:4/5;}
+    }
+    /* Video toggle */
+    .vid-toggle{position:absolute;left:12px;top:12px;z-index:5;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+      background:rgba(20,17,14,.5);color:#f5efe6;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s;}
+    .vid-toggle:hover{background:rgba(20,17,14,.8);}
+    .vid-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+    .vid-toggle svg{width:14px;height:14px;}
+    .vid-toggle .i-play{display:none;}
+    .vid-toggle[aria-pressed="false"] .i-play{display:block;}
+    .vid-toggle[aria-pressed="false"] .i-pause{display:none;}
+    /* Lightbox */
+    .lb{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(14,12,10,.96);color:#f5efe6;overflow:hidden;}
+    .lb::backdrop{background:rgba(14,12,10,.6);}
+    .lb[open]{display:flex;flex-direction:column;}
+    .lb-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:72px clamp(12px,7vw,110px) 12px;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
+    .lb-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 30px 80px rgba(0,0,0,.5);-webkit-user-drag:none;}
+    .lb-bar{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px clamp(16px,7vw,110px) 22px;}
+    .lb-cap{font-size:.86rem;color:rgba(245,239,230,.75);margin:0;}
+    .lb-count{font-size:.7rem;font-weight:600;letter-spacing:.16em;color:var(--gold);white-space:nowrap;}
+    .lb-btn{position:absolute;z-index:2;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#f5efe6;border:1px solid rgba(255,255,255,.22);background:rgba(20,17,14,.4);transition:background .2s,border-color .2s;}
+    .lb-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--charcoal);}
+    .lb-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+    .lb-btn svg{width:18px;height:18px;}
+    .lb-close{top:14px;right:14px;}
+    .lb-prev{left:clamp(8px,2vw,28px);top:50%;margin-top:-24px;}
+    .lb-next{right:clamp(8px,2vw,28px);top:50%;margin-top:-24px;}
+    .lb-one .lb-prev,.lb-one .lb-next,.lb-one .lb-count{display:none;}
+    @media (max-width:600px){.lb-prev,.lb-next{top:auto;bottom:64px;margin:0;}}
+    @media (prefers-reduced-motion:no-preference){
+      .lb[open]{animation:lb-in .4s var(--ease-out);}
+      .lb-img.lb-anim{animation:lb-img .55s var(--ease-out);}
+    }
+    @keyframes lb-in{from{opacity:0;}to{opacity:1;}}
+    @keyframes lb-img{from{opacity:0;transform:translate3d(calc(var(--dir,0) * 40px),0,0) scale(.97);}to{opacity:1;transform:none;}}
   </style>
 </head>
 <body>
@@ -49,9 +166,17 @@
     </div>
     <div class="container" style="padding-left:0;padding-right:0;max-width:100%;">
       <div class="cat-img-row">
-        <div class="img-ph cat-img tall"><span class="img-ph-label">5-panel shaker interior door — White Oak, natural finish</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Flush interior door — painted white, clean</span></div>
-        <div class="img-ph cat-img"><span class="img-ph-label">Raised panel interior door — walnut, dark stain</span></div>
+        <figure class="pf cat-img tall k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-shaker.jpg" alt="Wood glass-lite interior door in a sunlit dining room" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: wood glass-lite interior door in a sunlit dining room"></button>
+        </figure>
+        <figure class="pf cat-img k-wipe">
+          <video data-auto muted playsinline loop preload="metadata" poster="../images/story/clip-door.jpg" aria-label="Painted paneled interior door swinging open"><source src="../images/story/clip-door.mp4" type="video/mp4" /></video>
+        </figure>
+        <figure class="pf cat-img k-wipe" data-lb>
+          <div class="pf-px" data-parallax="0.04"><img src="../images/pages/doors/door-raised-panel.jpg" alt="White raised-panel double interior doors" /></div>
+          <button type="button" class="pf-open" data-cursor="View" aria-label="Enlarge photo: white raised-panel double interior doors"></button>
+        </figure>
       </div>
     </div>
   </section>
@@ -66,13 +191,45 @@
   <section class="section">
     <div class="container">
       <div class="section-intro"><div class="label">Door Styles</div><div class="rule"></div><h2>Choose Your Profile</h2><p>Every style is available in our full range of species and finishes. Custom profiles welcome.</p></div>
-      <div class="styles-grid">
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Shaker 5-panel door — flat center, clean lines</span></div><div class="style-body"><div class="style-name">Shaker 5-Panel</div><p class="style-desc">The workhorse of the interior door world. Clean, architectural, and at home in any style from farmhouse to contemporary.</p><div class="style-price">From $550 / door</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">2-panel craftsman interior door</span></div><div class="style-body"><div class="style-name">Craftsman 2-Panel</div><p class="style-desc">Two broad flat panels divided by a strong mid-rail. Ideal for Arts &amp; Crafts and Craftsman interiors.</p><div class="style-price">From $520 / door</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Raised panel interior door — traditional</span></div><div class="style-body"><div class="style-name">Raised 6-Panel</div><p class="style-desc">The classic raised panel profile. Dimensional and detailed — suits traditional, colonial, and formal interiors.</p><div class="style-price">From $680 / door</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Flush interior door — solid walnut veneer face</span></div><div class="style-body"><div class="style-name">Flush / Flat Panel</div><p class="style-desc">A clean flat face, no panels. Perfect for modern and minimalist interiors where the grain is the design.</p><div class="style-price">From $480 / door</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Louvered interior door — painted white</span></div><div class="style-body"><div class="style-name">Louvered</div><p class="style-desc">Angled slats for ventilation without visibility. Common for closets, laundry rooms, and mechanical spaces.</p><div class="style-price">From $620 / door</div></div></div>
-        <div class="style-card"><div class="img-ph style-img"><span class="img-ph-label">Glass-lite interior door — 10-lite true divided</span></div><div class="style-body"><div class="style-name">Glass-Lite Panel</div><p class="style-desc">Solid wood frame with glass panels — brings light between spaces without losing the weight of a real door.</p><div class="style-price">From $850 / door</div></div></div>
+      <div class="ex" id="ex">
+        <div class="ex-media" data-reveal="scale">
+          <div class="ex-frame" id="ex-frame">
+            <figure class="pf ex-layer grain"><img src="../images/story/sp-walnut.jpg" alt="Walnut grain close-up" /><span class="pf-tag">Grain shown: Walnut</span></figure>
+          </div>
+          <span class="ex-edge" aria-hidden="true"></span>
+          <button type="button" class="pf-open ex-open" data-lb-in="#ex-frame" data-cursor="View" aria-label="Enlarge photo of the selected style" hidden></button>
+          <div class="ex-meta" aria-hidden="true"><span class="ex-cap">Shaker 5-Panel</span><span class="ex-count">01 / 06</span></div>
+        </div>
+        <div class="ex-side">
+          <div class="ex-tabs" role="tablist" aria-label="Door styles">
+            <button type="button" class="ex-tab" role="tab" id="ex-t1" aria-controls="ex-p1" aria-selected="true"><span class="ex-num">01</span><span class="style-name">Shaker 5-Panel</span></button>
+            <button type="button" class="ex-tab" role="tab" id="ex-t2" aria-controls="ex-p2" aria-selected="false" tabindex="-1"><span class="ex-num">02</span><span class="style-name">Craftsman 2-Panel</span></button>
+            <button type="button" class="ex-tab" role="tab" id="ex-t3" aria-controls="ex-p3" aria-selected="false" tabindex="-1" data-photo="../images/pages/doors/door-raised-panel.jpg" data-alt="White raised-panel double interior doors"><span class="ex-num">03</span><span class="style-name">Raised 6-Panel</span></button>
+            <button type="button" class="ex-tab" role="tab" id="ex-t4" aria-controls="ex-p4" aria-selected="false" tabindex="-1" data-photo="../images/pages/doors/door-flush.jpg" data-alt="Flush-face solid wood door set into a pale facade"><span class="ex-num">04</span><span class="style-name">Flush / Flat Panel</span></button>
+            <button type="button" class="ex-tab" role="tab" id="ex-t5" aria-controls="ex-p5" aria-selected="false" tabindex="-1"><span class="ex-num">05</span><span class="style-name">Louvered</span></button>
+            <button type="button" class="ex-tab" role="tab" id="ex-t6" aria-controls="ex-p6" aria-selected="false" tabindex="-1" data-photo="../images/pages/doors/door-shaker.jpg" data-alt="Wood glass-lite interior door in a sunlit dining room"><span class="ex-num">06</span><span class="style-name">Glass-Lite Panel</span></button>
+          </div>
+          <div class="ex-panels">
+            <div class="ex-panel" role="tabpanel" id="ex-p1" aria-labelledby="ex-t1" tabindex="0"><p class="style-desc">The workhorse of the interior door world. Clean, architectural, and at home in any style from farmhouse to contemporary.</p><div class="style-price">From $550 / door</div></div>
+            <div class="ex-panel" role="tabpanel" id="ex-p2" aria-labelledby="ex-t2" tabindex="0"><p class="style-desc">Two broad flat panels divided by a strong mid-rail. Ideal for Arts &amp; Crafts and Craftsman interiors.</p><div class="style-price">From $520 / door</div></div>
+            <div class="ex-panel" role="tabpanel" id="ex-p3" aria-labelledby="ex-t3" tabindex="0"><p class="style-desc">The classic raised panel profile. Dimensional and detailed — suits traditional, colonial, and formal interiors.</p><div class="style-price">From $680 / door</div></div>
+            <div class="ex-panel" role="tabpanel" id="ex-p4" aria-labelledby="ex-t4" tabindex="0"><p class="style-desc">A clean flat face, no panels. Perfect for modern and minimalist interiors where the grain is the design.</p><div class="style-price">From $480 / door</div></div>
+            <div class="ex-panel" role="tabpanel" id="ex-p5" aria-labelledby="ex-t5" tabindex="0"><p class="style-desc">Angled slats for ventilation without visibility. Common for closets, laundry rooms, and mechanical spaces.</p><div class="style-price">From $620 / door</div></div>
+            <div class="ex-panel" role="tabpanel" id="ex-p6" aria-labelledby="ex-t6" tabindex="0"><p class="style-desc">Solid wood frame with glass panels — brings light between spaces without losing the weight of a real door.</p><div class="style-price">From $850 / door</div></div>
+          </div>
+          <div class="ex-species">
+            <div class="pf ex-swatch" aria-hidden="true"><img src="../images/story/sp-walnut.jpg" alt="" /></div>
+            <div>
+              <div class="label">Grain close-up</div>
+              <div class="ex-chips" role="group" aria-label="Show wood grain">
+                <button type="button" class="ex-chip" data-sp="walnut" aria-pressed="true">Walnut</button>
+                <button type="button" class="ex-chip" data-sp="cherry" aria-pressed="false">Cherry</button>
+                <button type="button" class="ex-chip" data-sp="maple" aria-pressed="false">Maple</button>
+                <button type="button" class="ex-chip" data-sp="oak" aria-pressed="false">White Oak</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -111,4 +268,356 @@
   </div></div>
 </div>
 <script src="../shared/nav.js"></script>
+<script>
+/* Page kit: photo wipes, lightbox, in-view video, spec-row reveals. */
+var Kit = (function () {
+  var html = document.documentElement;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var animate = !reduced && html.classList.contains('m-js');
+
+  /* ── Wipe reveals (polled: a fully clipped frame never "intersects") ── */
+  var pending = [];
+  function watchWipes(root) {
+    (root || document).querySelectorAll('.pf.k-wipe').forEach(function (el) {
+      if (!animate) { el.classList.remove('k-wipe'); return; }
+      if (pending.indexOf(el) < 0) pending.push(el);
+    });
+    checkWipes();
+  }
+  function checkWipes() {
+    if (!pending.length) return;
+    var vh = window.innerHeight, batch = [];
+    pending = pending.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      if ((r.width || r.height) && r.top < vh * 0.94 && r.bottom > 0) { batch.push(el); return false; }
+      return true;
+    });
+    batch.forEach(function (el, i) {
+      var d = Math.min(i * 0.09, 0.45);
+      el.style.setProperty('--kd', d + 's');
+      requestAnimationFrame(function () { el.classList.add('k-in'); });
+      setTimeout(function () {
+        el.classList.remove('k-wipe', 'k-in');
+        el.style.removeProperty('--kd');
+      }, 1900 + d * 1000);
+    });
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; checkWipes(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ── Spec tables: rows slide in one after another ── */
+  function specRows() {
+    if (!animate || !('IntersectionObserver' in window)) return;
+    document.querySelectorAll('.spec-table').forEach(function (t) {
+      t.querySelectorAll('tr').forEach(function (tr, i) { tr.style.setProperty('--i', i); });
+      var r = t.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) return; // already on screen: leave it
+      t.classList.add('k-rows');
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          t.classList.add('k-in');
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      io.observe(t);
+    });
+  }
+
+  /* ── Videos: muted loops that only play while on screen ── */
+  var ICON_PLAY = '<svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>';
+  var ICON_PAUSE = '<svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>';
+  function videos() {
+    var vids = document.querySelectorAll('video[data-auto]');
+    if (!vids.length) return;
+    var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        v._inView = e.isIntersecting;
+        syncVideo(v);
+      });
+    }, { threshold: 0.25 }) : null;
+    vids.forEach(function (v) {
+      v.muted = true;
+      v._userPaused = reduced;
+      if (!io) v._inView = true;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vid-toggle';
+      btn.innerHTML = ICON_PAUSE + ICON_PLAY;
+      function syncBtn() {
+        var on = !v.paused;
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.setAttribute('aria-label', on ? 'Pause video' : 'Play video');
+      }
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (v.paused) { v._userPaused = false; play(v); } else { v._userPaused = true; v.pause(); }
+      });
+      v.addEventListener('play', syncBtn);
+      v.addEventListener('pause', syncBtn);
+      syncBtn();
+      (v.closest('.pf') || v.parentNode).appendChild(btn);
+      if (io) io.observe(v);
+    });
+  }
+  // Plays only while on screen, not paused by the visitor, and not held by the page (v._hold).
+  function syncVideo(v) {
+    if (v._inView && !v._userPaused && !v._hold && !reduced) play(v); else v.pause();
+  }
+  function play(v) {
+    if (v.preload === 'none') v.preload = 'auto';
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+
+  /* ── Lightbox ── */
+  var dlg, lbImg, lbCap, lbCount, list = [], idx = 0, opener = null;
+  function svg(d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="' + d + '"/></svg>'; }
+  function buildLightbox() {
+    dlg = document.createElement('dialog');
+    dlg.className = 'lb';
+    dlg.setAttribute('aria-label', 'Photo viewer');
+    dlg.innerHTML =
+      '<div class="lb-stage"><img class="lb-img" alt=""></div>' +
+      '<div class="lb-bar"><p class="lb-cap" aria-live="polite"></p><span class="lb-count"></span></div>' +
+      '<button type="button" class="lb-btn lb-close" aria-label="Close photo viewer">' + svg('M5 5l14 14M19 5L5 19') + '</button>' +
+      '<button type="button" class="lb-btn lb-prev" aria-label="Previous photo">' + svg('M15 5l-7 7 7 7') + '</button>' +
+      '<button type="button" class="lb-btn lb-next" aria-label="Next photo">' + svg('M9 5l7 7-7 7') + '</button>';
+    document.body.appendChild(dlg);
+    lbImg = dlg.querySelector('.lb-img');
+    lbCap = dlg.querySelector('.lb-cap');
+    lbCount = dlg.querySelector('.lb-count');
+    dlg.querySelector('.lb-close').addEventListener('click', close);
+    dlg.querySelector('.lb-prev').addEventListener('click', function () { go(-1); });
+    dlg.querySelector('.lb-next').addEventListener('click', function () { go(1); });
+    dlg.addEventListener('click', function (e) {
+      if (e.target === dlg || e.target.classList.contains('lb-stage')) close();
+    });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    });
+    dlg.addEventListener('close', function () {
+      html.style.overflow = '';
+      if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    });
+    // Swipe
+    var sx = null, sy = 0;
+    var stage = dlg.querySelector('.lb-stage');
+    stage.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; });
+    stage.addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+    });
+    stage.addEventListener('pointercancel', function () { sx = null; });
+  }
+  function visible(el) { return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length); }
+  function collect() {
+    return Array.prototype.filter.call(document.querySelectorAll('[data-lb]'), function (el) {
+      return visible(el) && el.querySelector('img');
+    });
+  }
+  function show(i, dir) {
+    idx = (i + list.length) % list.length;
+    var el = list[idx], img = el.querySelector('img');
+    lbImg.src = el.getAttribute('data-lb') || img.currentSrc || img.src;
+    lbImg.alt = img.alt;
+    lbCap.textContent = img.alt;
+    lbCount.textContent = (idx + 1) + ' / ' + list.length;
+    lbImg.style.setProperty('--dir', dir || 0);
+    lbImg.classList.remove('lb-anim');
+    void lbImg.offsetWidth;
+    lbImg.classList.add('lb-anim');
+  }
+  function go(d) { if (list.length > 1) show(idx + d, d); }
+  function open(fig, from) {
+    if (!dlg) buildLightbox();
+    list = collect();
+    var i = list.indexOf(fig);
+    if (i < 0) { list = [fig]; i = 0; }
+    dlg.classList.toggle('lb-one', list.length < 2);
+    opener = from || document.activeElement;
+    show(i, 0);
+    html.style.overflow = 'hidden';
+    dlg.showModal();
+  }
+  function close() { if (dlg && dlg.open) dlg.close(); }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.pf-open');
+    if (!btn) return;
+    var fig = btn.closest('[data-lb]');
+    if (!fig && btn.getAttribute('data-lb-in')) {
+      var figs = document.querySelectorAll(btn.getAttribute('data-lb-in') + ' > [data-lb]');
+      fig = figs[figs.length - 1];
+    }
+    if (fig) { e.preventDefault(); open(fig, btn); }
+  });
+
+  function init() {
+    watchWipes();
+    setTimeout(checkWipes, 350);
+    specRows();
+    videos();
+  }
+  init();
+
+  return { reduced: reduced, animate: animate, watchWipes: watchWipes, open: open, play: play, syncVideo: syncVideo };
+})();
+
+/* Style explorer: tabs swap the framed photo with a sliding-door wipe. */
+(function () {
+  var ex = document.getElementById('ex');
+  if (!ex) return;
+  var frame = document.getElementById('ex-frame');
+  var edge = ex.querySelector('.ex-edge');
+  var openBtn = ex.querySelector('.ex-open');
+  var capEl = ex.querySelector('.ex-cap');
+  var countEl = ex.querySelector('.ex-count');
+  var tablist = ex.querySelector('[role="tablist"]');
+  var tabs = Array.prototype.slice.call(ex.querySelectorAll('[role="tab"]'));
+  var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+  var chips = Array.prototype.slice.call(ex.querySelectorAll('[data-sp]'));
+  var swatch = ex.querySelector('.ex-swatch');
+  var SP = {
+    walnut: '../images/story/sp-walnut.jpg',
+    cherry: '../images/pages/doors/wood-cherry.jpg',
+    maple: '../images/story/sp-maple.jpg',
+    oak: '../images/pages/doors/wood-white-oak.jpg'
+  };
+  var EASE = 'cubic-bezier(0.77, 0, 0.18, 1)';
+  var sp = 'walnut', cur = 0;
+  var motion = !Kit.reduced && !!frame.animate;
+
+  panels.forEach(function (p, i) { p.hidden = i !== 0; });
+
+  function spName() {
+    for (var i = 0; i < chips.length; i++) if (chips[i].getAttribute('data-sp') === sp) return chips[i].textContent;
+    return '';
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  function layerFor(i) {
+    var t = tabs[i];
+    var fig = document.createElement('figure');
+    fig.className = 'pf ex-layer';
+    var img = document.createElement('img');
+    img.decoding = 'async';
+    var photo = t.getAttribute('data-photo');
+    if (photo) {
+      img.src = photo;
+      img.alt = t.getAttribute('data-alt');
+      fig.setAttribute('data-lb', '');
+    } else {
+      fig.classList.add('grain');
+      img.src = SP[sp];
+      img.alt = spName() + ' grain close-up';
+      var tag = document.createElement('span');
+      tag.className = 'pf-tag';
+      tag.textContent = 'Grain shown: ' + spName();
+      fig.appendChild(tag);
+    }
+    fig.insertBefore(img, fig.firstChild);
+    return fig;
+  }
+
+  function swap(layer, dir, fade) {
+    var olds = Array.prototype.slice.call(frame.children);
+    frame.appendChild(layer);
+    openBtn.hidden = !layer.hasAttribute('data-lb');
+    if (!motion) { olds.forEach(function (o) { o.remove(); }); return; }
+    var done = function () { olds.forEach(function (o) { o.remove(); }); };
+    if (fade) {
+      layer.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: 'ease-out' }).onfinish = done;
+      return;
+    }
+    var from = dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
+    layer.animate([{ clipPath: from }, { clipPath: 'inset(0 0 0 0)' }], { duration: 1000, easing: EASE }).onfinish = done;
+    layer.firstChild.animate([{ transform: 'translateX(' + (dir * 8) + '%) scale(1.1)' }, { transform: 'none' }], { duration: 1400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+    olds.forEach(function (o) {
+      o.animate([{ transform: 'none', filter: 'brightness(1)' }, { transform: 'translateX(' + (-dir * 16) + '%)', filter: 'brightness(0.4)' }], { duration: 1000, easing: EASE, fill: 'forwards' });
+    });
+    edge.animate([
+      { left: dir > 0 ? '100%' : '0%', opacity: 1 },
+      { left: dir > 0 ? '0%' : '100%', opacity: 1 }
+    ], { duration: 1000, easing: EASE });
+  }
+
+  function select(i, focus) {
+    if (i === cur) { if (focus) tabs[i].focus(); return; }
+    var dir = i > cur ? 1 : -1;
+    tabs[cur].setAttribute('aria-selected', 'false');
+    tabs[cur].tabIndex = -1;
+    panels[cur].hidden = true;
+    cur = i;
+    tabs[i].setAttribute('aria-selected', 'true');
+    tabs[i].removeAttribute('tabindex');
+    panels[i].hidden = false;
+    if (focus) tabs[i].focus({ preventScroll: true });
+    // keep the active chip in view on the horizontal (mobile) tab row
+    if (tablist.scrollWidth > tablist.clientWidth) {
+      var t = tabs[i];
+      tablist.scrollTo({ left: t.offsetLeft - (tablist.clientWidth - t.offsetWidth) / 2, behavior: motion ? 'smooth' : 'auto' });
+    }
+    swap(layerFor(i), dir);
+    capEl.textContent = tabs[i].querySelector('.style-name').textContent;
+    countEl.textContent = pad(i + 1) + ' / ' + pad(tabs.length);
+    if (motion) {
+      capEl.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 250, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' });
+      panels[i].animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+    }
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(i, false); });
+  });
+  tablist.addEventListener('keydown', function (e) {
+    var k = e.key, n = tabs.length, to = -1;
+    if (k === 'ArrowRight' || k === 'ArrowDown') to = (cur + 1) % n;
+    else if (k === 'ArrowLeft' || k === 'ArrowUp') to = (cur - 1 + n) % n;
+    else if (k === 'Home') to = 0;
+    else if (k === 'End') to = n - 1;
+    if (to < 0) return;
+    e.preventDefault();
+    select(to, true);
+  });
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      if (c.getAttribute('data-sp') === sp) return;
+      sp = c.getAttribute('data-sp');
+      chips.forEach(function (o) { o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      var img = document.createElement('img');
+      img.src = SP[sp];
+      img.alt = '';
+      var olds = Array.prototype.slice.call(swatch.querySelectorAll('img'));
+      swatch.appendChild(img);
+      if (motion) {
+        img.animate([{ opacity: 0, transform: 'scale(1.25) rotate(-8deg)' }, { opacity: 1, transform: 'none' }], { duration: 800, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' })
+          .onfinish = function () { olds.forEach(function (o) { o.remove(); }); };
+      } else olds.forEach(function (o) { o.remove(); });
+      if (!tabs[cur].getAttribute('data-photo')) swap(layerFor(cur), 1, true);
+    });
+  });
+
+  // Warm the cache once the explorer is near.
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      io.disconnect();
+      tabs.forEach(function (t) { var p = t.getAttribute('data-photo'); if (p) (new Image()).src = p; });
+      Object.keys(SP).forEach(function (k) { (new Image()).src = SP[k]; });
+    }, { rootMargin: '600px 0px' });
+    io.observe(ex);
+  }
+})();
+</script>
 </body></html>

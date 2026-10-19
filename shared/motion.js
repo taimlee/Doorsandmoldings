@@ -82,7 +82,7 @@
       io.unobserve(entry.target);
       queue.push(entry.target);
     });
-    if (queue.length && !flushScheduled) { flushScheduled = true; requestAnimationFrame(flush); }
+    if (queue.length && !flushScheduled) { flushScheduled = true; setTimeout(flush, 16); }
   }
 
   function prep(el, cls) {
@@ -104,7 +104,7 @@
       }
       return true;
     });
-    if (queue.length && !flushScheduled) { flushScheduled = true; requestAnimationFrame(flush); }
+    if (queue.length && !flushScheduled) { flushScheduled = true; setTimeout(flush, 16); }
   }
 
   function splitWords(el) {
