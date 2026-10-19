@@ -34,7 +34,7 @@
     /* ── Home-specific (everything below the door-story hero) ── */
     /* ── Showroom walk (CSS 3D corridor) ── */
     .walk { position: relative; background: #0d0b09; color: var(--cream); --wkW: 1500px; --wkH: 1000px; --wkD: 1500px; --wkL: calc(var(--wkD) * 7 + 900px); }
-    .walk.wk-js { height: 520vh; height: 520svh; }
+    .walk.wk-js { height: 440vh; height: 440svh; }
     .wk-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate; background: #0d0b09; }
     .walk:not(.wk-js) .wk-stage { display: none; }
     .walk.wk-js .wk-fallback { display: none; }
@@ -86,10 +86,13 @@
     .wk-arrive h3 { font-size: clamp(2rem, 4vw, 3.4rem); color: var(--cream); margin: 8px 0 12px; }
     .wk-arrive p { color: rgba(255,255,255,0.75); margin-bottom: 22px; }
     .wk-hint { position: absolute; z-index: 5; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.6); opacity: var(--wk-hint, 1); transition: opacity 0.4s; }
+    .wk-skip { position: absolute; z-index: 7; right: max(var(--gutter), 24px); bottom: 26px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 3px; opacity: var(--wk-skip, 1); transition: color 0.2s, opacity 0.4s; }
+    .wk-skip:hover { color: var(--cream); border-color: var(--gold); }
+    .has-mobile-cta .wk-skip { bottom: calc(80px + env(safe-area-inset-bottom)); }
     .wk-hint i { width: 1px; height: 42px; background: linear-gradient(to bottom, transparent, var(--gold) 50%, transparent); background-size: 100% 200%; animation: ds-hint 2s ease-in-out infinite; }
     @media (max-width: 860px) {
       .walk { --wkW: 1000px; --wkH: 1200px; --wkD: 1250px; }
-      .walk.wk-js { height: 460vh; height: 460svh; }
+      .walk.wk-js { height: 400vh; height: 400svh; }
       .wk-scene { perspective: 760px; }
       .wk-panel { width: 340px; height: 440px; margin: -240px 0 0 -170px; }
       .wk-panel.wk-l { transform: translateX(calc(var(--wkW) / -2 + 40px)) translateZ(var(--z)) rotateY(48deg); }
@@ -484,6 +487,7 @@
         <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
       </div>
       <div class="wk-hint" aria-hidden="true"><span>Scroll to walk</span><i></i></div>
+      <button type="button" class="wk-skip" data-no-motion>Skip the walk ↓</button>
     </div>
     <div class="wk-fallback container" aria-label="Signature doors">
       <div class="grid-3">
@@ -842,6 +846,7 @@
     arrive.classList.toggle('is-live', arr > 0.6);
     stage.style.setProperty('--wk-head', (1 - clamp(p / 0.08, 0, 1)).toFixed(3));
     stage.style.setProperty('--wk-hint', (1 - clamp(p / 0.05, 0, 1)).toFixed(3));
+    stage.style.setProperty('--wk-skip', (1 - clamp((p - 0.7) / 0.1, 0, 1)).toFixed(3));
   }
   function tick() {
     raf = 0;
@@ -859,6 +864,11 @@
   });
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () { layout(); onScroll(); });
+  var skip = walk.querySelector('.wk-skip');
+  if (skip) skip.addEventListener('click', function () {
+    var y = walk.getBoundingClientRect().top + window.scrollY + walk.offsetHeight - stage.offsetHeight;
+    if (window.lenis) window.lenis.scrollTo(y, { duration: 1.2 }); else window.scrollTo({ top: y, behavior: 'smooth' });
+  });
   layout(); target = shown = progress(); render(shown);
 })();
 </script>

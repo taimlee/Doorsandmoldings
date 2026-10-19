@@ -5,7 +5,7 @@
    =================================================== */
 
 .door-story { position: relative; background: #0d0b09; color: var(--cream); margin-top: calc(-1 * var(--nav-h)); }
-.door-story.ds-js { height: 720vh; height: 720svh; }
+.door-story.ds-js { height: 620vh; height: 620svh; }
 
 .ds-stage {
   position: sticky; top: 0;
