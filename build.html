@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How We Make It | Solid Doors &amp; Moldings</title>
+  <meta name="description" content="Watch a solid wood door come together piece by piece: stiles and rails, six raised panels, brass hardware, finish. Built in Brooklyn by Solid Doors &amp; Moldings." />
+  <link rel="canonical" href="https://doorsandmoldings.com/build.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Solid Doors &amp; Moldings" />
+  <meta property="og:title" content="How We Make It | Solid Doors &amp; Moldings" />
+  <meta property="og:description" content="Watch a solid wood door come together piece by piece: stiles and rails, six raised panels, brass hardware, finish." />
+  <meta property="og:url" content="https://doorsandmoldings.com/build.html" />
+  <meta property="og:image" content="https://doorsandmoldings.com/images/share.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="shared/styles.css" />
+  <link rel="stylesheet" href="shared/motion.css" />
+  <script src="shared/motion.js"></script>
+  <style>
+    /* ── Build page ──────────────────────────────────── */
+    .bd { position: relative; background: #0f0c0a; color: var(--cream); margin-top: calc(-1 * var(--nav-h)); }
+    .bd.bd-js { height: 760vh; height: 760svh; }
+    .bd-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate; background: #0f0c0a; }
+    .bd:not(.bd-js) .bd-stage { position: relative; height: auto; min-height: 100vh; }
+
+    /* Backdrop: the workshop, blurred and dim, with a warm bench light where the door sits */
+    .bd-bgs { position: absolute; inset: 0; }
+    .bd-bg { position: absolute; inset: -3%; background-position: center; background-size: cover; filter: blur(4px) brightness(0.42) saturate(0.95); opacity: var(--o, 0); transform: scale(1.04) translate3d(0, calc(var(--py, 0) * 1px), 0); will-change: opacity, transform; }
+    .bd-light { position: absolute; inset: 0; background: radial-gradient(ellipse 34% 60% at var(--bd-lx, 62%) 52%, rgba(255,204,140,0.22) 0%, rgba(255,190,120,0.06) 45%, transparent 70%); }
+    .bd-shade { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(to top, rgba(15,12,10,0.9) 0%, rgba(15,12,10,0.5) 30%, rgba(15,12,10,0) 55%); opacity: 0; }
+    @media (max-width: 860px) { .bd-shade { opacity: 1; } }
+    .bd-grain { position: absolute; inset: 0; opacity: 0.07; mix-blend-mode: overlay; pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+    /* The scene is the full photograph; the door leaf is a region inside it. The parts are the same photo, clipped. */
+    .bd-scene { position: absolute; left: 0; top: 0; width: var(--sw, 600px); height: var(--sh, 900px); transform-origin: 0 0; transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sk, 1)); will-change: transform; }
+    .bd-layer { position: absolute; inset: 0; background: url(images/pages/build-door.jpg) 0 0 / 100% 100% no-repeat; }
+    .bd-context { opacity: var(--ctx, 0); }
+    .bd-door { position: absolute; inset: 0; filter: saturate(var(--sat, 0.55)) brightness(var(--bri, 0.86)) contrast(1.02); will-change: filter; }
+    .bd-part { will-change: transform, opacity; opacity: var(--o, 1); transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(var(--s, 1)) rotate(var(--r, 0deg)); }
+    .bd-part::after { content: ''; position: absolute; inset: 0; box-shadow: 0 30px 50px rgba(0,0,0,0.5); opacity: var(--sh, 0); clip-path: inherit; pointer-events: none; }
+    .bd-patch { position: absolute; inset: 0; opacity: var(--patch, 1); }
+    .bd-patch-a { clip-path: inset(53.6% 52.3% 35.3% 41.7%); }
+    .bd-patch-b { clip-path: inset(53.6% 58.3% 35.3% 38.8%); }
+    .bd-patch .bd-layer { transform: translateY(-12%); }
+    /* Finish sweep: a band of light crossing the leaf once */
+    .bd-sheen { position: absolute; background: linear-gradient(105deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 65%); transform: translateX(var(--sheen, -120%)); opacity: 0.9; mix-blend-mode: soft-light; pointer-events: none; }
+    .bd-shadow { position: absolute; left: 4%; right: 4%; bottom: -2%; height: 8%; background: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.55), transparent 70%); opacity: var(--gs, 0); }
+
+    /* Captions */
+    .bd-caps { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+    .bd-cap { position: absolute; left: max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter))); top: 50%; width: min(520px, 42vw); transform: translate3d(0, calc(-50% + var(--cy, 0px)), 0); opacity: 0; will-change: opacity, transform; }
+    .bd-cap.is-live { pointer-events: auto; }
+    .bd:not(.bd-js) .bd-cap { position: relative; opacity: 1; transform: none; left: auto; top: auto; width: auto; margin: 40px var(--gutter); }
+    .bd-kicker { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .bd-kicker::before { content: ''; width: 32px; height: 1px; background: var(--gold); }
+    .bd-cap h1 { color: var(--cream); font-size: clamp(2.6rem, 5vw, 5.2rem); line-height: 1.02; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .bd-cap h2 { color: var(--cream); font-size: clamp(2rem, 3.6vw, 3.4rem); line-height: 1.06; letter-spacing: -0.015em; margin-bottom: 14px; }
+    .bd-cap h1 em, .bd-cap h2 em { font-style: italic; color: var(--gold); }
+    .bd-cap p { color: rgba(255,255,255,0.74); font-size: clamp(1rem, 1.3vw, 1.1rem); line-height: 1.65; margin-bottom: 24px; max-width: 440px; }
+    .bd-steps { display: flex; gap: 10px; margin-top: 18px; }
+    .bd-steps i { width: 26px; height: 2px; background: rgba(255,255,255,0.18); position: relative; overflow: hidden; }
+    .bd-steps i::after { content: ''; position: absolute; inset: 0; background: var(--gold); transform: scaleX(var(--f, 0)); transform-origin: 0 50%; }
+    .bd-hint { position: absolute; z-index: 3; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.6); opacity: var(--hint, 1); transition: opacity 0.4s; }
+    .bd-hint i { width: 1px; height: 42px; background: linear-gradient(to bottom, transparent, var(--gold) 50%, transparent); background-size: 100% 200%; animation: bd-hint 2s ease-in-out infinite; }
+    @keyframes bd-hint { from { background-position: 0 100%; } to { background-position: 0 -100%; } }
+    .bd-chapters { position: absolute; z-index: 3; right: max(20px, calc(var(--gutter) / 2)); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+    .bd-chapters span { display: flex; align-items: center; justify-content: flex-end; gap: 12px; color: rgba(255,255,255,0.35); transition: color 0.4s; }
+    .bd-chapters span::after { content: ''; width: 18px; height: 1px; background: currentColor; transition: width 0.4s var(--ease-out); }
+    .bd-chapters span.on { color: var(--cream); }
+    .bd-chapters span.on::after { width: 34px; background: var(--gold); }
+    .bd-progress { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(255,255,255,0.08); }
+    .bd-progress span { display: block; height: 100%; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; }
+    .bd:not(.bd-js) .bd-chapters, .bd:not(.bd-js) .bd-hint, .bd:not(.bd-js) .bd-progress { display: none; }
+
+    /* Below the story */
+    .bd-after { background: var(--cream); color: var(--charcoal); }
+    .bd-after .lead { color: var(--charcoal-mid); }
+    .bd-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 36px); }
+    .bd-fact { padding: 0 0 28px; border: 1px solid var(--cream-dark); border-radius: 4px; background: #fff; overflow: hidden; }
+    .bd-fact h4, .bd-fact p { padding: 0 28px; }
+    .bd-fact-img { aspect-ratio: 4 / 3; overflow: hidden; margin-bottom: 22px; }
+    .bd-fact-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: scale 0.9s cubic-bezier(0.23, 1, 0.32, 1); scale: 1.03; }
+    .bd-fact:hover .bd-fact-img img { scale: 1.08; }
+    .bd-fact h4 { font-size: 1.1rem; margin-bottom: 8px; }
+    .bd-fact p { font-size: 0.9rem; }
+
+    @media (max-width: 860px) {
+      .bd.bd-js { height: 680vh; height: 680svh; }
+      .bd-light { background: radial-gradient(ellipse 60% 44% at 50% 40%, rgba(255,204,140,0.22) 0%, rgba(255,190,120,0.06) 45%, transparent 70%); }
+      .bd-cap { left: var(--gutter); right: var(--gutter); width: auto; top: auto; bottom: 28px; transform: translate3d(0, var(--cy, 0px), 0); text-align: center; }
+      .has-mobile-cta .bd-cap { bottom: calc(92px + env(safe-area-inset-bottom)); }
+      .bd-kicker { justify-content: center; } .bd-kicker::before { display: none; }
+      .bd-cap h1 { font-size: clamp(2.2rem, 9.5vw, 3rem); margin-bottom: 12px; }
+      .bd-cap h2 { font-size: clamp(1.7rem, 7.5vw, 2.4rem); margin-bottom: 8px; }
+      .bd-cap p { font-size: 0.95rem; margin: 0 auto 16px; }
+      .bd-steps { justify-content: center; }
+      .hero-ctas { justify-content: center; }
+      .bd-chapters, .bd-hint { display: none; }
+      .bd-facts { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bd.bd-js { height: auto; }
+      .bd.bd-js .bd-stage { position: relative; }
+      .bd-hint i { animation: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-content">
+
+  <section class="bd" id="build-story" aria-label="How a solid wood door is built">
+    <div class="bd-stage">
+      <div class="bd-bgs" aria-hidden="true">
+        <div class="bd-bg" style="background-image:url(images/pages/build-plane.jpg)"></div>
+        <div class="bd-bg" style="background-image:url(images/pages/build-joinery.jpg)"></div>
+        <div class="bd-bg" style="background-image:url(images/pages/build-sanding.jpg)"></div>
+        <div class="bd-bg" style="background-image:url(images/pages/build-brass.jpg)"></div>
+        <div class="bd-bg" style="background-image:url(images/pages/build-finish.jpg)"></div>
+      </div>
+      <div class="bd-light" aria-hidden="true"></div>
+      <div class="bd-grain" aria-hidden="true"></div>
+      <div class="bd-shade" aria-hidden="true"></div>
+
+      <div class="bd-scene" aria-hidden="true">
+        <div class="bd-layer bd-context"></div>
+        <div class="bd-door">
+          <!-- parts are filled in by the script from the PARTS table -->
+        </div>
+        <div class="bd-shadow"></div>
+      </div>
+      <img src="images/pages/build-door.jpg" alt="A white six-panel solid wood door with a brass lever, set in its casing" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" />
+
+      <div class="bd-caps">
+        <div class="bd-cap" data-cap="0">
+          <div class="bd-kicker">Solid Doors &amp; Moldings · Brooklyn</div>
+          <h1>One door. <em>Built in front of you.</em></h1>
+          <p>Every door we make starts as rough hardwood on a bench in Brooklyn. Scroll, and watch this one come together.</p>
+          <div class="hero-ctas">
+            <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
+            <a href="doors/interior-doors.html" class="btn btn-outline-light">See the Doors</a>
+          </div>
+        </div>
+        <div class="bd-cap" data-cap="1">
+          <div class="bd-kicker">01 · Stiles and rails</div>
+          <h2>The frame <em>comes first.</em></h2>
+          <p>Two stiles, four rails and a center mullion, milled from solid hardwood and joined with mortise-and-tenon joints. No veneers, no MDF cores.</p>
+          <div class="bd-steps"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="bd-cap" data-cap="2">
+          <div class="bd-kicker">02 · Panels</div>
+          <h2>Six raised panels, <em>floating.</em></h2>
+          <p>Each panel sits in a groove and floats, so the wood can move with the seasons without ever cracking the door.</p>
+          <div class="bd-steps"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="bd-cap" data-cap="3">
+          <div class="bd-kicker">03 · Hardware</div>
+          <h2>Solid brass, <em>fitted by hand.</em></h2>
+          <p>Levers, hinges and locks are mortised and fitted on the bench, so everything closes with the sound a real door should make.</p>
+        </div>
+        <div class="bd-cap" data-cap="4">
+          <div class="bd-kicker">04 · Finish</div>
+          <h2>Sanded, primed, <em>finished.</em></h2>
+          <p>Painted, stained or left raw for your finisher. Every coat applied in our shop before the door leaves.</p>
+        </div>
+        <div class="bd-cap" data-cap="5">
+          <div class="bd-kicker">05 · Installed</div>
+          <h2>Built to be <em>walked through.</em></h2>
+          <p>Delivered hinge-ready with matching casing, for hotels, offices, builders and homes. Tell us about your project.</p>
+          <div class="hero-ctas">
+            <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
+            <a href="contact.html" class="btn btn-outline-light">Talk to Us</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bd-chapters" aria-hidden="true"><span>Frame</span><span>Panels</span><span>Hardware</span><span>Finish</span><span>Installed</span></div>
+      <div class="bd-hint" aria-hidden="true"><span>Scroll to build</span><i></i></div>
+      <div class="bd-progress" aria-hidden="true"><span></span></div>
+    </div>
+  </section>
+
+  <section class="section bd-after">
+    <div class="container">
+      <div class="section-intro">
+        <div class="label">How It Works</div>
+        <div class="rule"></div>
+        <h2>From your drawings to your opening</h2>
+        <p class="lead">Send us a sketch, a spec sheet or a photo of the room. We send back shop drawings and samples before anything is cut.</p>
+      </div>
+      <div class="bd-facts">
+        <div class="bd-fact" data-reveal><div class="bd-fact-img"><img src="images/pages/build-lumber.jpg" alt="Stacked hardwood boards" loading="lazy" /></div><h4>Solid hardwood only</h4><p>Stiles, rails and panels are solid wood through and through. No hollow cores, no fillers.</p></div>
+        <div class="bd-fact" data-reveal><div class="bd-fact-img"><img src="images/pages/build-carve.jpg" alt="Hands carving a wood panel" loading="lazy" /></div><h4>Any size, any profile</h4><p>Standard sizes or made to measure. Interior, exterior, French, barn, fire-rated or fully custom.</p></div>
+        <div class="bd-fact" data-reveal><div class="bd-fact-img"><img src="images/pages/build-sanding.jpg" alt="Hands smoothing a board on a workbench" loading="lazy" /></div><h4>Made in Brooklyn</h4><p>Milled, assembled, sanded and finished in our own facility. You work directly with the maker.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-banner">
+    <div class="container">
+      <h2>Ready to Specify?</h2>
+      <p>Request a custom quote or order a sample pack.</p>
+      <div class="btn-row">
+        <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
+        <a href="contact.html" class="btn btn-outline-light">Contact Us</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-content -->
+<script src="shared/nav.js"></script>
+<script>
+/* The door builds itself from parts cut out of one real photograph.
+   All coordinates are percentages of the full photo (3916 × 5866). The left leaf sits at
+   x 7.3–48.2 %, y 17.9–94.7 %. */
+(function () {
+  var sec = document.getElementById('build-story');
+  var reduced = (window.Motion && Motion.reduced) || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stage = sec.querySelector('.bd-stage'), scene = sec.querySelector('.bd-scene'), door = sec.querySelector('.bd-door');
+  var caps = Array.prototype.slice.call(sec.querySelectorAll('.bd-cap'));
+  var chapters = Array.prototype.slice.call(sec.querySelectorAll('.bd-chapters span'));
+  var bar = sec.querySelector('.bd-progress span');
+  var ASPECT = 3916 / 5866;
+  var LEAF = { l: 7.3, t: 17.9, r: 48.2, b: 94.7 };
+
+  // clip = [top, right, bottom, left] edges in % of the photo. from = where the part starts (in % of the photo size / scale / degrees).
+  var PARTS = [
+    { n: 'stile-l', clip: [17.9, 7.3, 14.4, 94.7], from: { x: -34, y: 0, s: 1, r: 0 }, t: [0.06, 0.17] },
+    { n: 'stile-r', clip: [17.9, 41.7, 48.2, 94.7], from: { x: 34, y: 0, s: 1, r: 0 }, t: [0.06, 0.17] },
+    { n: 'rail-top', clip: [17.9, 14.4, 41.7, 23.1], from: { x: 0, y: -28, s: 1, r: 0 }, t: [0.12, 0.22] },
+    { n: 'rail-bottom', clip: [90.2, 14.4, 41.7, 94.7], from: { x: 0, y: 24, s: 1, r: 0 }, t: [0.12, 0.22] },
+    { n: 'rail-2', clip: [34.2, 14.4, 41.7, 38.4], from: { x: 0, y: -14, s: 1.08, r: 0 }, t: [0.17, 0.26] },
+    { n: 'rail-3', clip: [75.4, 14.4, 41.7, 78.5], from: { x: 0, y: 14, s: 1.08, r: 0 }, t: [0.17, 0.26] },
+    { n: 'mullion', clip: [23.1, 25.0, 30.4, 90.2], from: { x: 0, y: 0, s: 1.6, r: 0 }, t: [0.21, 0.30] },
+    { n: 'panel-tl', clip: [23.1, 14.4, 25.0, 34.2], from: { x: -8, y: -6, s: 1.5, r: -6 }, t: [0.34, 0.43] },
+    { n: 'panel-tr', clip: [23.1, 30.4, 41.7, 34.2], from: { x: 8, y: -6, s: 1.5, r: 6 }, t: [0.36, 0.45] },
+    { n: 'panel-ml', clip: [38.4, 14.4, 25.0, 75.4], from: { x: -10, y: 0, s: 1.4, r: -4 }, t: [0.38, 0.48] },
+    { n: 'panel-mr', clip: [38.4, 30.4, 41.7, 75.4], from: { x: 10, y: 0, s: 1.4, r: 4 }, t: [0.40, 0.50] },
+    { n: 'panel-bl', clip: [78.5, 14.4, 25.0, 90.2], from: { x: -8, y: 8, s: 1.5, r: -6 }, t: [0.42, 0.52] },
+    { n: 'panel-br', clip: [78.5, 30.4, 41.7, 90.2], from: { x: 8, y: 8, s: 1.5, r: 6 }, t: [0.44, 0.54] },
+    { n: 'lever', clip: [54.3, 39.2, 47.5, 64.0], from: { x: 14, y: -3, s: 1.7, r: -12 }, t: [0.58, 0.68], hw: true }
+  ];
+  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  var ease = function (t) { return t * t * (3 - 2 * t); };
+  var easeOutBack = function (t) { var c = 1.4; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+  var seg = function (p, a, b) { return ease(clamp((p - a) / (b - a), 0, 1)); };
+
+  // Build the part layers
+  var els = [];
+  PARTS.forEach(function (p) {
+    var el = document.createElement('div');
+    el.className = 'bd-layer bd-part';
+    var c = p.clip;
+    el.style.clipPath = 'inset(' + c[0] + '% ' + (100 - c[2]) + '% ' + (100 - c[3]) + '% ' + c[1] + '%)';
+    el.style.transformOrigin = ((c[1] + c[2]) / 2) + '% ' + ((c[0] + c[3]) / 2) + '%';
+    door.appendChild(el); els.push(el); p.el = el;
+  });
+  // A soft patch hides the lever that is already painted into the stile beneath, until the lever "arrives".
+  var patch = document.createElement('div'); patch.className = 'bd-patch bd-patch-a'; patch.innerHTML = '<div class="bd-layer"></div>';
+  var patchB = document.createElement('div'); patchB.className = 'bd-patch bd-patch-b'; patchB.innerHTML = '<div class="bd-layer"></div>';
+  door.insertBefore(patch, PARTS[PARTS.length - 1].el); door.insertBefore(patchB, PARTS[PARTS.length - 1].el);
+  var sheen = document.createElement('div'); sheen.className = 'bd-sheen';
+  sheen.style.cssText += 'left:' + LEAF.l + '%;top:' + LEAF.t + '%;width:' + (LEAF.r - LEAF.l) + '%;height:' + (LEAF.b - LEAF.t) + '%;';
+  door.appendChild(sheen);
+
+  /* Camera: frame the leaf during the build, then pull back to the whole photograph */
+  var SW = 0, SH = 0, VW = 0, VH = 0, mobile = false;
+  function layout() {
+    VW = stage.clientWidth; VH = stage.clientHeight; mobile = VW < 861;
+    var leafFrac = (LEAF.b - LEAF.t) / 100;
+    var leafH = mobile ? VH * 0.5 : VH * 0.8;
+    SH = leafH / leafFrac; SW = SH * ASPECT;
+    scene.style.setProperty('--sw', SW + 'px'); scene.style.setProperty('--sh', SH + 'px');
+    stage.style.setProperty('--bd-lx', mobile ? '50%' : '63%');
+    last = null;
+  }
+  var last = null;
+  function render(p) {
+    // Camera (zoom out from the leaf to the full door-in-room photo over the last scene)
+    var out = seg(p, 0.80, 0.92);
+    var leafCx = SW * ((LEAF.l + LEAF.r) / 200), leafCy = SH * ((LEAF.t + LEAF.b) / 200);
+    var cx = mobile ? VW * 0.5 : VW * 0.63, cy = mobile ? VH * 0.36 : VH * 0.5;
+    var fitK = Math.min((mobile ? VW * 0.9 : VW * 0.5) / SW, (mobile ? VH * 0.56 : VH * 0.86) / SH);
+    var k = 1 + (fitK - 1) * out;
+    var tx = cx - leafCx * k + ((mobile ? 0 : VW * 0.02) - 0) * out, ty = cy - leafCy * k;
+    var ex = (cx - (SW / 2) * k) - tx, ey = (VH * (mobile ? 0.31 : 0.5) - (SH / 2) * k) - ty;
+    tx += ex * out; ty += ey * out;
+    scene.style.setProperty('--sx', tx.toFixed(1) + 'px'); scene.style.setProperty('--sy', ty.toFixed(1) + 'px'); scene.style.setProperty('--sk', k.toFixed(4));
+
+    // Parts
+    PARTS.forEach(function (part) {
+      var t = clamp((p - part.t[0]) / (part.t[1] - part.t[0]), 0, 1);
+      var e = part.hw ? easeOutBack(t) : ease(t);
+      var f = part.from;
+      part.el.style.setProperty('--tx', ((1 - e) * f.x) + '%');
+      part.el.style.setProperty('--ty', ((1 - e) * f.y) + '%');
+      part.el.style.setProperty('--s', (1 + (f.s - 1) * (1 - e)).toFixed(4));
+      part.el.style.setProperty('--r', ((1 - e) * f.r).toFixed(2) + 'deg');
+      part.el.style.setProperty('--o', clamp(t * 3, 0, 1).toFixed(3));
+      part.el.style.setProperty('--sh', (t > 0 && t < 1 ? Math.sin(t * Math.PI) : 0).toFixed(3));
+    });
+    patch.style.setProperty('--patch', (seg(p, 0.06, 0.17) * (1 - seg(p, 0.62, 0.66))).toFixed(3));
+    patchB.style.setProperty('--patch', (seg(p, 0.40, 0.50) * (1 - seg(p, 0.62, 0.66))).toFixed(3));
+    // Backdrops follow the chapters, with a slow drift so they never feel like a slide show
+    var bgs = sec.querySelectorAll('.bd-bg');
+    var bw = [1 - seg(p, 0.07, 0.12), seg(p, 0.07, 0.12) * (1 - seg(p, 0.31, 0.36)), seg(p, 0.31, 0.36) * (1 - seg(p, 0.55, 0.60)),
+              seg(p, 0.55, 0.60) * (1 - seg(p, 0.69, 0.74)), seg(p, 0.69, 0.74) * (1 - seg(p, 0.84, 0.92))];
+    for (var b = 0; b < bgs.length; b++) { bgs[b].style.setProperty('--o', bw[b].toFixed(3)); bgs[b].style.setProperty('--py', (-18 + 36 * p).toFixed(1)); }
+
+    // Finish: colour comes up, one sweep of light
+    var fin = seg(p, 0.70, 0.80);
+    door.style.setProperty('--sat', (0.55 + 0.45 * fin).toFixed(3));
+    door.style.setProperty('--bri', (0.86 + 0.14 * fin).toFixed(3));
+    sheen.style.setProperty('--sheen', (-120 + 240 * seg(p, 0.72, 0.80)) + '%');
+    scene.style.setProperty('--ctx', seg(p, 0.84, 0.92).toFixed(3));
+    sec.querySelector('.bd-shadow').style.setProperty('--gs', (seg(p, 0.1, 0.3) * (1 - out)).toFixed(3));
+
+    // Captions and chrome
+    var win = [1 - seg(p, 0.03, 0.08), seg(p, 0.09, 0.14) * (1 - seg(p, 0.29, 0.33)), seg(p, 0.33, 0.38) * (1 - seg(p, 0.54, 0.57)),
+               seg(p, 0.57, 0.62) * (1 - seg(p, 0.69, 0.72)), seg(p, 0.71, 0.75) * (1 - seg(p, 0.80, 0.84)), seg(p, 0.90, 0.95)];
+    caps.forEach(function (el, i) {
+      var v = win[i];
+      el.style.opacity = v.toFixed(3);
+      el.style.setProperty('--cy', ((1 - v) * (i === 0 ? -18 : 26)).toFixed(1) + 'px');
+      var live = v > 0.5; if (el.classList.contains('is-live') !== live) { el.classList.toggle('is-live', live); el.setAttribute('aria-hidden', live ? 'false' : 'true'); }
+    });
+    var steps1 = caps[1].querySelectorAll('.bd-steps i'); [[0.06, 0.17], [0.12, 0.22], [0.17, 0.26], [0.21, 0.30]].forEach(function (r, i) { steps1[i].style.setProperty('--f', seg(p, r[0], r[1]).toFixed(3)); });
+    var steps2 = caps[2].querySelectorAll('.bd-steps i'); for (var i = 0; i < 6; i++) steps2[i].style.setProperty('--f', clamp((p - PARTS[7 + i].t[0]) / (PARTS[7 + i].t[1] - PARTS[7 + i].t[0]), 0, 1).toFixed(3));
+    var ch = p < 0.08 ? -1 : p < 0.33 ? 0 : p < 0.57 ? 1 : p < 0.71 ? 2 : p < 0.84 ? 3 : 4;
+    chapters.forEach(function (c, i) { c.classList.toggle('on', i === ch); });
+    stage.style.setProperty('--hint', (1 - seg(p, 0.01, 0.04)).toFixed(3));
+    bar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+  }
+
+  var target = 0, shown = 0, raf = 0;
+  function progress() { var r = sec.getBoundingClientRect(); return clamp(-r.top / Math.max(1, sec.offsetHeight - stage.offsetHeight), 0, 1); }
+  function tick() { raf = 0; shown += (target - shown) * (window.lenis ? 0.5 : 0.16); if (Math.abs(target - shown) < 0.0003) shown = target; render(shown); if (shown !== target) raf = requestAnimationFrame(tick); }
+  function onScroll() { target = progress(); if (!raf) raf = requestAnimationFrame(tick); }
+
+  if (reduced) { layout(); render(1); return; }
+  sec.classList.add('bd-js'); document.body.classList.add('has-film');
+  layout(); target = shown = progress(); render(shown);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { layout(); onScroll(); });
+})();
+</script>
+</body>
+</html>

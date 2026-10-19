@@ -60,6 +60,7 @@
         <button class="nav-btn">Resources <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,4 6,8 10,4"/></svg></button>
         <div class="nav-dropdown"><div class="nav-dropdown-inner">
           <div class="nav-dropdown-section">
+            <a href="${base}build.html">How We Make It</a>
             <a href="${base}finishes.html">Materials &amp; Finishes Guide</a>
             <a href="${base}faq.html">FAQ</a>
             <a href="${base}about.html">About Us</a>
@@ -101,6 +102,7 @@
       <ul class="mm-sub" id="mm-sub-2" hidden><li><a href="${base}industries/hotels.html">Hotels</a></li><li><a href="${base}industries/commercial.html">Commercial</a></li><li><a href="${base}industries/contractors.html">Contractors</a></li><li><a href="${base}industries/designers.html">Designers</a></li></ul>
     </li>
     <li class="mm-item" style="--i:3"><a class="mm-link" href="${base}hardware.html"><span>Hardware</span></a></li>
+    <li class="mm-item" style="--i:4"><a class="mm-link" href="${base}build.html"><span>How We Make It</span></a></li>
     <li class="mm-item" style="--i:4"><a class="mm-link" href="${base}finishes.html"><span>Finishes</span></a></li>
     <li class="mm-item" style="--i:5"><a class="mm-link" href="${base}about.html"><span>About</span></a></li>
     <li class="mm-item" style="--i:6"><a class="mm-link" href="${base}faq.html"><span>FAQ</span></a></li>
@@ -152,6 +154,7 @@
         <div class="footer-col-title">Company</div>
         <ul>
           <li><a href="${base}about.html">About Us</a></li>
+          <li><a href="${base}build.html">How We Make It</a></li>
           <li><a href="${base}finishes.html">Finishes Guide</a></li>
           <li><a href="${base}faq.html">FAQ</a></li>
           <li><a href="${base}contact.html">Contact</a></li>
