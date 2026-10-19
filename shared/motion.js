@@ -31,7 +31,7 @@
     if (!reduced && sessionStorage.getItem('m-door') === '1') {
       sessionStorage.removeItem('m-door');
       html.classList.add('m-entering');
-      setTimeout(function () { html.classList.remove('m-entering'); }, 1400);
+      setTimeout(function () { html.classList.remove('m-entering'); }, 1200);
     }
   } catch (e) {}
 
@@ -50,8 +50,8 @@
     '.footer-bottom', '[data-reveal]'
   ].join(',');
   var SPLIT = 'h1, h2, [data-split]';
-  var TILT = '.card, .style-card, .profile-card, .hw-card, .stain-card, .species-card, .industry-card, .feat-prod, [data-tilt]';
-  var MAGNET = '.btn, .nav-cta-quote, [data-magnetic]';
+  var TILT = '[data-tilt]';
+  var MAGNET = '.btn-gold, .nav-cta-quote, [data-magnetic]';
 
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   var excluded = function (el) { return !!el.closest(EXCLUDE); };
@@ -242,10 +242,13 @@
       topBtn.style.setProperty('--m-ring', (150.8 * (1 - p)).toFixed(1));
     }
     var mobileOpen = html.classList.contains('menu-open');
-    if (y < 200 || mobileOpen) html.classList.remove('m-nav-hidden');
-    else if (y - lastY > 6) html.classList.add('m-nav-hidden');
-    else if (lastY - y > 6) html.classList.remove('m-nav-hidden');
-    lastY = y;
+    var introOn = html.classList.contains('m-intro');
+    if (y < 200 || mobileOpen || introOn) html.classList.remove('m-nav-hidden');
+    else if (y - lastY > 14) html.classList.add('m-nav-hidden');
+    else if (lastY - y > 14) html.classList.remove('m-nav-hidden');
+    if (Math.abs(y - lastY) > 14 || y < 200) lastY = y;
+    // The homepage film has its own progress line; keep the page bar out of the way until the film ends.
+    if (progressBar) progressBar.style.setProperty('--m-pb', (heroEnd && y < heroEnd - vh) ? '0' : '1');
 
     if (reduced) return;
     checkWipes(vh);
@@ -401,7 +404,7 @@
       e.preventDefault();
       try { sessionStorage.setItem('m-door', '1'); } catch (err) {}
       html.classList.add('m-leaving');
-      setTimeout(function () { location.href = url.href; }, 760);
+      setTimeout(function () { location.href = url.href; }, 620);
     });
     window.addEventListener('pageshow', function (e) {
       if (e.persisted) html.classList.remove('m-leaving', 'm-entering');

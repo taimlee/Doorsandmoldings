@@ -157,7 +157,8 @@
 
   function tick() {
     raf = 0;
-    shown += (target - shown) * 0.16;
+    // Lenis already smooths the scroll on desktop; smoothing twice would feel laggy.
+    shown += (target - shown) * (window.lenis ? 0.45 : 0.16);
     if (Math.abs(target - shown) < 0.0004) shown = target;
     render(shown);
     if (shown !== target) raf = requestAnimationFrame(tick);
@@ -182,9 +183,13 @@
       'Solid Doors & Moldings'.split('').map((ch, k) => ch === ' ' ? ' ' : '<i style="--i:' + k + '">' + (ch === '&' ? '&amp;' : ch) + '</i>').join('') +
       '</span><span class="si-sub">Brooklyn, NY</span></div>' +
       '<div class="si-count"><b>0</b><span>%</span></div><div class="si-line"><i></i></div>';
+    // Let the display face arrive before the letters rise, so they never swap fonts mid-animation.
+    el.style.visibility = 'hidden';
+    const fontsReady = (document.fonts && document.fonts.ready) ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 600))]) : Promise.resolve();
+    fontsReady.then(() => { el.style.visibility = ''; });
     document.body.appendChild(el);
     const count = el.querySelector('.si-count b'), line = el.querySelector('.si-line i');
-    const t0 = performance.now(), MIN = 1500, MAX = 3200;
+    const t0 = performance.now(), MIN = 1300, MAX = 3000;
     let done = false, pct = 0;
     const timeout = new Promise((r) => setTimeout(r, MAX));
     requestAnimationFrame(function tick(now) {
