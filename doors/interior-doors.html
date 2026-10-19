@@ -19,7 +19,7 @@
   <script src="../shared/motion.js"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Solid Wood Interior Doors","description":"Premium solid hardwood interior doors in shaker, panel, flush and louvered profiles. Custom sizing available.","brand":{"@type":"Brand","name":"Solid Doors & Moldings"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://doorsandmoldings.com/"},{"@type":"ListItem","position":2,"name":"Doors"},{"@type":"ListItem","position":3,"name":"Interior Doors"}]}}</script>
   <style>
-    .cat-hero { background:var(--charcoal); padding: clamp(100px,12vw,150px) 0 0; overflow:hidden; }
+    .cat-hero { background:var(--paper-2); padding: clamp(100px,12vw,150px) 0 0; overflow:hidden; }
     .cat-hero-text { padding-bottom: clamp(48px,7vw,80px); max-width: 620px; }
     .cat-img-row { display:grid; grid-template-columns:2fr 1fr 1fr; gap:4px; }
     .cat-img { aspect-ratio:4/5; }
@@ -33,7 +33,7 @@
     /* ── Style explorer ── */
     .ex { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:clamp(28px,5vw,80px); align-items:start; }
     .ex-media { position:sticky; top:calc(var(--nav-h) + 24px); aspect-ratio:4/5; max-height:calc(100vh - var(--nav-h) - 48px); width:100%;
-      overflow:hidden; border-radius:2px; background:#1a1714; box-shadow:0 34px 80px rgba(20,17,14,0.20), 0 0 0 1px rgba(20,17,14,0.06); }
+      overflow:hidden; border-radius:2px; background:var(--forest-dark); box-shadow:0 34px 80px rgba(20,17,14,0.20), 0 0 0 1px rgba(20,17,14,0.06); }
     .ex-frame { position:absolute; inset:0; }
     .ex-frame > .ex-layer { position:absolute; inset:0; }
     .ex-layer img { transition:none; }
@@ -64,7 +64,7 @@
     .ex-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .ex-chip { font-size:0.8rem; font-weight:500; padding:8px 14px; border-radius:40px; border:1px solid var(--cream-dark); color:var(--charcoal-mid); transition:all .25s var(--ease-out); }
     .ex-chip:hover { border-color:var(--charcoal); color:var(--charcoal); }
-    .ex-chip[aria-pressed="true"] { background:var(--charcoal); border-color:var(--charcoal); color:var(--cream); }
+    .ex-chip[aria-pressed="true"] { background:var(--forest-dark); border-color:var(--charcoal); color:var(--cream); }
     .ex-chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     @media (max-width:900px){
       .ex { grid-template-columns:minmax(0,1fr); }
@@ -73,14 +73,14 @@
       .ex-tabs::-webkit-scrollbar { display:none; }
       .ex-tab { flex:none; width:auto; padding:10px 16px; border:1px solid var(--cream-dark); border-radius:40px; gap:8px; }
       .ex-tab:hover, .ex-tab[aria-selected="true"] { padding-left:16px; }
-      .ex-tab[aria-selected="true"] { background:var(--charcoal); border-color:var(--charcoal); color:var(--cream); }
+      .ex-tab[aria-selected="true"] { background:var(--forest-dark); border-color:var(--charcoal); color:var(--cream); }
       .ex-tab[aria-selected="true"] .ex-num { color:var(--gold); }
       .ex-tab::before { display:none; }
       .ex-tab .style-name { font-family:var(--sans); font-size:0.85rem; font-weight:600; }
       .ex-swatch { width:72px; height:72px; }
     }
     /* ── Page kit: real-photo frames, lightbox, video, spec rows ── */
-    :where(.pf){position:relative;overflow:hidden;background:#1a1714;margin:0;}
+    :where(.pf){position:relative;overflow:hidden;background:var(--forest-dark);margin:0;}
     .pf img,.pf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease-out);}
     .pf .pf-px{position:absolute;inset:-6% 0;will-change:transform;}
     .pf-open{position:absolute;inset:0;z-index:4;display:block;width:100%;height:100%;background:transparent;cursor:zoom-in;}
@@ -158,18 +158,18 @@
 <div class="page-content">
   <section class="cat-hero">
     <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35);margin-bottom:28px;">
-        <a href="../index.html" style="color:rgba(255,255,255,0.45);">Home</a><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.45);">Doors</span><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">Interior Doors</span>
+      <nav class="breadcrumb" style="color:var(--ink-lt);margin-bottom:28px;">
+        <a href="../index.html" style="color:var(--ink-lt);">Home</a><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-lt);">Doors</span><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-mid);">Interior Doors</span>
       </nav>
       <div class="cat-hero-text">
         <div class="label" style="margin-bottom:16px;">Interior Doors</div>
-        <h1 style="color:var(--cream);margin-bottom:18px;">Solid Wood Interior Doors That Define Every Room</h1>
-        <p class="lead" style="color:rgba(255,255,255,0.55);margin-bottom:32px;">A hollow-core door is a missed opportunity. Our solid hardwood interior doors bring weight, warmth, and character to every threshold — in profiles from spare Shaker to richly detailed raised panel.</p>
+        <h1 style="color:var(--ink);margin-bottom:18px;">Solid Wood Interior Doors That Define Every Room</h1>
+        <p class="lead" style="color:var(--ink-mid);margin-bottom:32px;">A hollow-core door is a missed opportunity. Our solid hardwood interior doors bring weight, warmth, and character to every threshold — in profiles from spare Shaker to richly detailed raised panel.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <a href="../quote.html" class="btn btn-gold">Get a Quote</a>
-          <a href="../finishes.html" class="btn btn-outline-light">Order Samples</a>
+          <a href="../finishes.html" class="btn btn-outline">Order Samples</a>
         </div>
       </div>
     </div>

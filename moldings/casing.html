@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../shared/motion.css" />
   <script src="../shared/motion.js"></script>
   <style>
-    .cat-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
+    .cat-hero{background:var(--paper-2);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
     .cat-img-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;}
     .cat-img{aspect-ratio:4/3;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
     .styles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,28px);}
@@ -40,7 +40,7 @@
       .cat-img-row .cat-img.tall{grid-column:1/-1;grid-row:auto;aspect-ratio:4/3;}
       .cat-img-row .cat-img:not(.tall){aspect-ratio:1/1;}
     }
-    .mk-ph{position:relative;overflow:hidden;background:#1a1714;display:block;}
+    .mk-ph{position:relative;overflow:hidden;background:var(--forest-dark);display:block;}
     .mk-ph>img,.mk-ph>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
     @media (prefers-reduced-motion:no-preference){.m-js .mk-ph:not(.img-ph){clip-path:inset(100% 0 0 0);}}
     .m-js .mk-zoom.img-ph>img{transform-origin:var(--ox,50%) var(--oy,50%);transition:--m-sc .9s var(--ease-out),transform-origin .7s var(--ease-out);}
@@ -91,7 +91,7 @@
     .mk-loupe.inspecting .mk-hint{opacity:0;}
 
     /* Compare */
-    .mk-cmp{position:relative;overflow:hidden;border-radius:3px;background:#1a1714;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize;--pos:50%;
+    .mk-cmp{position:relative;overflow:hidden;border-radius:3px;background:var(--forest-dark);touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize;--pos:50%;
       box-shadow:0 30px 70px rgba(0,0,0,.18);}
     .mk-cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
     .mk-cmp-a{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos)) 0 0);z-index:1;}
@@ -112,12 +112,12 @@
     @media(max-width:860px){.mk-cmp-wrap{grid-template-columns:1fr;}.mk-cmp-wrap .mk-cmp{aspect-ratio:4/5;max-height:78vh;}}
 
     /* Push-in story */
-    .mk-push{position:relative;background:var(--charcoal);color:var(--cream);}
+    .mk-push{position:relative;background:var(--forest-dark);color:var(--cream);}
     .mk-push.mk-live{height:300vh;height:300svh;}
     .mk-push-stage{position:relative;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,80px);align-items:center;
       padding:clamp(56px,8vw,96px) var(--gutter);max-width:var(--max-w);margin:0 auto;}
     .mk-live .mk-push-stage{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));height:calc(100svh - var(--nav-h));padding-top:clamp(24px,4vh,48px);padding-bottom:clamp(24px,4vh,48px);}
-    .mk-push-frame{position:relative;height:100%;min-height:340px;border-radius:3px;overflow:hidden;background:#0d0b09;
+    .mk-push-frame{position:relative;height:100%;min-height:340px;border-radius:3px;overflow:hidden;background:var(--forest-dark);
       box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06);}
     .mk-push:not(.mk-live) .mk-push-frame{aspect-ratio:4/3;height:auto;}
     .mk-push-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:var(--o,50% 50%);will-change:transform;}
@@ -153,18 +153,18 @@
 <div class="page-content">
   <section class="cat-hero">
     <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35);margin-bottom:28px;">
-        <a href="../index.html" style="color:rgba(255,255,255,0.45);">Home</a><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.45);">Moldings</span><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">Door &amp; Window Casing</span>
+      <nav class="breadcrumb" style="color:var(--ink-lt);margin-bottom:28px;">
+        <a href="../index.html" style="color:var(--ink-lt);">Home</a><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-lt);">Moldings</span><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-mid);">Door &amp; Window Casing</span>
       </nav>
       <div style="padding-bottom:clamp(48px,7vw,80px);max-width:620px;">
         <div class="label" style="margin-bottom:16px;">Door &amp; Window Casing</div>
-        <h1 style="color:var(--cream);margin-bottom:18px;">Frame Every Opening with Purpose</h1>
-        <p class="lead" style="color:rgba(255,255,255,0.55);margin-bottom:32px;">Casing is the detail that transforms a rough opening into an architectural moment. Our solid wood door and window casing profiles range from spare flat stock to richly layered traditional assemblies.</p>
+        <h1 style="color:var(--ink);margin-bottom:18px;">Frame Every Opening with Purpose</h1>
+        <p class="lead" style="color:var(--ink-mid);margin-bottom:32px;">Casing is the detail that transforms a rough opening into an architectural moment. Our solid wood door and window casing profiles range from spare flat stock to richly layered traditional assemblies.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <a href="../quote.html" class="btn btn-gold">Get a Quote</a>
-          <a href="../finishes.html" class="btn btn-outline-light">Order Samples</a>
+          <a href="../finishes.html" class="btn btn-outline">Order Samples</a>
         </div>
       </div>
     </div>

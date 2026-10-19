@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../shared/motion.css" />
   <script src="../shared/motion.js"></script>
   <style>
-    .cat-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
+    .cat-hero{background:var(--paper-2);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
     .cat-hero-text{padding-bottom:clamp(48px,7vw,80px);max-width:620px;}
     .cat-img-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;}
     .cat-img{aspect-ratio:4/5;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
@@ -42,7 +42,7 @@
       box-shadow:inset 0 0 0 1px rgba(20,17,14,0.06);}
     .bs::after{content:'';position:absolute;left:0;right:0;bottom:0;height:var(--bs-floor,30px);
       background:linear-gradient(180deg, oklch(70% 0.03 65), oklch(58% 0.035 60));box-shadow:0 -1px 0 rgba(20,17,14,0.12);}
-    .bs-opening{position:absolute;overflow:hidden;background:#1a1714;box-shadow:inset 0 0 0 1px rgba(20,17,14,0.25);}
+    .bs-opening{position:absolute;overflow:hidden;background:var(--forest-dark);box-shadow:inset 0 0 0 1px rgba(20,17,14,0.25);}
     .bs-opening img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 50%;}
     .bs-opening::after{content:'';position:absolute;inset:0;box-shadow:inset 0 14px 30px rgba(0,0,0,0.35),inset 10px 0 24px rgba(0,0,0,0.18),inset -10px 0 24px rgba(0,0,0,0.18);}
     .bs-rail{position:absolute;z-index:2;background-repeat:repeat-x;background-size:auto 100%;box-shadow:0 6px 12px rgba(20,17,14,0.18);}
@@ -58,7 +58,7 @@
     .bs.used .bs-hint{opacity:0;}
     @media(max-width:600px){.bs-hint{right:12px;font-size:0.6rem;}}
     /* ── Page kit: real-photo frames, lightbox, video, spec rows ── */
-    :where(.pf){position:relative;overflow:hidden;background:#1a1714;margin:0;}
+    :where(.pf){position:relative;overflow:hidden;background:var(--forest-dark);margin:0;}
     .pf img,.pf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease-out);}
     .pf .pf-px{position:absolute;inset:-6% 0;will-change:transform;}
     .pf-open{position:absolute;inset:0;z-index:4;display:block;width:100%;height:100%;background:transparent;cursor:zoom-in;}
@@ -136,18 +136,18 @@
 <div class="page-content">
   <section class="cat-hero">
     <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35);margin-bottom:28px;">
-        <a href="../index.html" style="color:rgba(255,255,255,0.45);">Home</a><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.45);">Doors</span><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">Barn Doors</span>
+      <nav class="breadcrumb" style="color:var(--ink-lt);margin-bottom:28px;">
+        <a href="../index.html" style="color:var(--ink-lt);">Home</a><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-lt);">Doors</span><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-mid);">Barn Doors</span>
       </nav>
       <div class="cat-hero-text">
         <div class="label" style="margin-bottom:16px;">Barn Doors</div>
-        <h1 style="color:var(--cream);margin-bottom:18px;">Sliding Doors Built to Be Seen — and Used</h1>
-        <p class="lead" style="color:rgba(255,255,255,0.55);margin-bottom:32px;">A barn door is functional art. Ours are built from solid wood — not engineered panels — and paired with heavy-duty hardware that glides silently for decades. Available in classic, modern, and fully custom profiles.</p>
+        <h1 style="color:var(--ink);margin-bottom:18px;">Sliding Doors Built to Be Seen — and Used</h1>
+        <p class="lead" style="color:var(--ink-mid);margin-bottom:32px;">A barn door is functional art. Ours are built from solid wood — not engineered panels — and paired with heavy-duty hardware that glides silently for decades. Available in classic, modern, and fully custom profiles.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <a href="../quote.html" class="btn btn-gold">Get a Quote</a>
-          <a href="../hardware.html" class="btn btn-outline-light">Browse Hardware</a>
+          <a href="../hardware.html" class="btn btn-outline">Browse Hardware</a>
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../shared/motion.css" />
   <script src="../shared/motion.js"></script>
   <style>
-    .cat-hero{background:var(--charcoal);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
+    .cat-hero{background:var(--paper-2);padding:clamp(100px,12vw,150px) 0 0;overflow:hidden;}
     .cat-hero-text{padding-bottom:clamp(48px,7vw,80px);max-width:620px;}
     .cat-img-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;}
     .cat-img{aspect-ratio:4/5;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
@@ -43,7 +43,7 @@
     .rating-card:hover .rating-num{transform:translateY(-3px);}
 
     /* ── In context: notes pinned to a real corridor photo ── */
-    .hs-sec{background:var(--charcoal);color:var(--cream);}
+    .hs-sec{background:var(--forest-dark);color:var(--cream);}
     .hs-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center;}
     .hs-media{position:relative;width:min(560px, calc((100vh - var(--nav-h) - 80px) * 0.7665));aspect-ratio:3024/3945;}
     .hs-photo{position:absolute;inset:0;border-radius:2px;box-shadow:0 40px 90px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.06);}
@@ -78,7 +78,7 @@
       .hs-note{min-height:0;}
     }
     /* ── Page kit: real-photo frames, lightbox, video, spec rows ── */
-    :where(.pf){position:relative;overflow:hidden;background:#1a1714;margin:0;}
+    :where(.pf){position:relative;overflow:hidden;background:var(--forest-dark);margin:0;}
     .pf img,.pf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease-out);}
     .pf .pf-px{position:absolute;inset:-6% 0;will-change:transform;}
     .pf-open{position:absolute;inset:0;z-index:4;display:block;width:100%;height:100%;background:transparent;cursor:zoom-in;}
@@ -156,18 +156,18 @@
 <div class="page-content">
   <section class="cat-hero">
     <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35);margin-bottom:28px;">
-        <a href="../index.html" style="color:rgba(255,255,255,0.45);">Home</a><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.45);">Doors</span><span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">Fire-Rated Doors</span>
+      <nav class="breadcrumb" style="color:var(--ink-lt);margin-bottom:28px;">
+        <a href="../index.html" style="color:var(--ink-lt);">Home</a><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-lt);">Doors</span><span class="breadcrumb-sep">/</span>
+        <span style="color:var(--ink-mid);">Fire-Rated Doors</span>
       </nav>
       <div class="cat-hero-text">
         <div class="label" style="margin-bottom:16px;">Fire-Rated Doors</div>
-        <h1 style="color:var(--cream);margin-bottom:18px;">Code-Compliant Doors That Don't Look Like They Are</h1>
-        <p class="lead" style="color:rgba(255,255,255,0.55);margin-bottom:32px;">Fire-rated doors don't have to look institutional. Our UL-listed solid wood fire doors meet 20, 45, 60, and 90-minute ratings in the same profiles, species, and finishes as our standard line — beautiful and compliant.</p>
+        <h1 style="color:var(--ink);margin-bottom:18px;">Code-Compliant Doors That Don't Look Like They Are</h1>
+        <p class="lead" style="color:var(--ink-mid);margin-bottom:32px;">Fire-rated doors don't have to look institutional. Our UL-listed solid wood fire doors meet 20, 45, 60, and 90-minute ratings in the same profiles, species, and finishes as our standard line — beautiful and compliant.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <a href="../quote.html" class="btn btn-gold">Get a Quote</a>
-          <a href="../contact.html" class="btn btn-outline-light">Talk to a Specialist</a>
+          <a href="../contact.html" class="btn btn-outline">Talk to a Specialist</a>
         </div>
       </div>
     </div>

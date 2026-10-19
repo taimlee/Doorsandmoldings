@@ -32,81 +32,11 @@
   </script>
   <style>
     /* ── Home-specific (everything below the door-story hero) ── */
-    /* ── Showroom walk (CSS 3D corridor) ── */
-    .walk { position: relative; background: #0d0b09; color: var(--cream); --wkW: 1500px; --wkH: 1000px; --wkD: 1500px; --wkL: calc(var(--wkD) * 7 + 900px); }
-    .walk.wk-js { height: 440vh; height: 440svh; }
-    .wk-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate; background: #0d0b09; }
-    .walk:not(.wk-js) .wk-stage { display: none; }
-    .walk.wk-js .wk-fallback { display: none; }
-    .wk-fallback { padding: clamp(56px, 8vw, 96px) var(--gutter); }
-    .wk-head { position: absolute; z-index: 5; left: 0; right: 0; top: clamp(56px, 10vh, 110px); text-align: center; pointer-events: none; opacity: var(--wk-head, 1); transition: opacity 0.4s; }
-    .wk-head h2 { color: var(--cream); font-size: clamp(2rem, 4.2vw, 3.8rem); }
-    .wk-head h2 em { font-style: italic; color: var(--gold); }
-    .wk-scene { position: absolute; inset: 0; perspective: 1100px; perspective-origin: 50% 48%; }
-    .wk-world { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translate3d(0, var(--wk-bob, 0px), var(--wk-z, 0px)) rotateY(var(--wk-sway, 0deg)); will-change: transform; }
-    .wk-world > * { position: absolute; left: 0; top: 0; transform-style: preserve-3d; backface-visibility: hidden; }
-    /* Surfaces are built per bay (one bay per door) so no single layer exceeds what phone GPUs will draw */
-    .wk-bays { transform-style: preserve-3d; }
-    .wk-seg { position: absolute; left: 0; top: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    .wk-seg-wall { width: calc(var(--wkD) + 2px); height: var(--wkH); margin: calc(var(--wkH) / -2) 0 0 calc(var(--wkD) / -2 - 1px);
-      background:
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 140px),
-        linear-gradient(180deg, #221c17 0%, #2b2420 45%, #1a1512 100%); }
-    .wk-seg-floor, .wk-seg-ceil { width: var(--wkW); height: calc(var(--wkD) + 2px); margin: calc(var(--wkD) / -2 - 1px) 0 0 calc(var(--wkW) / -2); }
-    .wk-seg-floor { background:
-        repeating-linear-gradient(90deg, rgba(0,0,0,0.35) 0 2px, transparent 2px 180px),
-        linear-gradient(180deg, rgba(0,0,0,0.18) 0 2px, transparent 2px),
-        linear-gradient(90deg, #2a1f16, #3a2b1e 50%, #2a1f16); }
-    .wk-seg-ceil { background:
-        radial-gradient(ellipse 240px 150px at 50% 50%, rgba(255,206,140,0.5) 0%, rgba(255,190,120,0.16) 45%, rgba(255,190,120,0) 100%),
-        #15110e; }
-    /* Door panels hang on the walls, turned 55° toward the corridor so they read as you approach */
-    .wk-panel { display: block; width: 440px; height: 560px; margin: -300px 0 0 -220px; color: inherit; opacity: var(--o, 1); }
-    .wk-panel.wk-l { transform: translateX(calc(var(--wkW) / -2 + 210px)) translateZ(var(--z)) rotateY(55deg); }
-    .wk-panel.wk-r { transform: translateX(calc(var(--wkW) / 2 - 210px)) translateZ(var(--z)) rotateY(-55deg); }
-    .wk-frame { position: absolute; inset: 0; padding: 10px; background: linear-gradient(135deg, #6a4c22, #b9893d 40%, #6a4c22); box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.12); }
-    .wk-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .wk-cap { width: 360px; margin: 300px 0 0 -180px; text-align: center; opacity: var(--o, 1); }
-    .wk-cap.wk-l { transform: translateX(calc(var(--wkW) / -2 + 300px)) translateZ(calc(var(--z) + 230px)); }
-    .wk-cap.wk-r { transform: translateX(calc(var(--wkW) / 2 - 300px)) translateZ(calc(var(--z) + 230px)); }
-    .wk-kicker { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
-    .wk-title { display: block; font-family: var(--serif); font-size: 2rem; line-height: 1.1; color: var(--cream); }
-    /* The doorway at the end of the corridor, lit from within */
-    .wk-end { width: 520px; height: 760px; margin: -380px 0 0 -260px; transform: translateZ(var(--z)); opacity: var(--o, 1); }
-    .wk-door { position: absolute; inset: 0; border: 22px solid #3a2a1c; background: radial-gradient(ellipse at 50% 60%, #fff0d4 0%, #e5b86a 35%, #6f4a1a 100%); box-shadow: 0 0 120px 40px rgba(255,190,110,0.35), inset 0 0 80px rgba(0,0,0,0.3); }
-    .wk-glow { position: absolute; inset: -40%; background: radial-gradient(ellipse at center, rgba(255,205,140,0.35), transparent 60%); }
-    .wk-haze { position: absolute; inset: 0; pointer-events: none; z-index: 2;
-      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(13,11,9,0) 0%, rgba(13,11,9,0.35) 60%, rgba(13,11,9,0.9) 100%); }
-    .wk-arrive { position: absolute; z-index: 6; left: 50%; top: 50%; width: min(520px, 86vw); transform: translate(-50%, -50%) translateY(calc((1 - var(--wk-arr, 0)) * 24px)); opacity: var(--wk-arr, 0); text-align: center; pointer-events: none; }
-    .wk-arrive.is-live { pointer-events: auto; }
-    .wk-arrive h3 { font-size: clamp(2rem, 4vw, 3.4rem); color: var(--cream); margin: 8px 0 12px; }
-    .wk-arrive p { color: rgba(255,255,255,0.75); margin-bottom: 22px; }
-    .wk-hint { position: absolute; z-index: 5; left: 50%; bottom: 26px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.6); opacity: var(--wk-hint, 1); transition: opacity 0.4s; }
-    .wk-skip { position: absolute; z-index: 7; right: max(var(--gutter), 24px); bottom: 26px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.55); border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 3px; opacity: var(--wk-skip, 1); transition: color 0.2s, opacity 0.4s; }
-    .wk-skip:hover { color: var(--cream); border-color: var(--gold); }
-    .wk-hint i { width: 1px; height: 42px; background: linear-gradient(to bottom, transparent, var(--gold) 50%, transparent); background-size: 100% 200%; animation: ds-hint 2s ease-in-out infinite; }
-    @media (max-width: 860px) {
-      .walk { --wkW: 1000px; --wkH: 1200px; --wkD: 1250px; }
-      .walk.wk-js { height: 400vh; height: 400svh; }
-      .wk-scene { perspective: 760px; }
-      .wk-panel { width: 340px; height: 440px; margin: -240px 0 0 -170px; }
-      .wk-panel.wk-l { transform: translateX(calc(var(--wkW) / -2 + 160px)) translateZ(var(--z)) rotateY(48deg); }
-      .wk-panel.wk-r { transform: translateX(calc(var(--wkW) / 2 - 160px)) translateZ(var(--z)) rotateY(-48deg); }
-      .wk-cap { width: 260px; margin: 230px 0 0 -130px; }
-      .wk-cap.wk-l { transform: translateX(calc(var(--wkW) / -2 + 250px)) translateZ(calc(var(--z) + 170px)); }
-      .wk-cap.wk-r { transform: translateX(calc(var(--wkW) / 2 - 250px)) translateZ(calc(var(--z) + 170px)); }
-      .wk-title { font-size: 1.5rem; }
-      .wk-end { width: 380px; height: 600px; margin: -300px 0 0 -190px; }
-      .wk-hint { display: none; }
-      .has-mobile-cta .wk-arrive { top: 46%; }
-      .has-mobile-cta .wk-skip { bottom: calc(84px + env(safe-area-inset-bottom)); right: auto; left: var(--gutter); }
-    }
-    @media (prefers-reduced-motion: reduce) { .walk.wk-js { height: auto; } .walk.wk-js .wk-stage { display: none; } .walk.wk-js .wk-fallback { display: block; } }
 
 
 
     /* Marquee: drifts on its own, speeds up and leans with scroll velocity */
-    .marquee-wrap { overflow: hidden; background: var(--gold); padding: 14px 0; }
+    .marquee-wrap { overflow: hidden; background: var(--oak-pale); border-top: 1px solid var(--linen); border-bottom: 1px solid var(--linen); padding: 14px 0; }
     .marquee-inner {
       display: flex; gap: 48px; white-space: nowrap; width: max-content;
       animation: marquee 40s linear infinite; will-change: transform;
@@ -116,7 +46,7 @@
       font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
       color: var(--charcoal); flex-shrink: 0; display: flex; align-items: center; gap: 20px;
     }
-    .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--charcoal); opacity: 0.4; }
+    .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--forest-dark); opacity: 0.4; }
     @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     /* Product categories: tabs with a sliding gold rule, panels that cross-fade */
@@ -173,11 +103,11 @@
     /* Industries: a real photograph rises behind each card on hover / focus */
     .industry-strip {
       display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 2px; background: var(--charcoal);
+      gap: 2px; background: var(--forest-dark);
     }
     .industry-card {
       position: relative; overflow: hidden; isolation: isolate;
-      background: var(--charcoal); padding: clamp(32px, 5vw, 56px) clamp(20px, 3vw, 36px);
+      background: var(--forest-dark); padding: clamp(32px, 5vw, 56px) clamp(20px, 3vw, 36px);
       min-height: clamp(300px, 30vw, 400px);
       display: flex; flex-direction: column; justify-content: flex-end;
       border-right: 1px solid rgba(255,255,255,0.06);
@@ -432,67 +362,6 @@
   </div>
 
 
-
-  <!-- SHOWROOM WALK: first-person corridor; scrolling walks you past six real doors to the quote doorway -->
-  <section class="walk" id="walk" aria-label="Walk the showroom">
-    <div class="wk-stage">
-      <div class="wk-head container">
-        <div class="label">The Showroom</div>
-        <h2>Walk <em>through.</em></h2>
-      </div>
-      <div class="wk-scene" aria-hidden="true">
-        <div class="wk-world">
-          <div class="wk-bays"></div>
-          <a class="wk-panel wk-l" href="doors/exterior-doors.html" data-i="0" data-morph>
-            <span class="wk-frame"><img src="images/pages/core/door-exterior-grand.jpg" alt="Carved double entry with ironwork glass" loading="lazy" /></span>
-          </a>
-          <div class="wk-cap wk-l" data-i="0" aria-hidden="true"><span class="wk-kicker">Exterior</span><span class="wk-title">Grand entries</span></div>
-          <a class="wk-panel wk-r" href="doors/interior-doors.html" data-i="1" data-morph>
-            <span class="wk-frame"><img src="images/pages/core/door-raised-panel.jpg" alt="White raised-panel double interior doors" loading="lazy" /></span>
-          </a>
-          <div class="wk-cap wk-r" data-i="1" aria-hidden="true"><span class="wk-kicker">Interior</span><span class="wk-title">Raised panel</span></div>
-          <a class="wk-panel wk-l" href="doors/french-doors.html" data-i="2" data-morph>
-            <span class="wk-frame"><img src="images/pages/core/door-french.jpg" alt="French door open onto a sunlit balcony" loading="lazy" /></span>
-          </a>
-          <div class="wk-cap wk-l" data-i="2" aria-hidden="true"><span class="wk-kicker">French</span><span class="wk-title">Glass and light</span></div>
-          <a class="wk-panel wk-r" href="doors/barn-doors.html" data-i="3" data-morph>
-            <span class="wk-frame"><img src="images/pages/core/door-barn-reclaimed.jpg" alt="Reclaimed-wood barn doors with iron strap hinges" loading="lazy" /></span>
-          </a>
-          <div class="wk-cap wk-r" data-i="3" aria-hidden="true"><span class="wk-kicker">Barn</span><span class="wk-title">Sliding</span></div>
-          <a class="wk-panel wk-l" href="doors/custom-doors.html" data-i="4" data-morph>
-            <span class="wk-frame"><img src="images/pages/core/door-custom.jpg" alt="Carved custom double doors in warm sunlight" loading="lazy" /></span>
-          </a>
-          <div class="wk-cap wk-l" data-i="4" aria-hidden="true"><span class="wk-kicker">Custom</span><span class="wk-title">To your drawings</span></div>
-          <a class="wk-panel wk-r" href="doors/fire-rated-doors.html" data-i="5" data-morph>
-            <span class="wk-frame"><img src="images/pages/core/door-fire-rated.jpg" alt="Hotel corridor lined with fire-rated wood doors" loading="lazy" /></span>
-          </a>
-          <div class="wk-cap wk-r" data-i="5" aria-hidden="true"><span class="wk-kicker">Fire-rated</span><span class="wk-title">Code-compliant</span></div>
-          <div class="wk-end" data-end>
-            <div class="wk-door"><span class="wk-glow"></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="wk-haze" aria-hidden="true"></div>
-      <div class="wk-arrive">
-        <div class="wk-kicker">Your project</div>
-        <h3>Built to your drawings.</h3>
-        <p>Tell us what you're building. We'll send drawings, samples and a quote.</p>
-        <a href="quote.html" class="btn btn-gold">Get a Custom Quote →</a>
-      </div>
-      <div class="wk-hint" aria-hidden="true"><span>Scroll to walk</span><i></i></div>
-      <button type="button" class="wk-skip" data-no-motion>Skip the walk ↓</button>
-    </div>
-    <div class="wk-fallback container" aria-label="Signature doors">
-      <div class="grid-3">
-        <a class="card" href="doors/exterior-doors.html"><div class="card-img"><img src="images/pages/core/door-exterior-grand.jpg" alt="Carved double entry with ironwork glass" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div><div class="card-body"><div class="card-label label">Exterior</div><div class="card-title">Grand entries</div></div></a>
-        <a class="card" href="doors/interior-doors.html"><div class="card-img"><img src="images/pages/core/door-raised-panel.jpg" alt="White raised-panel double interior doors" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div><div class="card-body"><div class="card-label label">Interior</div><div class="card-title">Raised panel</div></div></a>
-        <a class="card" href="doors/french-doors.html"><div class="card-img"><img src="images/pages/core/door-french.jpg" alt="French door open onto a sunlit balcony" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div><div class="card-body"><div class="card-label label">French</div><div class="card-title">Glass and light</div></div></a>
-        <a class="card" href="doors/barn-doors.html"><div class="card-img"><img src="images/pages/core/door-barn-reclaimed.jpg" alt="Reclaimed-wood barn doors with iron strap hinges" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div><div class="card-body"><div class="card-label label">Barn</div><div class="card-title">Sliding</div></div></a>
-        <a class="card" href="doors/custom-doors.html"><div class="card-img"><img src="images/pages/core/door-custom.jpg" alt="Carved custom double doors in warm sunlight" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div><div class="card-body"><div class="card-label label">Custom</div><div class="card-title">To your drawings</div></div></a>
-        <a class="card" href="doors/fire-rated-doors.html"><div class="card-img"><img src="images/pages/core/door-fire-rated.jpg" alt="Hotel corridor lined with fire-rated wood doors" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div><div class="card-body"><div class="card-label label">Fire-rated</div><div class="card-title">Code-compliant</div></div></a>
-      </div>
-    </div>
-  </section>
 
   <!-- FEATURE STRIP -->
   <div class="container">
@@ -797,87 +666,7 @@
 </div><!-- /page-content -->
 <script src="shared/nav.js"></script>
 <script src="shared/door-story.js"></script>
-<script>
-/* Showroom walk: scroll moves the corridor toward a stationary viewer (CSS 3D); the pointer sways the view on desktop */
-(function () {
-  var walk = document.getElementById('walk');
-  if (!walk) return;
-  var reduced = (window.Motion && Motion.reduced) || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) return;
-  var stage = walk.querySelector('.wk-stage'), world = walk.querySelector('.wk-world');
-  var items = Array.prototype.slice.call(walk.querySelectorAll('.wk-panel, .wk-cap, .wk-end'));
-  var arrive = walk.querySelector('.wk-arrive');
-  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  walk.classList.add('wk-js');
 
-  function cssNum(name) { return parseFloat(getComputedStyle(walk).getPropertyValue(name)) || 0; }
-  var D = 1500, L = 0, END = 0, TRAVEL = 0, W = 1500, H = 1000;
-  var bays = walk.querySelector('.wk-bays');
-  function buildBays() {
-    var n = 8, html = '';
-    for (var k = 0; k < n; k++) {
-      var zc = -(k * D) - D / 2 + 400;     // bay centre; the first bay starts just behind the viewer
-      html += '<div class="wk-seg wk-seg-wall" style="transform:translateX(' + (-W / 2) + 'px) translateZ(' + zc + 'px) rotateY(90deg)"></div>' +
-              '<div class="wk-seg wk-seg-wall" style="transform:translateX(' + (W / 2) + 'px) translateZ(' + zc + 'px) rotateY(-90deg)"></div>' +
-              '<div class="wk-seg wk-seg-floor" style="transform:translateY(' + (H / 2) + 'px) translateZ(' + zc + 'px) rotateX(90deg)"></div>' +
-              '<div class="wk-seg wk-seg-ceil" style="transform:translateY(' + (-H / 2) + 'px) translateZ(' + zc + 'px) rotateX(-90deg)"></div>';
-    }
-    bays.innerHTML = html;
-  }
-  function layout() {
-    D = cssNum('--wkD'); W = cssNum('--wkW'); H = cssNum('--wkH'); L = D * 7 + 900; END = -(D * 6 + 600); TRAVEL = -END - 700;
-    buildBays();
-    items.forEach(function (el) {
-      var z = el.hasAttribute('data-end') ? END : -(700 + (+el.dataset.i) * D);
-      el.style.setProperty('--z', z + 'px'); el.dataset.z = z;
-    });
-  }
-  var target = 0, shown = 0, sway = 0, swayT = 0, raf = 0;
-  var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
-  function progress() { var r = walk.getBoundingClientRect(); return clamp(-r.top / Math.max(1, walk.offsetHeight - stage.offsetHeight), 0, 1); }
-  function render(p) {
-    var t = p * TRAVEL;                             // how far we have walked
-    world.style.setProperty('--wk-z', t.toFixed(1) + 'px');
-    // a faint footstep bob while walking (desktop only), so the move reads as walking rather than sliding
-    world.style.setProperty('--wk-bob', (fine ? Math.sin(t / 170) * 5 : 0).toFixed(2) + 'px');
-    world.style.setProperty('--wk-sway', sway.toFixed(2) + 'deg');
-    for (var i = 0; i < items.length; i++) {
-      var el = items[i], z = (+el.dataset.z) + t;    // effective depth: 0 is the viewer, negative is ahead
-      var near = el.classList.contains('wk-cap') ? -520 : -260;   // captions bow out before they loom
-      var o = z > near + 380 ? 0 : z > near ? (near + 380 - z) / 380 : z < -5200 ? 0 : z < -3400 ? (z + 5200) / 1800 : 1;
-      el.style.setProperty('--o', clamp(o, 0, 1).toFixed(3));
-    }
-    var arr = clamp((p - 0.86) / 0.1, 0, 1);
-    stage.style.setProperty('--wk-arr', arr.toFixed(3));
-    arrive.classList.toggle('is-live', arr > 0.6);
-    stage.style.setProperty('--wk-head', (1 - clamp(p / 0.08, 0, 1)).toFixed(3));
-    stage.style.setProperty('--wk-hint', (1 - clamp(p / 0.05, 0, 1)).toFixed(3));
-    stage.style.setProperty('--wk-skip', (1 - clamp((p - 0.7) / 0.1, 0, 1)).toFixed(3));
-  }
-  function tick() {
-    raf = 0;
-    var k = window.lenis ? 0.5 : 0.14;
-    shown += (target - shown) * k; sway += (swayT - sway) * 0.08;
-    if (Math.abs(target - shown) < 0.0003) shown = target;
-    render(shown);
-    if (shown !== target || Math.abs(swayT - sway) > 0.01) raf = requestAnimationFrame(tick);
-  }
-  function kick() { if (!raf) raf = requestAnimationFrame(tick); }
-  function onScroll() { target = progress(); kick(); }
-  if (fine) document.addEventListener('pointermove', function (e) {
-    if (e.pointerType !== 'mouse') return;
-    swayT = ((e.clientX / window.innerWidth) - 0.5) * -3.2; kick();
-  });
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function () { layout(); onScroll(); });
-  var skip = walk.querySelector('.wk-skip');
-  if (skip) skip.addEventListener('click', function () {
-    var y = walk.getBoundingClientRect().top + window.scrollY + walk.offsetHeight - stage.offsetHeight;
-    if (window.lenis) window.lenis.scrollTo(y, { duration: 1.2 }); else window.scrollTo({ top: y, behavior: 'smooth' });
-  });
-  layout(); target = shown = progress(); render(shown);
-})();
-</script>
 </script>
 
 <script>

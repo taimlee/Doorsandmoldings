@@ -59,7 +59,7 @@
     .species-tag{font-size:0.65rem;font-weight:600;letter-spacing:0.06em;padding:3px 8px;background:var(--cream-mid);border-radius:100px;color:var(--charcoal-lt);}
     .sp-pick{position:absolute;inset:0;width:100%;height:100%;z-index:4;border-radius:2px;}
     .sp-pick:focus-visible{outline:2px solid var(--gold);outline-offset:-3px;}
-    .sp-pick-hint{position:absolute;right:10px;top:10px;z-index:3;font-size:0.6rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;background:var(--charcoal);color:var(--cream);padding:4px 8px;border-radius:2px;opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .4s var(--ease-out);pointer-events:none;}
+    .sp-pick-hint{position:absolute;right:10px;top:10px;z-index:3;font-size:0.6rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;background:var(--forest-dark);color:var(--cream);padding:4px 8px;border-radius:2px;opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .4s var(--ease-out);pointer-events:none;}
     .species-card:hover .sp-pick-hint,.sp-pick:focus-visible ~ .species-img .sp-pick-hint{opacity:1;transform:none;}
     .species-card.is-on .sp-pick-hint{opacity:1;transform:none;background:var(--gold);color:var(--charcoal);}
 
@@ -114,7 +114,7 @@
     .paint-chip[aria-pressed="true"]::after{opacity:1;transform:scale(1);}
     .paint-chip[aria-pressed="true"]{transform:translateY(-3px);}
     .paint-chip:focus-visible{outline:2px solid var(--gold);outline-offset:6px;}
-    .paint-chip-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(calc(-50% + var(--tip-dx,0px)));background:var(--charcoal);color:var(--cream);font-size:0.68rem;padding:4px 8px;border-radius:2px;white-space:nowrap;display:none;pointer-events:none;z-index:10;}
+    .paint-chip-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(calc(-50% + var(--tip-dx,0px)));background:var(--forest-dark);color:var(--cream);font-size:0.68rem;padding:4px 8px;border-radius:2px;white-space:nowrap;display:none;pointer-events:none;z-index:10;}
     @keyframes tip-in{from{opacity:0;}to{opacity:1;}}
     .paint-chip:hover .paint-chip-tooltip,.paint-chip:focus-visible .paint-chip-tooltip{display:block;animation:tip-in .15s ease both;}
     .paint-stage{background:#f2efe9;}

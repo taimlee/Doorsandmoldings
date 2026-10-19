@@ -57,7 +57,7 @@
     /* ─── Scroll story: points change beside a pinned real photo ─── */
     .xs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(48px,8vw,100px);align-items:start;}
     .xs-media{position:sticky;top:calc(var(--nav-h) + 6vh);}
-    .xs-frame{position:relative;height:min(76vh,700px);border-radius:3px;overflow:hidden;background:#14110e;box-shadow:0 40px 90px rgba(0,0,0,0.20);}
+    .xs-frame{position:relative;height:min(76vh,700px);border-radius:3px;overflow:hidden;background:var(--forest-dark);box-shadow:0 40px 90px rgba(0,0,0,0.20);}
     .xs-slide{position:absolute;inset:0;margin:0;clip-path:inset(0 0 0 100%);transition:clip-path 1.1s cubic-bezier(0.77,0,0.18,1);}
     .xs-slide:first-child{clip-path:inset(0 0 0 0);}
     .xs-ready .xs-slide:first-child:not(.is-on):not(.is-under){clip-path:inset(0 0 0 100%);}
@@ -86,7 +86,7 @@
     .xs-js .xs-step.was-on .pain-check{border-color:var(--gold);}
 
     /* ─── Value cards with a real photo header ─── */
-    .vp-photo{position:relative;aspect-ratio:16/9;overflow:hidden;margin:calc(clamp(24px,3.5vw,44px) * -1) calc(clamp(24px,3.5vw,44px) * -1) 24px;background:#1a1714;}
+    .vp-photo{position:relative;aspect-ratio:16/9;overflow:hidden;margin:calc(clamp(24px,3.5vw,44px) * -1) calc(clamp(24px,3.5vw,44px) * -1) 24px;background:var(--forest-dark);}
     .vp-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 1.2s var(--ease-out);}
     .vp:hover .vp-photo img{transform:scale(1.12);}
     .vp{transition:box-shadow .4s var(--ease-out);position:relative;}
