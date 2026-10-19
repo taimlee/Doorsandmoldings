@@ -31,7 +31,7 @@
     if (!reduced && sessionStorage.getItem('m-door') === '1') {
       sessionStorage.removeItem('m-door');
       html.classList.add('m-entering');
-      setTimeout(function () { html.classList.remove('m-entering'); }, 950);
+      setTimeout(function () { html.classList.remove('m-entering'); }, 1400);
     }
   } catch (e) {}
 
@@ -231,7 +231,8 @@
     var p = clamp(y / max, 0, 1);
     if (progressBar) progressBar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
     if (topBtn) {
-      topBtn.classList.toggle('on', y > 600);
+      var heroEnd = (document.getElementById('door-story') || {}).offsetHeight || 0;
+      topBtn.classList.toggle('on', y > Math.max(600, heroEnd));
       topBtn.style.setProperty('--m-ring', (150.8 * (1 - p)).toFixed(1));
     }
     var mobileOpen = (document.getElementById('mobile-nav') || {}).style;
@@ -268,7 +269,10 @@
     topBtn.innerHTML =
       '<svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/></svg>' +
       '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
-    topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }); });
+    topBtn.addEventListener('click', function () {
+      if (window.lenis) window.lenis.scrollTo(0, { duration: 1.4 });
+      else window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    });
     document.body.appendChild(topBtn);
     setupMagnet(topBtn);
   }
@@ -324,11 +328,28 @@
       e.preventDefault();
       try { sessionStorage.setItem('m-door', '1'); } catch (err) {}
       html.classList.add('m-leaving');
-      setTimeout(function () { location.href = url.href; }, 400);
+      setTimeout(function () { location.href = url.href; }, 760);
     });
     window.addEventListener('pageshow', function (e) {
       if (e.persisted) html.classList.remove('m-leaving', 'm-entering');
     });
+  }
+
+
+  /* ─── Smooth scrolling: Lenis on desktop mice/trackpads; phones keep native scrolling ─── */
+  function setupSmoothScroll() {
+    if (!finePointer || window.innerWidth < 900) return;
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js';
+    s.async = true;
+    s.onload = function () {
+      if (!window.Lenis) return;
+      var lenis = new window.Lenis({ lerp: 0.085, wheelMultiplier: 0.95, smoothWheel: true });
+      window.lenis = lenis;
+      lenis.on('scroll', requestFrame);
+      (function loop(t) { lenis.raf(t); requestAnimationFrame(loop); })(performance.now());
+    };
+    document.head.appendChild(s);
   }
 
   /* ─── Init ─── */
@@ -344,6 +365,7 @@
       setTimeout(requestFrame, 300); // re-check once nav.js has swapped in photos
       buildCursor();
       setupTransitions();
+      setupSmoothScroll();
     } else {
       document.querySelectorAll('[data-count], .stat-number').forEach(function (el) { el.dataset.mCounted = '1'; });
     }

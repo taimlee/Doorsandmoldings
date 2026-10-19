@@ -18,14 +18,31 @@ html.m-js::before, html.m-js::after {
 }
 html.m-js::before { left: 0; }
 html.m-js::after  { right: 0; --m-leaf-x: 101%; box-shadow: inset 3px 0 0 var(--gold); }
-html.m-entering::before, html.m-entering::after { visibility: visible; animation: m-leaf-open 0.75s var(--ease-out) 0.05s both; }
+html.m-entering::before, html.m-entering::after { visibility: visible; animation: m-leaf-open 0.95s cubic-bezier(0.76, 0, 0.24, 1) 0.28s both; }
 html.m-entering::after { animation-name: m-leaf-open-r; }
-html.m-leaving::before, html.m-leaving::after { visibility: visible; animation: m-leaf-close 0.42s cubic-bezier(0.7, 0, 0.3, 1) both; }
+html.m-leaving::before, html.m-leaving::after { visibility: visible; animation: m-leaf-close 0.6s cubic-bezier(0.76, 0, 0.24, 1) both; }
 html.m-leaving::after { animation-name: m-leaf-close-r; }
 @keyframes m-leaf-open    { from { transform: translateX(0); } to { transform: translateX(-101%); } }
 @keyframes m-leaf-open-r  { from { transform: translateX(0); } to { transform: translateX(101%); } }
 @keyframes m-leaf-close   { from { transform: translateX(-101%); } to { transform: translateX(0); } }
 @keyframes m-leaf-close-r { from { transform: translateX(101%); } to { transform: translateX(0); } }
+/* The name appears in the seam while the doors are closed */
+html.m-leaving body::after, html.m-entering body::after {
+  content: "Solid Doors & Moldings"; position: fixed; z-index: 10000; left: 50%; top: 50%;
+  transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
+  font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.5rem); letter-spacing: 0.02em; color: var(--cream);
+}
+html.m-leaving body::after { animation: m-mark-in 0.45s var(--ease-out) 0.3s both; }
+html.m-entering body::after { animation: m-mark-out 0.35s var(--ease-out) both; }
+@keyframes m-mark-in { from { opacity: 0; transform: translate(-50%, -40%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+@keyframes m-mark-out { from { opacity: 1; } to { opacity: 0; transform: translate(-50%, -60%); } }
+html.m-entering .page-content { animation: m-page-in 1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both; }
+@keyframes m-page-in { from { transform: scale(1.03); } to { transform: none; } }
+
+/* Smooth scrolling (Lenis) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
 
 /* ─── Reveal ─── */
 .m-js .m-r {

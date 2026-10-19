@@ -1,199 +1,188 @@
 /* ===================================================
-   SOLID DOORS & MOLDINGS — Door Story
-   Scroll position (0 → 8) drives eight scenes in one pinned stage, shown
-   through a tall frame of real footage and photography:
-   0 hero (door clip scrubbed by scroll) · 1 construction · 2 species ·
-   3 style · 4 moldings · 5 hardware · 6 the shop · 7 step inside (frame opens to full screen)
+   SOLID DOORS & MOLDINGS — Door Story (Apple-style scroll film)
+   128 real-footage frames drawn to a canvas as you scroll:
+   frames 0–71  a solid wood pivot door opens (Pexels 39576517)
+   push-in      the camera zooms into the open door and dissolves
+   frames 72–127 walk through a doorway into a warm room (Pexels 29882731)
    =================================================== */
 
 (function () {
   const section = document.getElementById('door-story');
   if (!section) return;
 
-  const $ = (sel) => section.querySelector(sel);
-  const $$ = (sel) => Array.from(section.querySelectorAll(sel));
+  const stage = section.querySelector('.ds-stage');
+  const canvas = section.querySelector('.ds-canvas');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const caps = Array.from(section.querySelectorAll('.ds-cap'));
+  const chapters = Array.from(section.querySelectorAll('.ds-chapters span'));
+  const hint = section.querySelector('.ds-hint');
+  const shade = section.querySelector('.ds-shade');
+  const bar = section.querySelector('.ds-progress span');
 
-  const SCENES = 8;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const portraitMQ = window.matchMedia('(max-width: 860px), (orientation: portrait) and (max-width: 1100px)');
 
-  const stage = $('.ds-stage');
-  const frame = $('.ds-frame');
-  const full = $('.ds-full');
-  const fullImg = $('.ds-full img');
-  const slides = $$('.ds-slide');
-  const ambient = $$('.ds-ambient div');
-  const caps = $$('.ds-cap');
-  const railBtns = $$('.ds-rail button');
-  const progress = $('.ds-progress span');
-  const tag = $('.ds-tag-text');
-  const scrub = $('.ds-scrub');
-
-  // Per scene: the frame tag, and for photo scenes the names shown with each sub-image.
-  const TAGS = ['Solid wood entry', 'Hand-planed', null, null, null, 'Lever hardware', 'The workshop', ''];
-  const subNames = {};
-  [2, 3, 4].forEach((i) => {
-    subNames[i] = caps[i].querySelectorAll('[data-word]');
-  });
+  const TOTAL = 128, A_END = 71, B_START = 72;
+  // Where the open door sits in each frame set (fraction of the frame), used as the push-in focus.
+  const FOCUS = { d: [0.555, 0.40], m: [0.64, 0.40] };
 
   /* ─── Helpers ─── */
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ease = (t) => t * t * (3 - 2 * t);
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const seg = (s, a, b) => ease(clamp((s - a) / (b - a)));
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const seg = (p, a, b) => ease(clamp((p - a) / (b - a)));
 
-  const last = {};
-  const setOnce = (key, value, fn) => { if (last[key] !== value) { last[key] = value; fn(value); } };
+  /* ─── Frames ─── */
+  let set = null, frames = [], loaded = [];
+  function frameUrl(s, i) { return 'images/seq/' + s + '/' + String(i).padStart(3, '0') + '.webp'; }
 
-  /* ─── Measurements ─── */
-  let NAV = 72, SW = 0, SH = 0, FR = { x: 0, y: 0, w: 0, h: 0 };
-  function measure() {
-    NAV = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
-    const s = stage.getBoundingClientRect();
-    const f = frame.getBoundingClientRect();
-    SW = s.width; SH = s.height;
-    FR = { x: f.left - s.left, y: f.top - s.top, w: f.width, h: f.height };
-    for (const k in last) delete last[k];
-  }
-
-  /* ─── Video control ─── */
-  const loops = slides.map((sl) => sl.querySelector('video:not(.ds-scrub)'));
-  function manageVideo(i, visible, near) {
-    const v = loops[i];
-    if (!v) return;
-    if (near && v.preload === 'none') { v.preload = 'auto'; v.load(); }
-    if (visible && v.paused) v.play().catch(() => {});
-    else if (!visible && !v.paused) v.pause();
-  }
-  let scrubTarget = 0;
-  function scrubTo(t) {
-    if (!scrub || !scrub.duration) return;
-    const time = t * (scrub.duration - 0.05);
-    if (Math.abs(time - scrubTarget) < 1 / 30) return;
-    scrubTarget = time;
-    if (!scrub.seeking) scrub.currentTime = time;
-  }
-  if (scrub) {
-    scrub.addEventListener('seeked', () => {
-      if (Math.abs(scrub.currentTime - scrubTarget) > 1 / 30) scrub.currentTime = scrubTarget;
+  function loadSet(s) {
+    if (s === set) return;
+    set = s;
+    frames = new Array(TOTAL);
+    loaded = new Array(TOTAL).fill(false);
+    // Coarse-to-fine order: the film is scrubbable almost immediately, then fills in.
+    const order = [], seen = new Set();
+    [16, 8, 4, 2, 1].forEach((step) => {
+      for (let i = 0; i < TOTAL; i += step) if (!seen.has(i)) { seen.add(i); order.push(i); }
     });
-    // iOS only renders seeks after the video has been played once.
-    const prime = () => { scrub.play().then(() => scrub.pause()).catch(() => {}); window.removeEventListener('touchstart', prime); };
-    window.addEventListener('touchstart', prime, { passive: true });
+    if (!seen.has(TOTAL - 1)) order.splice(1, 0, TOTAL - 1);
+    let next = 0, active = 0;
+    const pump = () => {
+      while (active < 6 && next < order.length) {
+        const i = order[next++], img = new Image(), mySet = s;
+        active++;
+        img.decoding = 'async';
+        img.onload = () => {
+          active--;
+          if (mySet !== set) return;
+          frames[i] = img; loaded[i] = true;
+          if (i === 0) { section.classList.add('ds-ready'); requestDraw(true); }
+          else requestDraw(true);
+          pump();
+        };
+        img.onerror = () => { active--; pump(); };
+        img.src = frameUrl(s, i);
+      }
+    };
+    pump();
   }
 
-  /* ─── Render ─── */
-  function render(s) {
-    // Slides open like a pair of doors from the centre.
-    const reveal = slides.map((_, i) => (i === 0 ? 1 : seg(s, i - 0.22, i + 0.08)));
-    slides.forEach((sl, i) => {
-      const r = reveal[i];
-      const x = (50 * (1 - r)).toFixed(2);
-      setOnce('clip' + i, x, (v) => { sl.style.clipPath = i === 0 ? '' : 'inset(0 ' + v + '% 0 ' + v + '%)'; });
-      const next = reveal[i + 1] || 0;
-      // Slow push-in through each scene; the outgoing scene leans back as the next one opens.
-      const kb = 1.12 - 0.12 * clamp((s - (i - 0.2)) / 1.3);
-      const media = sl.querySelectorAll(':scope > .ds-media, :scope > .ds-sub > .ds-media');
-      const scale = (kb * (1 + 0.06 * next)).toFixed(4);
-      setOnce('kb' + i, scale, (v) => media.forEach((m) => { m.style.transform = 'scale(' + v + ')'; }));
+  function nearest(i) {
+    if (loaded[i]) return frames[i];
+    for (let d = 1; d < TOTAL; d++) {
+      if (i - d >= 0 && loaded[i - d]) return frames[i - d];
+      if (i + d < TOTAL && loaded[i + d]) return frames[i + d];
+    }
+    return null;
+  }
 
-      const visible = r > 0.02 && next < 0.98 && s < 7.4;
-      manageVideo(i, visible, s > i - 0.8 && s < i + 1.5);
+  /* ─── Canvas ─── */
+  let W = 0, H = 0, DPR = 1;
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = stage.clientWidth; H = stage.clientHeight;
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+    loadSet(portraitMQ.matches ? 'm' : 'd');
+    requestDraw(true);
+  }
 
-      // Sub-images slide across like a sliding door.
-      const subs = sl.querySelectorAll('.ds-sub');
-      if (subs.length) {
-        let shown = 0;
-        subs.forEach((sub, k) => {
-          const sr = k === 0 ? 1 : seg(s, i + 0.2 + (k - 1) * 0.22, i + 0.32 + (k - 1) * 0.22);
-          if (sr > 0.5) shown = k;
-          const val = ((1 - sr) * 100).toFixed(2);
-          setOnce('sub' + i + k, val, (v) => {
-            sub.style.clipPath = k === 0 ? '' : 'inset(0 ' + v + '% 0 0)';
-            sub.style.setProperty('--edge', sr > 0.01 && sr < 0.99 ? 1 : 0);
-          });
-          const bar = caps[i].querySelectorAll('.ds-count i')[k];
-          if (bar) bar.style.setProperty('--f', sr.toFixed(3));
-        });
-        setOnce('word' + i, shown, (v) => subNames[i].forEach((w, k) => w.classList.toggle('on', k === v)));
+  // Draw an image to cover the canvas, scaled by `zoom` around focus point (fx, fy).
+  function drawCover(img, zoom, fx, fy, alpha) {
+    if (!img) return;
+    const cw = canvas.width, ch = canvas.height;
+    const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * zoom;
+    const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+    // Keep the focus point fixed on screen while zooming, then clamp to cover.
+    const base = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    const bx = (cw - img.naturalWidth * base) / 2, by = (ch - img.naturalHeight * base) / 2;
+    const px = bx + fx * img.naturalWidth * base, py = by + fy * img.naturalHeight * base;
+    let x = px - fx * dw, y = py - fy * dh;
+    x = Math.min(0, Math.max(cw - dw, x));
+    y = Math.min(0, Math.max(ch - dh, y));
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(img, x, y, dw, dh);
+    ctx.globalAlpha = 1;
+  }
+
+  /* ─── Scroll → progress, smoothed ─── */
+  let NAV = 72, target = 0, shown = 0, raf = 0, lastKey = '';
+  const range = () => Math.max(1, section.offsetHeight - stage.offsetHeight);
+  const readProgress = () => clamp(-section.getBoundingClientRect().top / range());
+
+  function render(p) {
+    const [fx, fy] = FOCUS[set] || FOCUS.d;
+    // Door opens over the first 46% of the scroll.
+    const fa = Math.round(clamp(p / 0.46) * A_END);
+    // Push into the open door, then dissolve into the walk-in.
+    const z = easeInOut(clamp((p - 0.38) / 0.18));
+    const xf = seg(p, 0.47, 0.57);
+    const fb = B_START + Math.round(clamp((p - 0.55) / 0.4) * (TOTAL - 1 - B_START));
+
+    const key = fa + '|' + fb + '|' + z.toFixed(3) + '|' + xf.toFixed(3) + '|' + canvas.width;
+    if (key !== lastKey) {
+      lastKey = key;
+      if (xf < 1) drawCover(nearest(fa), 1 + 0.75 * z, fx, fy, 1);
+      if (xf > 0) drawCover(nearest(fb), 1 + 0.12 * (1 - xf), 0.5, 0.5, xf);
+    }
+
+    // Captions
+    const win = [
+      1 - seg(p, 0.035, 0.085),
+      seg(p, 0.11, 0.15) * (1 - seg(p, 0.26, 0.30)),
+      seg(p, 0.30, 0.34) * (1 - seg(p, 0.44, 0.48)),
+      seg(p, 0.62, 0.66) * (1 - seg(p, 0.78, 0.82)),
+      seg(p, 0.85, 0.9),
+    ];
+    caps.forEach((el, i) => {
+      const v = win[i] || 0;
+      el.style.opacity = v.toFixed(3);
+      el.style.setProperty('--cy', ((1 - v) * (i === 0 ? -18 : 26)).toFixed(1) + 'px');
+      const live = v > 0.5;
+      if (el.classList.contains('is-live') !== live) {
+        el.classList.toggle('is-live', live);
+        el.setAttribute('aria-hidden', live ? 'false' : 'true');
       }
     });
-
-    // Hero: the door clip follows the scroll.
-    scrubTo(clamp(s / 0.95));
-
-    // Final scene: the lobby photo opens out from the frame to the whole screen.
-    const f = seg(s, 6.85, 7.35);
-    const ins = [FR.y, SW - FR.x - FR.w, SH - FR.y - FR.h, FR.x].map((v) => (v * (1 - f)).toFixed(1) + 'px');
-    setOnce('full', ins.join(' '), (v) => { full.style.clipPath = f > 0 ? 'inset(' + v + ' round 3px)' : ''; });
-    fullImg.style.transform = 'scale(' + (1.15 - 0.15 * seg(s, 6.85, 8)).toFixed(4) + ')';
-
-    const active = Math.min(SCENES - 1, Math.floor(s + 0.08));
-    setOnce('active', active, (v) => {
-      ambient.forEach((a, i) => a.classList.toggle('on', i === v));
-      railBtns.forEach((b, i) => {
-        b.classList.toggle('on', i === v);
-        if (i === v) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
-      });
-    });
-    const sceneTag = TAGS[active] !== null ? TAGS[active]
-      : (caps[active].querySelector('[data-word].on') || {}).textContent || '';
-    setOnce('tag', sceneTag, (v) => { tag.textContent = v; });
-
-    /* Captions */
-    caps.forEach((el, i) => {
-      let v;
-      if (i === 0) v = 1 - seg(s, 0.6, 0.9);
-      else if (i === SCENES - 1) v = seg(s, 7.15, 7.45);
-      else v = seg(s, i, i + 0.18) * (1 - seg(s, i + 0.78, i + 0.95));
-      setOnce('cap' + i, v.toFixed(3), () => {
-        el.style.opacity = v.toFixed(3);
-        el.style.setProperty('--cy', (1 - v) * (i === 0 ? -24 : 24) + 'px');
-        el.classList.toggle('is-live', v > 0.5);
-        el.setAttribute('aria-hidden', v > 0.5 ? 'false' : 'true');
-      });
-    });
-
-    progress.style.transform = 'scaleX(' + (s / SCENES).toFixed(4) + ')';
+    const ch = p < 0.1 ? -1 : p < 0.3 ? 0 : p < 0.5 ? 1 : p < 0.83 ? 2 : 3;
+    chapters.forEach((c, i) => c.classList.toggle('on', i === ch));
+    hint.style.opacity = (1 - seg(p, 0.01, 0.04)).toFixed(3);
+    shade.style.setProperty('--shade', (0.75 + 0.25 * Math.max(...win)).toFixed(3));
+    bar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
   }
 
-  /* ─── Scroll wiring ─── */
-  const scrollRange = () => Math.max(1, section.offsetHeight - stage.offsetHeight);
-  const currentScene = () => clamp((NAV - section.getBoundingClientRect().top) / scrollRange()) * SCENES;
-
-  let ticking = false;
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { ticking = false; render(currentScene()); });
+  function tick() {
+    raf = 0;
+    shown += (target - shown) * 0.16;
+    if (Math.abs(target - shown) < 0.0004) shown = target;
+    render(shown);
+    if (shown !== target) raf = requestAnimationFrame(tick);
   }
+  function requestDraw(force) {
+    if (force) lastKey = '';
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function onScroll() { target = readProgress(); requestDraw(false); }
 
+  /* ─── Setup ─── */
   function setup() {
-    measure();
-    if (reduceMotion.matches) {
-      section.classList.remove('ds-js');
+    NAV = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+    if (reduced.matches) {
+      section.classList.remove('ds-js', 'ds-ready');
       window.removeEventListener('scroll', onScroll);
-      render(0);
+      caps.forEach((el, i) => { el.style.opacity = i === 0 ? '1' : '0'; el.classList.toggle('is-live', i === 0); });
       return;
     }
     section.classList.add('ds-js');
-    measure();
-    render(currentScene());
+    resize();
+    target = shown = readProgress();
+    render(shown);
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  railBtns.forEach((btn, i) => {
-    btn.addEventListener('click', () => {
-      const target = i === 0 ? 0 : i === SCENES - 1 ? 7.98 : i + 0.45;
-      const top = section.getBoundingClientRect().top + window.scrollY - NAV;
-      window.scrollTo({ top: top + (target / SCENES) * scrollRange(), behavior: 'smooth' });
-    });
-  });
-
-  window.addEventListener('resize', () => { measure(); render(reduceMotion.matches ? 0 : currentScene()); });
-  reduceMotion.addEventListener('change', setup);
-  if (scrub) scrub.addEventListener('loadedmetadata', () => render(currentScene()));
-  // The frame's entrance animation moves it; re-measure once it settles.
-  frame.addEventListener('animationend', () => { measure(); render(currentScene()); });
+  window.addEventListener('resize', () => { if (!reduced.matches) { resize(); onScroll(); } });
+  portraitMQ.addEventListener('change', () => { if (!reduced.matches) resize(); });
+  reduced.addEventListener('change', setup);
 
   setup();
 })();
