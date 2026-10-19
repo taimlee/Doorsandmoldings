@@ -182,11 +182,12 @@
     <div class="container">
       <div class="section-intro-center"><div class="label">Fire Ratings</div><div class="rule" style="margin:0 auto 20px;"></div><h2>Four Ratings. One Standard of Craft.</h2></div>
       <div class="rating-grid">
-        <div class="rating-card" data-reveal><div class="rating-num" data-count>20</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Corridor and exit access doors. Common in residential and light commercial applications.</p></div>
-        <div class="rating-card" data-reveal><div class="rating-num" data-count>45</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Exit enclosures, stairwells, and most commercial interior openings. The most commonly specified commercial rating.</p></div>
-        <div class="rating-card" data-reveal><div class="rating-num" data-count>60</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Openings in 2-hour fire-rated walls. Required for many hotel corridor and suite entry applications.</p></div>
-        <div class="rating-card" data-reveal><div class="rating-num" data-count>90</div><div class="rating-unit">Minute Rating</div><p class="rating-label">High-rise and heavy commercial applications. 3-hour fire wall openings in industrial and institutional buildings.</p></div>
+        <div class="rating-card" data-reveal><div class="rating-num" data-count>20</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Corridor and smoke-partition doors, including hotel guest-room and office suite entries off rated corridors.</p></div>
+        <div class="rating-card" data-reveal><div class="rating-num" data-count>45</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Openings in 1-hour fire barriers and fire partitions other than corridors.</p></div>
+        <div class="rating-card" data-reveal><div class="rating-num" data-count>60</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Openings in 1-hour exit stair and shaft enclosures.</p></div>
+        <div class="rating-card" data-reveal><div class="rating-num" data-count>90</div><div class="rating-unit">Minute Rating</div><p class="rating-label">Openings in 2-hour walls, including exit stair and shaft enclosures in taller buildings.</p></div>
       </div>
+      <p style="text-align:center;margin-top:28px;font-size:0.85rem;color:var(--charcoal-lt);" data-reveal>Required ratings depend on the wall rating and your local code. Confirm with your architect or code official.</p>
     </div>
   </section>
 
@@ -206,7 +207,7 @@
         <div class="hs-note" id="hs-note" aria-live="polite">
           <div class="hs-k">20 Minute Rating</div>
           <h3 class="hs-t">Corridor doors</h3>
-          <p class="hs-p">Corridor and exit access doors. Common in residential and light commercial applications.</p>
+          <p class="hs-p">Corridor and smoke-partition doors, including hotel guest-room and office suite entries off rated corridors.</p>
         </div>
         <div class="hs-nav">
           <button type="button" class="hs-prev" aria-label="Previous note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -224,7 +225,7 @@
           <div class="label">Compliance &amp; Certifications</div><div class="rule"></div><h2>UL Listed. Code Ready. Beautiful.</h2>
           <p class="lead" style="margin:20px 0 12px;">Our fire doors carry UL certification (UL 10B and UL 10C) and comply with NFPA 80 installation requirements. We provide full documentation for AHJ submissions.</p>
           <div class="compliance-list">
-            <div class="compliance-item" data-reveal="left"><div class="compliance-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div><span>UL 10B Listed (positive pressure)</span></div>
+            <div class="compliance-item" data-reveal="left"><div class="compliance-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div><span>UL 10C Listed (positive pressure)</span></div>
             <div class="compliance-item" data-reveal="left"><div class="compliance-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div><span>NFPA 80 compliant</span></div>
             <div class="compliance-item" data-reveal="left"><div class="compliance-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div><span>IBC and local code ready</span></div>
             <div class="compliance-item" data-reveal="left"><div class="compliance-check"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></div><span>ADA hardware compatibility</span></div>
@@ -235,7 +236,7 @@
         <div>
           <table class="spec-table">
             <tr><td>Ratings Available</td><td>20 · 45 · 60 · 90 minute</td></tr>
-            <tr><td>UL Listing</td><td>UL 10B and 10C (positive pressure)</td></tr>
+            <tr><td>UL Listing</td><td>UL 10B (neutral pressure) and UL 10C (positive pressure)</td></tr>
             <tr><td>Species Available</td><td>Most hardwoods — consult for 90-min</td></tr>
             <tr><td>Standard Sizes</td><td>Up to 48"×120"</td></tr>
             <tr><td>Thickness</td><td>1-3/4" · 2-1/4" based on rating</td></tr>
@@ -467,9 +468,9 @@ var Kit = (function () {
   var hs = document.getElementById('hs');
   if (!hs) return;
   var NOTES = [
-    { k: '20 Minute Rating', t: 'Corridor doors', p: 'Corridor and exit access doors. Common in residential and light commercial applications.' },
-    { k: '45 Minute Rating', t: 'Exit enclosures and stairwells', p: 'Exit enclosures, stairwells, and most commercial interior openings. The most commonly specified commercial rating.' },
-    { k: '60 Minute Rating', t: 'Suite entry', p: 'Openings in 2-hour fire-rated walls. Required for many hotel corridor and suite entry applications.' },
+    { k: '20 Minute Rating', t: 'Corridor and guest-room doors', p: 'Corridor and smoke-partition doors, including hotel guest-room and office suite entries off rated corridors.' },
+    { k: '45 Minute Rating', t: '1-hour walls', p: 'Openings in 1-hour fire barriers and fire partitions other than corridors.' },
+    { k: '60 Minute Rating', t: 'Stair and shaft enclosures', p: 'Openings in 1-hour exit stair and shaft enclosures.' },
     { k: 'Hardware', t: 'Rated closers, hinges, and latches', p: 'ADA hardware compatibility.' },
     { k: 'Documentation', t: 'Label cards, cut sheets, AHJ submittals', p: 'Label documentation included.' }
   ];

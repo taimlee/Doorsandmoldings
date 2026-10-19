@@ -29,7 +29,7 @@
   const scrub = $('.ds-scrub');
 
   // Per scene: the frame tag, and for photo scenes the names shown with each sub-image.
-  const TAGS = ['Solid wood', 'Hand-planed', null, null, null, 'Lever hardware', 'The workshop', ''];
+  const TAGS = ['Solid wood entry', 'Hand-planed', null, null, null, 'Lever hardware', 'The workshop', ''];
   const subNames = {};
   [2, 3, 4].forEach((i) => {
     subNames[i] = caps[i].querySelectorAll('[data-word]');

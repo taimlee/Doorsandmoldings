@@ -8,7 +8,7 @@
   <meta property="og:title" content="Solid Doors &amp; Moldings | Premium Solid Wood Doors" />
   <meta property="og:description" content="American-crafted solid wood doors, architectural moldings, and hardware. Built for architects, designers, contractors, and discerning homeowners." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://soliddoorsandmoldings.com/" />
+  <meta property="og:url" content="https://doorsandmoldings.com/" />
   <link rel="stylesheet" href="shared/styles.css" />
   <link rel="stylesheet" href="shared/motion.css" />
   <script src="shared/motion.js"></script>
@@ -18,13 +18,10 @@
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Solid Doors & Moldings",
-    "url": "https://soliddoorsandmoldings.com",
-    "logo": "https://soliddoorsandmoldings.com/shared/logo.svg",
+    "url": "https://doorsandmoldings.com",
+    "logo": "https://doorsandmoldings.com/favicon.svg",
     "description": "Premium American-crafted solid wood doors, architectural moldings, and door hardware.",
-    "address": { "@type": "PostalAddress", "streetAddress": "829 E New York Ave", "addressLocality": "Brooklyn", "addressRegion": "NY", "postalCode": "11203", "addressCountry": "US" },
-    
-    
-"sameAs": ["https://instagram.com/soliddoorsandmoldings", "https://houzz.com/soliddoorsandmoldings"]
+    "address": { "@type": "PostalAddress", "streetAddress": "829 E New York Ave", "addressLocality": "Brooklyn", "addressRegion": "NY", "postalCode": "11203", "addressCountry": "US" }
   }
   </script>
   <style>
@@ -224,6 +221,12 @@
     }
     .pv-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.25); }
     .pv-tag b { font-weight: 600; color: var(--gold); }
+    .pv-thumb {
+      display: none; position: relative; margin-top: 14px; aspect-ratio: 16 / 10;
+      border-radius: 3px; overflow: hidden; background: #0d0b09;
+      box-shadow: 0 18px 40px rgba(20,17,14,0.18);
+    }
+    .pv-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
     /* Final CTA: slow push-in on a real interior */
     .cta-photo { padding: clamp(96px, 14vw, 180px) 0; }
@@ -248,12 +251,12 @@
     @media (max-width: 900px) {
       .story-grid { grid-template-columns: 1fr; }
       .pv-grid { grid-template-columns: 1fr; gap: 8px; align-items: start; }
-      .pv-media {
-        position: sticky; top: calc(var(--nav-h) + 10px); z-index: 2;
-        aspect-ratio: auto; height: min(56vw, 38vh); order: -1;
-      }
-      .pv-steps { padding-top: 16px; }
-      .pv-step { padding: 22px 0; }
+      /* Phones: each step carries its own photo instead of a pinned frame */
+      .pv-media { display: none; }
+      .pv-steps { padding-top: 8px; }
+      .pv-step { padding: 22px 0; opacity: 1; }
+      .pv-step .pv-body { grid-template-rows: 1fr !important; }
+      .pv-thumb { display: block; }
     }
     @media (max-width: 600px) {
       .cat-panel { grid-template-columns: 1fr; }
@@ -279,7 +282,7 @@
   <section class="door-story" id="door-story">
     <div class="ds-stage">
       <div class="ds-ambient" aria-hidden="true">
-        <div class="on" style="background-image:url(images/story/clip-door.jpg)"></div>
+        <div class="on" style="background-image:url(images/story/hero-entry.jpg)"></div>
         <div style="background-image:url(images/story/clip-planing.jpg)"></div>
         <div style="background-image:url(images/story/sp-walnut.jpg)"></div>
         <div style="background-image:url(images/story/st-raised.jpg)"></div>
@@ -294,7 +297,7 @@
 
       <div class="ds-frame" aria-hidden="true">
         <div class="ds-slide" data-scene="0">
-          <div class="ds-media"><video class="ds-scrub" src="images/story/clip-door.mp4" poster="images/story/clip-door.jpg" muted playsinline preload="auto"></video></div>
+          <div class="ds-media"><img src="images/story/hero-entry.jpg" alt="" fetchpriority="high" /></div>
         </div>
         <div class="ds-slide" data-scene="1">
           <div class="ds-media"><video src="images/story/clip-planing.mp4" poster="images/story/clip-planing.jpg" muted playsinline loop preload="none"></video></div>
@@ -309,7 +312,7 @@
           <div class="ds-sub"><div class="ds-media"><img src="images/story/st-raised.jpg" alt="" loading="lazy" /></div></div>
           <div class="ds-sub"><div class="ds-media"><img src="images/story/st-french.jpg" alt="" loading="lazy" /></div></div>
           <div class="ds-sub"><div class="ds-media"><img src="images/story/st-pivot.jpg" alt="" loading="lazy" /></div></div>
-          <div class="ds-sub"><div class="ds-media"><img src="images/story/st-entry.jpg" alt="" loading="lazy" /></div></div>
+          <div class="ds-sub"><div class="ds-media"><img src="images/story/st-custom.jpg" alt="" loading="lazy" /></div></div>
         </div>
         <div class="ds-slide" data-scene="4">
           <div class="ds-sub"><div class="ds-media"><img src="images/story/md-panel.jpg" alt="" loading="lazy" /></div></div>
@@ -354,7 +357,7 @@
             <span data-word>Alder</span>
           </div>
           <div class="ds-count"><i></i><i></i><i></i><i></i></div>
-          <p>12+ hardwood species, each with its own grain, color and way of aging.</p>
+          <p>Domestic and imported hardwoods, each with its own grain, color and way of aging.</p>
           <a href="finishes.html" class="ds-link hide-sm">Materials &amp; Finishes Guide →</a>
         </div>
 
@@ -365,7 +368,7 @@
             <span data-word class="on">Raised Panel</span>
             <span data-word>French</span>
             <span data-word>Modern Pivot</span>
-            <span data-word>Grand Entry</span>
+            <span data-word>Custom Carved</span>
           </div>
           <div class="ds-count"><i></i><i></i><i></i><i></i></div>
           <p>Interior, exterior, French, barn, fire-rated or fully custom, built to your drawings.</p>
@@ -699,22 +702,22 @@
               <li class="pv-step is-active" data-step="0">
                 <div class="pv-head"><span class="process-step-num">01</span><span class="label">Consult</span></div>
                 <h4><button type="button" class="pv-btn">Discovery &amp; Specification</button></h4>
-                <div class="pv-body"><div><p>We meet to understand your project — architecture, scale, species preference, and finish goals. We'll send samples.</p></div></div>
+                <div class="pv-body"><div><p>We meet to understand your project — architecture, scale, species preference, and finish goals. We'll send samples.</p><div class="pv-thumb" aria-hidden="true"><img src="images/pages/core/workshop-samples.jpg" alt="" loading="lazy" /></div></div></div>
               </li>
               <li class="pv-step" data-step="1">
                 <div class="pv-head"><span class="process-step-num">02</span><span class="label">Design</span></div>
                 <h4><button type="button" class="pv-btn">Custom Drawings &amp; Approval</button></h4>
-                <div class="pv-body"><div><p>Our design team produces shop drawings for your review. Nothing goes into production until you sign off.</p></div></div>
+                <div class="pv-body"><div><p>Our design team produces shop drawings for your review. Nothing goes into production until you sign off.</p><div class="pv-thumb" aria-hidden="true"><img src="images/pages/core/workshop-cnc.jpg" alt="" loading="lazy" style="object-position:62% 50%" /></div></div></div>
               </li>
               <li class="pv-step" data-step="2">
                 <div class="pv-head"><span class="process-step-num">03</span><span class="label">Craft</span></div>
                 <h4><button type="button" class="pv-btn">Production in Brooklyn</button></h4>
-                <div class="pv-body"><div><p>Your doors and moldings are milled, assembled, sanded, and finished in our Brooklyn facility.</p></div></div>
+                <div class="pv-body"><div><p>Your doors and moldings are milled, assembled, sanded, and finished in our Brooklyn facility.</p><div class="pv-thumb" aria-hidden="true"><img src="images/story/clip-shop.jpg" alt="" loading="lazy" style="object-position:22% 50%" /></div></div></div>
               </li>
               <li class="pv-step" data-step="3">
                 <div class="pv-head"><span class="process-step-num">04</span><span class="label">Deliver</span></div>
                 <h4><button type="button" class="pv-btn">White-Glove Delivery</button></h4>
-                <div class="pv-body"><div><p>We package everything carefully and can arrange professional installation anywhere in the continental US.</p></div></div>
+                <div class="pv-body"><div><p>We package everything carefully and can arrange professional installation anywhere in the continental US.</p><div class="pv-thumb" aria-hidden="true"><img src="images/story/room-hotel-lobby.jpg" alt="" loading="lazy" /></div></div></div>
               </li>
             </ol>
           </div>
