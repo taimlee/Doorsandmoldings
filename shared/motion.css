@@ -1,0 +1,153 @@
+/* ===================================================
+   SOLID DOORS & MOLDINGS — Motion System (styles)
+   Paired with shared/motion.js. Hidden/animated states only apply once
+   motion.js has added html.m-js, and never under prefers-reduced-motion.
+   =================================================== */
+
+@property --m-sc { syntax: '<number>'; inherits: true; initial-value: 1.12; }
+
+/* ─── Page transition: two door leaves ─── */
+html.m-js::before, html.m-js::after {
+  content: ''; position: fixed; top: 0; bottom: 0; width: 50.5%; z-index: 9999;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.25), rgba(0,0,0,0) 12%, rgba(0,0,0,0) 88%, rgba(0,0,0,0.35)),
+    var(--charcoal);
+  pointer-events: none;
+  transform: translateX(var(--m-leaf-x, -101%));
+  visibility: hidden;
+}
+html.m-js::before { left: 0; }
+html.m-js::after  { right: 0; --m-leaf-x: 101%; box-shadow: inset 3px 0 0 var(--gold); }
+html.m-entering::before, html.m-entering::after { visibility: visible; animation: m-leaf-open 0.75s var(--ease-out) 0.05s both; }
+html.m-entering::after { animation-name: m-leaf-open-r; }
+html.m-leaving::before, html.m-leaving::after { visibility: visible; animation: m-leaf-close 0.42s cubic-bezier(0.7, 0, 0.3, 1) both; }
+html.m-leaving::after { animation-name: m-leaf-close-r; }
+@keyframes m-leaf-open    { from { transform: translateX(0); } to { transform: translateX(-101%); } }
+@keyframes m-leaf-open-r  { from { transform: translateX(0); } to { transform: translateX(101%); } }
+@keyframes m-leaf-close   { from { transform: translateX(-101%); } to { transform: translateX(0); } }
+@keyframes m-leaf-close-r { from { transform: translateX(101%); } to { transform: translateX(0); } }
+
+/* ─── Reveal ─── */
+.m-js .m-r {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.9s var(--ease-out) var(--m-d, 0s),
+    transform 0.9s var(--ease-out) var(--m-d, 0s);
+}
+.m-js .m-r[data-reveal="left"]  { transform: translate3d(-40px, 0, 0); }
+.m-js .m-r[data-reveal="right"] { transform: translate3d(40px, 0, 0); }
+.m-js .m-r[data-reveal="scale"] { transform: scale(0.94); }
+.m-js .m-r[data-reveal="fade"]  { transform: none; }
+.m-js .m-r.m-in { opacity: 1; transform: none; }
+
+/* Image wipe: the frame uncovers bottom-up while the photo settles */
+.m-js .m-wipe {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.1s cubic-bezier(0.77, 0, 0.18, 1) var(--m-d, 0s);
+}
+.m-js .m-wipe.m-in { clip-path: inset(0 0 0 0); }
+.m-js .img-ph > img {
+  transform: translate3d(0, var(--m-py, 0px), 0) scale(var(--m-sc));
+  transition: --m-sc 1.6s var(--ease-out);
+  will-change: transform;
+}
+.m-js .m-wipe:not(.m-in) > img { --m-sc: 1.3; }
+
+/* Split headings: each word rises out of a mask */
+.m-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.m-wi { display: inline-block; }
+.m-js .m-split .m-wi {
+  transform: translate3d(0, 105%, 0);
+  transition: transform 0.9s var(--ease-out) calc(var(--m-d, 0s) + var(--m-i, 0) * 0.045s);
+}
+.m-js .m-split.m-in .m-wi { transform: none; }
+
+/* Labels and rules */
+.m-js .label.m-lab { letter-spacing: 0.42em; opacity: 0; transition: letter-spacing 1.1s var(--ease-out) var(--m-d, 0s), opacity 0.8s var(--ease-out) var(--m-d, 0s); }
+.m-js .label.m-lab.m-in { letter-spacing: 0.14em; opacity: 1; }
+.m-js .rule.m-rule { transform: scaleX(0); transform-origin: 0 50%; transition: transform 1s var(--ease-out) calc(var(--m-d, 0s) + 0.15s); }
+.section-intro-center .rule.m-rule, .cta-banner .rule.m-rule { transform-origin: 50% 50%; }
+.m-js .rule.m-rule.m-in { transform: none; }
+
+/* ─── Hover: tilt + glare ─── */
+.m-tilt { transform-style: preserve-3d; will-change: transform; }
+.m-tilt.m-tilting { transition: transform 0.12s linear, box-shadow 0.25s var(--ease-out) !important; }
+.m-glare {
+  position: absolute; inset: 0; pointer-events: none; z-index: 3; border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,240,215,0.28), rgba(255,240,215,0) 55%);
+  opacity: 0; transition: opacity 0.3s;
+  mix-blend-mode: soft-light;
+}
+.m-tilting > .m-glare { opacity: 1; }
+
+/* Photo zoom inside cards on hover */
+.card .img-ph > img, .style-card .img-ph > img, .profile-card .img-ph > img,
+.hw-card .img-ph > img, .species-card .img-ph > img, .feat-prod .img-ph > img {
+  transition: --m-sc 0.9s var(--ease-out);
+}
+.card:hover .img-ph > img, .style-card:hover .img-ph > img, .profile-card:hover .img-ph > img,
+.hw-card:hover .img-ph > img, .species-card:hover .img-ph > img, .feat-prod:hover .img-ph > img { --m-sc: 1.2; }
+
+/* Gold sheen across gold buttons */
+.btn-gold, .nav-cta-quote { position: relative; overflow: hidden; isolation: isolate; }
+.btn-gold::after, .nav-cta-quote::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; z-index: -1;
+  background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg); transition: left 0.7s var(--ease-out);
+}
+.btn-gold:hover::after, .nav-cta-quote:hover::after { left: 130%; }
+
+/* ─── Chrome: progress bar, nav auto-hide, back-to-top, cursor ─── */
+#m-progress {
+  position: fixed; left: 0; right: 0; top: var(--nav-h); height: 2px; z-index: 999;
+  background: var(--gold); transform: scaleX(0); transform-origin: 0 50%;
+  pointer-events: none; transition: top 0.35s var(--ease-out);
+}
+#main-nav { transition: transform 0.35s var(--ease-out), background 0.3s, box-shadow 0.3s, border-color 0.3s; }
+html.m-nav-hidden #main-nav { transform: translateY(-100%); }
+html.m-nav-hidden #m-progress { top: 0; }
+
+#m-top {
+  position: fixed; right: 22px; bottom: 22px; z-index: 998;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--charcoal); color: var(--cream);
+  display: grid; place-items: center;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.30);
+  opacity: 0; transform: translateY(16px) scale(0.9); pointer-events: none;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out), background 0.2s;
+}
+#m-top.on { opacity: 1; transform: none; pointer-events: auto; }
+#m-top:hover { background: var(--gold); color: var(--charcoal); }
+#m-top svg.ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+#m-top svg.ring circle { fill: none; stroke: var(--gold); stroke-width: 2; stroke-dasharray: 150.8; stroke-dashoffset: var(--m-ring, 150.8); }
+#m-top:hover svg.ring circle { stroke: var(--charcoal); }
+#m-top .arrow { width: 18px; height: 18px; position: relative; }
+
+.m-cursor {
+  position: fixed; left: 0; top: 0; z-index: 10000; pointer-events: none;
+  width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  display: grid; place-items: center;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--charcoal);
+  transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), margin 0.3s var(--ease-out),
+              background 0.3s, border-color 0.3s, opacity 0.3s;
+  opacity: 0;
+}
+.m-cursor.on { opacity: 1; }
+.m-cursor.hover { width: 60px; height: 60px; margin: -30px 0 0 -30px; background: rgba(180,130,50,0.12); }
+.m-cursor.label { width: 84px; height: 84px; margin: -42px 0 0 -42px; background: var(--gold); border-color: var(--gold); }
+.m-cursor.down { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+.m-cursor span { opacity: 0; transition: opacity 0.2s; }
+.m-cursor.label span { opacity: 1; }
+
+/* ─── Reduced motion: everything visible, nothing moves ─── */
+@media (prefers-reduced-motion: reduce) {
+  html.m-js::before, html.m-js::after { display: none; }
+  .m-js .m-r, .m-js .m-wipe, .m-js .m-split .m-wi, .m-js .label.m-lab, .m-js .rule.m-rule {
+    opacity: 1 !important; transform: none !important; clip-path: none !important; letter-spacing: 0.14em; transition: none !important;
+  }
+  .m-js .img-ph > img { transform: none !important; }
+  .m-cursor, #m-progress { display: none; }
+}
