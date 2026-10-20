@@ -26,16 +26,16 @@
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
 
     /* ─── Hero ─── */
-    .hw-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 0; overflow: hidden; position: relative; }
+    .hw-hero { background: var(--paper-2); padding: clamp(44px,6vw,88px) 0 clamp(48px,7vw,88px); overflow: hidden; position: relative; }
     .hw-hero::before { content:''; position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse 60% 70% at 78% 60%, rgba(180,130,50,0.10), transparent 70%); }
-    .hw-hero-inner { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.05fr); gap: clamp(40px,6vw,80px); align-items: end; padding-bottom: 0; position: relative; }
+    .hw-hero-inner { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.05fr); gap: clamp(40px,6vw,80px); align-items: center; padding-bottom: 0; position: relative; }
 
     /* Viewer: a framed window onto real photography and footage */
     .hv { position: relative; }
     .hv-stage {
       position: relative; aspect-ratio: 1 / 1; max-height: min(640px, calc(100vh - 280px)); min-height: 360px; width: 100%;
-      overflow: hidden; background:var(--forest-dark); border-radius: 3px 3px 0 0;
-      box-shadow: 0 40px 90px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+      overflow: hidden; background:var(--linen); border-radius: 14px;
+      box-shadow: 0 30px 70px rgba(42,33,24,0.16);
       isolation: isolate;
     }
     .hv-slide { position: absolute; inset: 0; margin: 0; clip-path: inset(0 0 0 100%); transition: clip-path 1s cubic-bezier(0.77,0,0.18,1); z-index: 1; }
@@ -43,7 +43,7 @@
     .hv-slide.is-out { clip-path: inset(0 0 0 0); z-index: 1; }
     .hv-slide img, .hv-slide video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transform: scale(1.08); transition: transform 6s var(--ease-out); }
     .hv-slide.is-on img, .hv-slide.is-on video { transform: scale(1); }
-    .hv-slide::after { content:''; position:absolute; inset:0; background: linear-gradient(to bottom, rgba(10,8,6,0.55) 0%, rgba(10,8,6,0) 26%, rgba(10,8,6,0) 70%, rgba(10,8,6,0.5) 100%); pointer-events:none; }
+    .hv-slide::after { content:''; position:absolute; inset:0; background: linear-gradient(to bottom, rgba(10,8,6,0.42) 0%, rgba(10,8,6,0) 26%, rgba(10,8,6,0) 70%, rgba(10,8,6,0.42) 100%); pointer-events:none; }
     .hv-cap {
       position: absolute; left: 20px; top: 26px; z-index: 5;
       display: flex; align-items: center; gap: 10px;
@@ -52,7 +52,7 @@
     .hv-cap::before { content:''; width:6px; height:6px; border-radius:50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.25); }
     .hv-thumbs { position: absolute; right: 16px; bottom: 16px; z-index: 6; display: flex; gap: 8px; }
     .hv-thumb {
-      width: 58px; height: 58px; padding: 0; border-radius: 2px; overflow: hidden; position: relative;
+      width: 58px; height: 58px; padding: 0; border-radius: 8px; overflow: hidden; position: relative;
       border: 1px solid rgba(255,255,255,0.25); opacity: 0.62;
       transition: opacity .3s, transform .4s var(--ease-out), border-color .3s;
     }
@@ -79,15 +79,15 @@
     }
     .finish-chip .swatch { width: 14px; height: 14px; border-radius: 50%; transition: transform .4s var(--ease-out); }
     .finish-chip:hover { border-color: var(--charcoal); color: var(--charcoal); }
-    .finish-chip.active { border-color: var(--charcoal); color: var(--cream); background:var(--forest-dark); }
+    .finish-chip.active { border-color: var(--forest); color: #FFFFFF; background: var(--forest); }
     .finish-chip.active .swatch { transform: scale(1.15); box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
     .finish-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
     .hw-count { font-size: 0.75rem; color: var(--charcoal-lt); margin-left: auto; letter-spacing: 0.04em; }
 
     /* ─── Cards ─── */
     .hw-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2vw, 24px); }
-    .hw-card { background: white; border-radius: 2px; overflow: hidden; transition: box-shadow 0.35s var(--ease-out); position: relative; }
-    .hw-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.10); }
+    .hw-card { background: white; border: 1px solid var(--linen); border-radius: 14px; overflow: hidden; transition: box-shadow 0.35s var(--ease-out); position: relative; }
+    .hw-card:hover { box-shadow: 0 16px 48px rgba(42,33,24,0.10); }
     .hw-card[hidden] { display: none; }
     .hw-card-img { aspect-ratio: 1/1; position: relative; overflow: hidden; background: #ede9e1; }
     .hw-open { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; display: block; cursor: zoom-in; }
@@ -103,7 +103,7 @@
     .hw-shown {
       position: absolute; left: 12px; bottom: 12px; z-index: 3; pointer-events: none;
       font-size: 0.62rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--charcoal); background: rgba(255,255,255,0.88); padding: 4px 9px; border-radius: 2px;
+      color: var(--charcoal); background: rgba(255,255,255,0.88); padding: 4px 9px; border-radius: 6px;
       backdrop-filter: blur(4px);
       transform: translateY(6px); opacity: 0; transition: opacity .35s, transform .45s var(--ease-out);
     }
@@ -135,7 +135,7 @@
     /* ─── Pulls, hinges & accessories: list beside real footage ─── */
     .acc-wrap { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(40px, 7vw, 100px); align-items: start; }
     .acc-aside { position: sticky; top: calc(var(--nav-h) + 32px); }
-    .acc-frame { position: relative; aspect-ratio: 4/5; max-height: 62vh; overflow: hidden; border-radius: 3px; background:var(--forest-dark); box-shadow: 0 30px 70px rgba(0,0,0,0.18); }
+    .acc-frame { position: relative; aspect-ratio: 4/5; max-height: 62vh; overflow: hidden; border-radius: 14px; background:var(--paper-2); box-shadow: 0 30px 70px rgba(42,33,24,0.16); }
     .acc-frame video, .acc-frame img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; }
     .acc-list { border-top: 1px solid var(--cream-dark); }
     .acc-row {
@@ -158,13 +158,13 @@
     .finish-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
     .finish-card { text-align: center; display: block; width: 100%; padding: 0; color: inherit; border-radius: 4px; }
     .finish-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
-    .finish-sample { height: 80px; border-radius: 4px; margin-bottom: 10px; position: relative; overflow: hidden; display: block; transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
+    .finish-sample { height: 80px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden; display: block; transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
     .finish-sample::before { content:''; position:absolute; inset:0; background: linear-gradient(160deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 42%, rgba(0,0,0,0.22) 100%); }
     .finish-sample::after { content:''; position:absolute; top:0; bottom:0; left:-70%; width:45%; background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-18deg); transition: left .9s var(--ease-out); }
     .finish-card:hover .finish-sample, .finish-card:focus-visible .finish-sample { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
     .finish-card:hover .finish-sample::after, .finish-card:focus-visible .finish-sample::after { left: 130%; }
     .finish-name { font-size: 0.75rem; font-weight: 600; color: var(--cream); display: block; }
-    .finish-code { font-size: 0.68rem; color: rgba(255,255,255,0.40); display: block; }
+    .finish-code { font-size: 0.68rem; color: rgba(255,255,255,0.62); display: block; }
     .finish-hint { font-size: 0.68rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-top: 6px; opacity: 0; transition: opacity .3s; }
     .finish-card:hover .finish-hint, .finish-card:focus-visible .finish-hint { opacity: 1; }
 
@@ -175,13 +175,14 @@
     .lb[open]::backdrop { animation: lb-fade .4s ease; }
     @keyframes lb-in { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
     @keyframes lb-fade { from { opacity: 0; } to { opacity: 1; } }
-    .lb-inner { display: grid; grid-template-columns: 1.5fr 1fr; background:var(--forest-dark); border-radius: 3px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.6); }
+    .lb-inner { display: grid; grid-template-columns: 1.5fr 1fr; background:var(--forest-dark); border-radius: 14px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.6); }
     .lb-media { position: relative; background:var(--forest-dark); aspect-ratio: 1/1; max-height: 86vh; overflow: hidden; }
     .lb-media img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; transition: opacity .4s; }
     .lb-media img.loading { opacity: 0; }
+    .lb-body .label { color: var(--oak); }
     .lb-body { padding: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
     .lb-body h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); color: var(--cream); }
-    .lb-mat { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+    .lb-mat { font-size: 0.85rem; color: rgba(255,255,255,0.72); }
     .lb-fin { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-top: 10px; }
     .lb-price { font-weight: 700; margin-top: 14px; }
     .lb-body .btn { margin-top: 22px; align-self: flex-start; }
@@ -197,8 +198,7 @@
     @media(max-width:768px){
       .hw-grid { grid-template-columns: repeat(2,1fr); }
       .hw-hero-inner { grid-template-columns: minmax(0,1fr); }
-      .hv { margin: 0 calc(var(--gutter) * -1); }
-      .hv-stage { aspect-ratio: 4/3.4; border-radius: 0; min-height: 0; max-height: none; }
+      .hv-stage { aspect-ratio: 4/3.4; border-radius: 12px; min-height: 0; max-height: none; }
       .hv-thumb { width: 48px; height: 48px; }
       .lb-inner { grid-template-columns: 1fr; }
       .lb-media { aspect-ratio: 4/3; }
@@ -224,19 +224,19 @@
 
   <section class="hw-hero">
     <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
-        <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
+      <nav class="breadcrumb" style="margin-bottom:32px;">
+        <a href="index.html">Home</a>
         <span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">Hardware</span>
+        <span style="color:var(--ink);">Hardware</span>
       </nav>
       <div class="hw-hero-inner">
-        <div style="padding-bottom: clamp(48px,7vw,80px);">
+        <div>
           <div class="label" style="margin-bottom:20px;">Hardware Collection</div>
-          <h1 style="color:var(--cream); margin-bottom:18px;">The Detail That<br/>Defines the Door</h1>
-          <p class="lead" style="color:rgba(255,255,255,0.55); max-width:480px; margin-bottom:32px;">Solid brass, oil-rubbed bronze, satin nickel, and matte black door hardware — levers, knobs, pulls, and hinges that are worthy of the doors they're on.</p>
+          <h1 style="margin-bottom:18px;">The Detail That<br/>Defines the Door</h1>
+          <p class="lead" style="max-width:480px; margin-bottom:32px;">Solid brass, oil-rubbed bronze, satin nickel, and matte black door hardware — levers, knobs, pulls, and hinges that are worthy of the doors they're on.</p>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <a href="quote.html" class="btn btn-gold">Request Hardware Quote</a>
-            <a href="finishes.html" class="btn btn-outline-light">Order Samples</a>
+            <a href="finishes.html" class="btn btn-outline">Order Samples</a>
           </div>
         </div>
         <div class="hv" data-no-motion>
@@ -516,7 +516,7 @@
         <div class="label" style="color:var(--gold);">Available Finishes</div>
         <div class="rule"></div>
         <h2 style="color:var(--cream);">Standard Finishes</h2>
-        <p style="color:rgba(255,255,255,0.50);">Custom patinas available. Sample chips available.</p>
+        <p style="color:rgba(255,255,255,0.72);">Custom patinas available. Sample chips available.</p>
       </div>
       <div class="finish-row">
         <button type="button" class="finish-card" data-target="brass"><span class="finish-sample" style="background:#c8a951;"></span><span class="finish-name">Polished Brass</span><span class="finish-code">PB</span><span class="finish-hint" aria-hidden="true">Show sets</span></button>

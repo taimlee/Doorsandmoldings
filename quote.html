@@ -21,24 +21,26 @@
   <style>
     .vis-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-    /* Hero on a real photograph, slow push-in */
-    .quote-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); position: relative; overflow: hidden; isolation: isolate; }
-    .ph-hero-bg { position: absolute; inset: -12% 0; z-index: -1; overflow: hidden; }
-    .ph-hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); animation: ph-push 16s var(--ease-out) forwards; }
-    .ph-hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,17,14,0.95) 0%, rgba(20,17,14,0.82) 45%, rgba(20,17,14,0.55) 100%); }
+    /* Light hero: text beside a framed photograph with a slow push-in */
+    .quote-hero { background: var(--paper-2); padding: clamp(48px,7vw,88px) 0 clamp(48px,7vw,80px); position: relative; overflow: hidden; }
+    .ph-hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px,6vw,80px); align-items: center; }
+    .ph-hero-grid > * { min-width: 0; }
+    .ph-hero-photo { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: var(--linen); border: 1px solid var(--linen); box-shadow: 0 24px 60px rgba(42,33,24,0.14); }
+    .ph-hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); animation: ph-push 14s var(--ease-out) forwards; }
     @keyframes ph-push { to { transform: scale(1); } }
+    @media(max-width:900px){ .ph-hero-grid { grid-template-columns: 1fr; gap: 28px; } .ph-hero-photo { aspect-ratio: 16 / 10; } }
 
     .quote-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(48px,8vw,100px); align-items: start; }
-    .quote-card { background: white; border-radius: 4px; padding: clamp(24px,4vw,48px); box-shadow: 0 4px 48px rgba(0,0,0,0.10); position: relative; overflow: hidden; }
+    .quote-card { background: white; border-radius: 14px; border: 1px solid var(--linen); padding: clamp(24px,4vw,48px); box-shadow: 0 10px 40px rgba(42,33,24,0.08); position: relative; overflow: hidden; }
 
     /* Progress */
-    .q-progress { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--cream-mid); }
-    .q-progress span { position: absolute; inset: 0; background: var(--gold); transform-origin: 0 50%; transform: scaleX(var(--q, 0.3333)); transition: transform 0.8s var(--ease-out); }
+    .q-progress { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--paper-2); }
+    .q-progress span { position: absolute; inset: 0; background: var(--forest); transform-origin: 0 50%; transform: scaleX(var(--q, 0.3333)); transition: transform 0.8s var(--ease-out); }
     .step-indicator { display: flex; align-items: flex-start; gap: 0; margin-bottom: 36px; list-style: none; }
     .step { flex: 1; text-align: center; }
     .step-btn { display: block; width: 100%; padding: 0; color: inherit; cursor: default; border-radius: 2px; }
     .step-btn:not(:disabled) { cursor: pointer; }
-    .step-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+    .step-btn:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; }
     .step-num {
       width: 34px; height: 34px; border-radius: 50%; font-size: 0.80rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
@@ -46,16 +48,16 @@
       transition: background 0.4s var(--ease-out), color 0.4s, transform 0.4s var(--ease-out), box-shadow 0.4s;
       position: relative;
     }
-    .step.active .step-num { background:var(--forest-dark); color: var(--cream); transform: scale(1.08); box-shadow: 0 0 0 5px rgba(20,17,14,0.08); }
-    .step.done .step-num { background: var(--gold); color: var(--charcoal); }
+    .step.active .step-num { background: var(--forest); color: #FFFFFF; transform: scale(1.08); box-shadow: 0 0 0 5px rgba(47,93,70,0.16); }
+    .step.done .step-num { background: var(--forest-pale); color: var(--forest); box-shadow: inset 0 0 0 1.5px var(--forest); }
     .step.done .step-num b { display: none; }
     .step-num svg { width: 14px; height: 14px; display: none; }
     .step.done .step-num svg { display: block; animation: q-pop 0.45s var(--ease-out); }
-    .step.done .step-btn:hover .step-num { box-shadow: 0 0 0 5px rgba(180,130,50,0.18); }
+    .step.done .step-btn:hover .step-num { box-shadow: inset 0 0 0 1.5px var(--forest), 0 0 0 5px rgba(47,93,70,0.16); }
     .step-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--charcoal-lt); transition: color 0.3s; }
     .step.active .step-label { color: var(--charcoal); }
     .step-connector { flex: 0.5; height: 2px; background: var(--cream-dark); margin-top: 16px; position: relative; overflow: hidden; }
-    .step-connector span { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.6s var(--ease-out); }
+    .step-connector span { position: absolute; inset: 0; background: var(--forest); transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.6s var(--ease-out); }
     .step-connector.filled span { transform: scaleX(1); }
     @keyframes q-pop { from { transform: scale(0.3); opacity: 0; } to { transform: none; opacity: 1; } }
 
@@ -82,15 +84,15 @@
     .product-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
     .product-option {
       position: relative; display: flex; align-items: center; gap: 14px;
-      border: 1.5px solid var(--cream-dark); border-radius: 4px; padding: 10px 40px 10px 10px;
+      border: 1.5px solid var(--linen); border-radius: 10px; padding: 10px 40px 10px 10px;
       cursor: pointer; text-align: left; background: white;
       transition: border-color 0.25s, background 0.25s, box-shadow 0.25s, transform 0.25s var(--ease-out);
     }
     .product-option:hover { border-color: var(--charcoal-lt); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(20,17,14,0.07); }
-    .product-option.selected { border-color: var(--gold); background: var(--gold-pale); }
-    .product-option:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .product-option.selected { border-color: var(--forest); background: var(--forest-pale); }
+    .product-option:focus-within { outline: 2px solid var(--forest); outline-offset: 2px; }
     .po-input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-    .po-media { width: 64px; height: 64px; flex-shrink: 0; border-radius: 2px; overflow: hidden; background: var(--cream-mid); }
+    .po-media { width: 64px; height: 64px; flex-shrink: 0; border-radius: 6px; overflow: hidden; background: var(--paper-2); }
     .po-media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 0.8s var(--ease-out), filter 0.4s; filter: saturate(0.85); }
     .product-option:hover .po-media img, .product-option.selected .po-media img { transform: scale(1.16); filter: none; }
     .product-option-label { font-size: 0.86rem; font-weight: 600; color: var(--charcoal); display: block; line-height: 1.3; }
@@ -102,14 +104,14 @@
       transition: background 0.25s, border-color 0.25s, transform 0.35s var(--ease-out);
     }
     .po-check svg { width: 11px; height: 11px; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset 0.35s var(--ease-out) 0.05s; }
-    .product-option.selected .po-check { background: var(--gold); border-color: var(--gold); transform: scale(1.1); }
+    .product-option.selected .po-check { background: var(--forest); border-color: var(--forest); color: #FFFFFF; transform: scale(1.1); }
     .product-option.selected .po-check svg { stroke-dashoffset: 0; }
 
     /* Fields */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-input, .form-select, .form-textarea { transition: border-color 0.2s, box-shadow 0.25s, background 0.2s; }
     .form-input:hover, .form-select:hover, .form-textarea:hover { border-color: var(--charcoal-lt); }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.14); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--forest); box-shadow: 0 0 0 4px rgba(47,93,70,0.14); }
     .form-group.is-invalid .form-input { border-color: #b4402a; background: #fff8f6; }
     .form-group.is-invalid .form-input:focus { box-shadow: 0 0 0 4px rgba(180,64,42,0.14); }
     .form-group.is-valid .form-input { border-color: oklch(62% 0.09 140); }
@@ -119,7 +121,7 @@
     .q-alert { display: none; font-size: 0.84rem; color: #a03722; background: #fff3f0; border-left: 3px solid #b4402a; padding: 10px 14px; margin-top: 20px; border-radius: 2px; }
     .q-alert.on { display: block; }
 
-    .q-summary { background: var(--cream); border-radius: 4px; padding: 14px 16px; margin-bottom: 24px; display: none; }
+    .q-summary { background: var(--paper); border: 1px solid var(--linen); border-radius: 10px; padding: 14px 16px; margin-bottom: 24px; display: none; }
     .q-summary.on { display: block; }
     .q-summary-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
     .q-summary-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--charcoal-lt); }
@@ -130,7 +132,7 @@
     .quote-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
     .btn-prev { font-size: 0.80rem; font-weight: 600; color: var(--charcoal-lt); display: flex; align-items: center; gap: 6px; cursor: pointer; transition: color 0.15s, gap 0.2s; background: none; border: none; padding: 8px 0; }
     .btn-prev:hover { color: var(--charcoal); gap: 10px; }
-    .btn-prev:focus-visible, .quote-nav .btn:focus-visible, .q-summary-edit:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .btn-prev:focus-visible, .quote-nav .btn:focus-visible, .q-summary-edit:focus-visible { outline: 2px solid var(--forest); outline-offset: 3px; }
     .btn[disabled] { opacity: 0.75; cursor: progress; }
     .q-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: q-spin 0.7s linear infinite; display: inline-block; }
     @keyframes q-spin { to { transform: rotate(360deg); } }
@@ -142,14 +144,14 @@
     .why-num { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--gold-dark); line-height: 1; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--cream); border: 1px solid var(--cream-dark); display: grid; place-items: center; position: relative; }
     .why-text h4 { font-size: 0.95rem; margin-bottom: 4px; padding-top: 2px; }
     .why-text p { font-size: 0.83rem; color: var(--charcoal-lt); }
-    .why-photo { aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; position: relative; background: var(--cream-mid); }
+    .why-photo { aspect-ratio: 4 / 3; border-radius: 14px; border: 1px solid var(--linen); overflow: hidden; position: relative; background: var(--paper-2); }
     .why-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--ease-out); }
     .why-photo:hover img { transform: scale(1.05); }
 
     .success-card { text-align: center; padding: 40px 0; display: none; }
     .success-card.on { animation: q-in 0.6s var(--ease-out) both; }
     .success-card h3:focus { outline: none; }
-    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold-dark); animation: q-pop 0.6s var(--ease-out) both; }
+    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--forest-pale); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--forest); animation: q-pop 0.6s var(--ease-out) both; }
     .success-icon svg { width: 28px; height: 28px; }
     .success-icon polyline { stroke-dasharray: 30; stroke-dashoffset: 30; animation: q-draw 0.6s var(--ease-out) 0.35s forwards; }
     @keyframes q-draw { to { stroke-dashoffset: 0; } }
@@ -157,7 +159,7 @@
     @media(max-width:900px){ .quote-layout { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .why-photo { display: none; } }
     @media(max-width:560px){ .product-selector { grid-template-columns: 1fr; } .q-sel-head { flex-direction: column; gap: 4px; } .quote-nav .btn { white-space: normal; text-align: center; } }
     @media (prefers-reduced-motion: reduce) {
-      .ph-hero-bg img { animation: none; transform: none; }
+      .ph-hero-photo img { animation: none; transform: none; }
       .quote-step.q-in, .quote-step.q-out, .quote-step.q-in .q-stag, .success-card.on, .success-icon, .step.done .step-num svg { animation: none !important; }
       .success-icon polyline { animation: none; stroke-dashoffset: 0; }
       .q-viewport, .q-progress span, .step-connector span, .po-media img, .product-option { transition: none !important; }
@@ -169,16 +171,18 @@
 <div class="page-content">
 
   <section class="quote-hero">
-    <div class="ph-hero-bg" aria-hidden="true" data-parallax="0.12"><img src="images/pages/core/bg-workshop-lumber.jpg" alt="" /></div>
-    <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
-        <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
-        <span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">Get a Quote</span>
-      </nav>
-      <div class="label" style="margin-bottom:20px;">Custom Quote</div>
-      <h1 style="color:var(--cream); margin-bottom:16px;">Tell Us About<br/>Your Project</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.55);">We'll put together a detailed quote. No obligation, no pressure.</p>
+    <div class="container ph-hero-grid">
+      <div class="ph-hero-text">
+        <nav class="breadcrumb" style="margin-bottom:28px;">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span style="color:var(--ink-mid);">Get a Quote</span>
+        </nav>
+        <div class="label" style="margin-bottom:20px;">Custom Quote</div>
+        <h1 style="margin-bottom:16px;">Tell Us About<br/>Your Project</h1>
+        <p class="lead">We'll put together a detailed quote. No obligation, no pressure.</p>
+      </div>
+      <div class="ph-hero-photo" aria-hidden="true"><img src="images/pages/core/bg-workshop-lumber.jpg" alt="" /></div>
     </div>
   </section>
 

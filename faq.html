@@ -42,11 +42,14 @@
   </script>
   <style>
     .vis-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-    .faq-hero { background: var(--charcoal); padding: clamp(100px,12vw,150px) 0 clamp(60px,8vw,100px); position: relative; overflow: hidden; isolation: isolate; }
-    .ph-hero-bg { position: absolute; inset: -12% 0; z-index: -1; overflow: hidden; }
-    .ph-hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.14); animation: ph-push 16s var(--ease-out) forwards; }
-    .ph-hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,17,14,0.95) 0%, rgba(20,17,14,0.84) 45%, rgba(20,17,14,0.6) 100%); }
+    /* Light hero: text beside a framed photograph with a slow push-in */
+    .faq-hero { background: var(--paper-2); padding: clamp(48px,7vw,88px) 0 clamp(48px,7vw,80px); position: relative; overflow: hidden; }
+    .ph-hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px,6vw,80px); align-items: center; }
+    .ph-hero-grid > * { min-width: 0; }
+    .ph-hero-photo { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: var(--linen); border: 1px solid var(--linen); box-shadow: 0 24px 60px rgba(42,33,24,0.14); }
+    .ph-hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); animation: ph-push 14s var(--ease-out) forwards; }
     @keyframes ph-push { to { transform: scale(1); } }
+    @media(max-width:900px){ .ph-hero-grid { grid-template-columns: 1fr; gap: 28px; } .ph-hero-photo { aspect-ratio: 16 / 10; } }
 
     .faq-layout { display: grid; grid-template-columns: 260px 1fr; gap: clamp(40px,6vw,80px); align-items: start; }
     .faq-layout > * { min-width: 0; }
@@ -57,9 +60,9 @@
       color: var(--charcoal-lt); border-left: 2px solid var(--cream-dark);
       transition: color 0.25s, border-color 0.25s, padding-left 0.3s var(--ease-out); margin-bottom: 2px;
     }
-    .faq-nav-item:hover, .faq-nav-item.active { color: var(--charcoal); border-left-color: var(--gold); }
-    .faq-nav-item.active { padding-left: 20px; font-weight: 600; }
-    .faq-nav-item:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .faq-nav-item:hover, .faq-nav-item.active { color: var(--ink); border-left-color: var(--forest); }
+    .faq-nav-item.active { padding-left: 20px; font-weight: 600; color: var(--forest-dark); }
+    .faq-nav-item:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
     .faq-nav-item.is-empty { opacity: 0.35; }
     .faq-section-title { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 8px; }
     .fq-section { margin-top: 48px; padding-top: 48px; border-top: 1px solid var(--cream-dark); scroll-margin-top: calc(var(--nav-h) + 24px); }
@@ -71,23 +74,23 @@
     .fq-tools { margin-bottom: 40px; }
     .fq-search { position: relative; }
     .fq-search svg.fq-glass { position: absolute; left: 18px; top: 50%; width: 18px; height: 18px; margin-top: -9px; color: var(--charcoal-lt); pointer-events: none; transition: color 0.25s; }
-    .fq-search:focus-within svg.fq-glass { color: var(--gold-dark); }
+    .fq-search:focus-within svg.fq-glass { color: var(--forest); }
     .fq-input {
       width: 100%; padding: 17px 92px 17px 50px; font-family: var(--sans); font-size: 1rem; color: var(--charcoal);
-      background: white; border: 1.5px solid var(--cream-dark); border-radius: 3px; outline: none;
+      background: white; border: 1.5px solid var(--linen); border-radius: 999px; outline: none;
       transition: border-color 0.25s, box-shadow 0.3s;
       -webkit-appearance: none; appearance: none;
     }
     .fq-input::-webkit-search-cancel-button { display: none; }
     .fq-input:hover { border-color: var(--charcoal-lt); }
-    .fq-input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(180,130,50,0.14), 0 14px 34px rgba(20,17,14,0.07); }
+    .fq-input:focus { border-color: var(--forest); box-shadow: 0 0 0 4px rgba(47,93,70,0.14), 0 14px 34px rgba(42,33,24,0.07); }
     .fq-clear {
       position: absolute; right: 52px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%;
       display: grid; place-items: center; color: var(--charcoal-lt); transition: background 0.2s, color 0.2s;
     }
     .fq-clear[hidden] { display: none; }
     .fq-clear:hover { background: var(--cream-mid); color: var(--charcoal); }
-    .fq-clear:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .fq-clear:focus-visible { outline: 2px solid var(--forest); outline-offset: 1px; }
     .fq-clear svg { width: 14px; height: 14px; }
     .fq-kbd { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: var(--sans); font-size: 0.72rem; font-weight: 600; color: var(--charcoal-lt); border: 1px solid var(--cream-dark); border-radius: 3px; padding: 2px 7px; pointer-events: none; }
     .fq-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
@@ -98,12 +101,12 @@
       white-space: nowrap;
     }
     .fq-chip:hover { border-color: var(--charcoal-lt); transform: translateY(-1px); }
-    .fq-chip[aria-pressed="true"] { background:var(--forest-dark); border-color: var(--charcoal); color: var(--cream); }
-    .fq-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .fq-chip[aria-pressed="true"] { background: var(--forest); border-color: var(--forest); color: #FFFFFF; }
+    .fq-chip:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
     .fq-chip.is-empty { opacity: 0.45; }
     .fq-chip .n { font-weight: 500; opacity: 0.6; margin-left: 4px; }
     .fq-status { font-size: 0.8rem; color: var(--charcoal-lt); margin-top: 14px; min-height: 1.3em; }
-    .fq-empty { text-align: center; padding: 56px 20px; border: 1px dashed var(--cream-dark); border-radius: 4px; }
+    .fq-empty { text-align: center; padding: 56px 20px; border: 1px dashed var(--linen); border-radius: 14px; background: #FFFFFF; }
     .fq-empty[hidden] { display: none; }
     .fq-empty h3 { font-size: 1.3rem; margin-bottom: 8px; }
     .fq-empty p { font-size: 0.9rem; margin-bottom: 0; }
@@ -122,14 +125,14 @@
       transition: color 0.2s;
     }
     .fq-btn:hover, .fq-btn[aria-expanded="true"] { color: var(--gold-dark); }
-    .fq-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 1px; }
+    .fq-btn:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; border-radius: 2px; }
     .fq-icon {
       width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--cream-dark);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
       transition: background 0.35s, border-color 0.35s, color 0.35s, transform 0.45s var(--ease-out);
     }
-    .fq-btn:hover .fq-icon { border-color: var(--gold); }
-    .fq-btn[aria-expanded="true"] .fq-icon { background: var(--gold); border-color: var(--gold); color: white; transform: rotate(135deg); }
+    .fq-btn:hover .fq-icon { border-color: var(--forest); }
+    .fq-btn[aria-expanded="true"] .fq-icon { background: var(--forest); border-color: var(--forest); color: white; transform: rotate(135deg); }
     .fq-panel { overflow: hidden; }
     .fq-panel.is-animating { transition: height 0.45s var(--ease-out); }
     .fq-inner { padding-bottom: 22px; max-width: 680px; transition: opacity 0.4s var(--ease-out), transform 0.45s var(--ease-out); }
@@ -148,7 +151,7 @@
       .fq-input { padding-right: 48px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .ph-hero-bg img { animation: none; transform: none; }
+      .ph-hero-photo img { animation: none; transform: none; }
       .fq-panel.is-animating, .fq-inner, .fq-icon, .fq-chip, .faq-nav-item { transition: none !important; }
       .faq-item.fq-show, .fq-empty.on { animation: none; }
     }
@@ -158,16 +161,18 @@
 <div class="page-content">
 
   <section class="faq-hero">
-    <div class="ph-hero-bg" aria-hidden="true" data-parallax="0.12"><img src="images/pages/core/bg-room-hallway.jpg" alt="" /></div>
-    <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,0.35); margin-bottom:32px;">
-        <a href="index.html" style="color:rgba(255,255,255,0.45);">Home</a>
-        <span class="breadcrumb-sep">/</span>
-        <span style="color:rgba(255,255,255,0.70);">FAQ</span>
-      </nav>
-      <div class="label" style="margin-bottom:20px;">Frequently Asked Questions</div>
-      <h1 style="color:var(--cream); margin-bottom:16px;">Answers to the<br/>Questions We Hear Most</h1>
-      <p class="lead" style="color:rgba(255,255,255,0.55); max-width:560px;">Can't find what you're looking for? <a href="contact.html" style="color:var(--gold);">Contact us</a> — we're happy to talk through your project.</p>
+    <div class="container ph-hero-grid">
+      <div class="ph-hero-text">
+        <nav class="breadcrumb" style="margin-bottom:28px;">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span style="color:var(--ink-mid);">FAQ</span>
+        </nav>
+        <div class="label" style="margin-bottom:20px;">Frequently Asked Questions</div>
+        <h1 style="margin-bottom:16px;">Answers to the<br/>Questions We Hear Most</h1>
+        <p class="lead" style="max-width:560px;">Can't find what you're looking for? <a href="contact.html" style="color:var(--forest); font-weight:600; text-decoration:underline; text-underline-offset:3px;">Contact us</a> — we're happy to talk through your project.</p>
+      </div>
+      <div class="ph-hero-photo" aria-hidden="true"><img src="images/pages/core/bg-room-hallway.jpg" alt="" /></div>
     </div>
   </section>
 
@@ -190,7 +195,7 @@
           <a class="faq-nav-item" href="#moldings">Moldings Pricing</a>
           <a class="faq-nav-item" href="#sustainability">Sustainability</a>
           </nav>
-          <div style="margin-top:32px; padding:20px; background:var(--cream-mid); border-radius:4px;">
+          <div style="margin-top:32px; padding:20px; background:#FFFFFF; border:1px solid var(--linen); border-radius:14px;">
             <div style="font-size:0.80rem; font-weight:600; margin-bottom:8px;">Still have questions?</div>
             <p style="font-size:0.80rem; color:var(--charcoal-lt); margin-bottom:14px;">Visits are by appointment only.</p>
             <a href="contact.html" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Contact Us</a>
