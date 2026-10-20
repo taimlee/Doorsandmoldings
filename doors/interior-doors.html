@@ -33,7 +33,7 @@
     /* ── Style explorer ── */
     .ex { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:clamp(28px,5vw,80px); align-items:start; }
     .ex-media { position:sticky; top:calc(var(--nav-h) + 24px); aspect-ratio:4/5; max-height:calc(100vh - var(--nav-h) - 48px); width:100%;
-      overflow:hidden; border-radius:2px; background:var(--forest-dark); box-shadow:0 34px 80px rgba(20,17,14,0.20), 0 0 0 1px rgba(20,17,14,0.06); }
+      overflow:hidden; border-radius:14px; background:var(--forest-dark); box-shadow:0 34px 80px rgba(20,17,14,0.20), 0 0 0 1px rgba(20,17,14,0.06); }
     .ex-frame { position:absolute; inset:0; }
     .ex-frame > .ex-layer { position:absolute; inset:0; }
     .ex-layer img { transition:none; }
@@ -45,6 +45,7 @@
     .ex-cap { font-family:var(--serif); font-size:clamp(1.3rem,2.4vw,1.9rem); line-height:1.1; }
     .ex-count { font-size:0.7rem; font-weight:600; letter-spacing:0.16em; color:var(--gold); white-space:nowrap; }
     .ex-open[hidden] { display:none; }
+    .ex-media .pf-tag { bottom:auto; top:14px; }
     .ex-tabs { display:flex; flex-direction:column; border-top:1px solid var(--cream-dark); }
     .ex-tab { position:relative; display:flex; align-items:baseline; gap:18px; width:100%; text-align:left; padding:16px 4px 16px 18px;
       border-bottom:1px solid var(--cream-dark); color:var(--charcoal-lt); transition:color .3s, padding .4s var(--ease-out); }
@@ -53,7 +54,7 @@
     .ex-tab[aria-selected="true"] { color:var(--charcoal); padding-left:24px; }
     .ex-tab[aria-selected="true"]::before { transform:none; }
     .ex-tab:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
-    .ex-num { font-size:0.68rem; font-weight:600; letter-spacing:0.14em; color:var(--gold); }
+    .ex-num { font-size:0.68rem; font-weight:600; letter-spacing:0.14em; color:var(--oak-dark); }
     .ex-tab .style-name { font-size:clamp(1.1rem,1.6vw,1.35rem); margin:0; }
     .ex-panels { padding:26px 0 8px; min-height:150px; }
     .ex-panel .style-desc { font-size:0.95rem; margin-bottom:14px; max-width:46ch; }
@@ -63,8 +64,8 @@
     .ex-swatch img { border-radius:50%; }
     .ex-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .ex-chip { font-size:0.8rem; font-weight:500; padding:8px 14px; border-radius:40px; border:1px solid var(--cream-dark); color:var(--charcoal-mid); transition:all .25s var(--ease-out); }
-    .ex-chip:hover { border-color:var(--charcoal); color:var(--charcoal); }
-    .ex-chip[aria-pressed="true"] { background:var(--forest-dark); border-color:var(--charcoal); color:var(--cream); }
+    .ex-chip:hover { border-color:var(--oak); color:var(--ink); }
+    .ex-chip[aria-pressed="true"] { background:var(--forest-dark); border-color:var(--forest-dark); color:#fff; }
     .ex-chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     @media (max-width:900px){
       .ex { grid-template-columns:minmax(0,1fr); }
@@ -73,8 +74,8 @@
       .ex-tabs::-webkit-scrollbar { display:none; }
       .ex-tab { flex:none; width:auto; padding:10px 16px; border:1px solid var(--cream-dark); border-radius:40px; gap:8px; }
       .ex-tab:hover, .ex-tab[aria-selected="true"] { padding-left:16px; }
-      .ex-tab[aria-selected="true"] { background:var(--forest-dark); border-color:var(--charcoal); color:var(--cream); }
-      .ex-tab[aria-selected="true"] .ex-num { color:var(--gold); }
+      .ex-tab[aria-selected="true"] { background:var(--forest-dark); border-color:var(--forest-dark); color:#fff; }
+      .ex-tab[aria-selected="true"] .ex-num { color:var(--oak); }
       .ex-tab::before { display:none; }
       .ex-tab .style-name { font-family:var(--sans); font-size:0.85rem; font-weight:600; }
       .ex-swatch { width:72px; height:72px; }
@@ -152,6 +153,12 @@
     }
     @keyframes lb-in{from{opacity:0;}to{opacity:1;}}
     @keyframes lb-img{from{opacity:0;transform:translate3d(calc(var(--dir,0) * 40px),0,0) scale(.97);}to{opacity:1;transform:none;}}
+  
+    /* Daylight theme finish: rounded frames, forest actives */
+    .ex-media, .pr-frame, .cmp, .bs-scene, .fx-stage, .hs-stage, .hs-photo, .pf.cat-img, .pf.style-img, .style-img, .fx-leaf, .bs-stage { border-radius: 14px; overflow: hidden; }
+    .ex-chip[aria-pressed="true"], .ex-tab[aria-selected="true"], .cmp-legend button.on, .hs-nav button[aria-current="true"] { background: var(--forest); color: #fff; border-color: var(--forest); }
+    .pr-count, .hs-count { color: var(--oak); }
+    .ex-meta { color: rgba(255,255,255,0.85); }
   </style>
 </head>
 <body>

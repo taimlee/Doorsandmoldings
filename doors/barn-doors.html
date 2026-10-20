@@ -23,8 +23,8 @@
     .cat-img-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;}
     .cat-img{aspect-ratio:4/5;}.cat-img.tall{aspect-ratio:auto;height:100%;min-height:260px;}
     .styles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,28px);}
-    .style-card{border:1.5px solid var(--cream-dark);border-radius:2px;overflow:hidden;transition:all 0.2s var(--ease-out);}
-    .style-card:hover{border-color:var(--charcoal);box-shadow:0 10px 40px rgba(0,0,0,0.08);}
+    .style-card{background:#fff;border:1px solid var(--linen);border-radius:14px;overflow:hidden;transition:all 0.2s var(--ease-out);}
+    .style-card:hover{border-color:var(--oak);box-shadow:0 10px 40px rgba(0,0,0,0.08);}
     .style-img{aspect-ratio:3/4;}.style-body{padding:20px;}
     .style-name{font-family:var(--serif);font-size:1.1rem;margin-bottom:4px;}
     .style-desc{font-size:0.82rem;color:var(--charcoal-lt);margin-bottom:12px;}
@@ -37,7 +37,7 @@
     .bs-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;}
     .bs-head .section-intro{margin-bottom:clamp(28px,4vw,44px);}
     .bs-state{font-size:0.7rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:clamp(28px,4vw,44px);min-width:8ch;text-align:right;}
-    .bs{position:relative;height:var(--bs-h,520px);overflow:hidden;border-radius:2px;touch-action:pan-y;user-select:none;-webkit-user-select:none;
+    .bs{position:relative;height:var(--bs-h,520px);overflow:hidden;border-radius:14px;touch-action:pan-y;user-select:none;-webkit-user-select:none;
       background:radial-gradient(ellipse 70% 80% at 50% 30%, oklch(95% 0.012 78), oklch(89% 0.014 78));
       box-shadow:inset 0 0 0 1px rgba(20,17,14,0.06);}
     .bs::after{content:'';position:absolute;left:0;right:0;bottom:0;height:var(--bs-floor,30px);
@@ -130,6 +130,12 @@
     }
     @keyframes lb-in{from{opacity:0;}to{opacity:1;}}
     @keyframes lb-img{from{opacity:0;transform:translate3d(calc(var(--dir,0) * 40px),0,0) scale(.97);}to{opacity:1;transform:none;}}
+  
+    /* Daylight theme finish: rounded frames, forest actives */
+    .ex-media, .pr-frame, .cmp, .bs-scene, .fx-stage, .hs-stage, .hs-photo, .pf.cat-img, .pf.style-img, .style-img, .fx-leaf, .bs-stage { border-radius: 14px; overflow: hidden; }
+    .ex-chip[aria-pressed="true"], .ex-tab[aria-selected="true"], .cmp-legend button.on, .hs-nav button[aria-current="true"] { background: var(--forest); color: #fff; border-color: var(--forest); }
+    .pr-count, .hs-count { color: var(--oak); }
+    .ex-meta { color: rgba(255,255,255,0.85); }
   </style>
 </head>
 <body>
